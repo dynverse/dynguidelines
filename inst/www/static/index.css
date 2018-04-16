@@ -1,0 +1,45 @@
+
+.btn-green {
+    background-color: #1ab394;
+    color: #fff;
+    border-radius: 3px;
+}
+.btn-green:focus,
+.btn-green:hover {
+    background-color: #18a689;
+    color: #fff;
+}
+.panel-footer {
+    padding: 0 15px;
+    border: none;
+    text-align: right;
+    background-color: #fff;
+}
+
+
+
+
+
+/* Questions */
+
+.inactive-question {
+    display:none;
+}
+
+
+
+/* Rotated headers */
+th.rotate {
+  height: 140px;
+  white-space: nowrap;
+}
+
+th.rotate > div {
+  transform:
+    translate(0px, 0px)
+    rotate(315deg);
+    width: 30px;
+}
+th.rotate > div > span {
+  border-bottom: 1px solid #ccc;
+}
