@@ -250,6 +250,8 @@ var update_methods = function () {
             cells = cells.enter()
                 .append("td")
                 .merge(cells);
+            cells.exit()
+                .remove();
             var _loop_1 = function (column) {
                 column_renderers[column.renderer](cells
                     .filter(function (d) { return d.column.column_id == column.column_id; }));

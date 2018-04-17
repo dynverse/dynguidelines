@@ -313,6 +313,9 @@ var update_methods = function() {
                 .append("td")
                 .merge(cells)
 
+            cells.exit()
+                .remove()
+
 
             for (let column of methods_data.method_columns) {
                 column_renderers[column.renderer](
