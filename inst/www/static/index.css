@@ -1,22 +1,11 @@
+/* tabs */
 
-.btn-green {
-    background-color: #1ab394;
-    color: #fff;
-    border-radius: 3px;
+.tab-content {
+    padding: 10px;
+    border-color: #dee2e6;
+    border-width: 0px 1px 1px 1px;
+    border-style: solid;
 }
-.btn-green:focus,
-.btn-green:hover {
-    background-color: #18a689;
-    color: #fff;
-}
-.panel-footer {
-    padding: 0 15px;
-    border: none;
-    text-align: right;
-    background-color: #fff;
-}
-
-
 
 
 

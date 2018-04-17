@@ -86,7 +86,27 @@ var enter_btn_toggle = function(p, question) {
 }
 var enter_survey_functions = {
     radio: enter_btn_toggle,
-    checkbox: enter_btn_toggle
+    checkbox: enter_btn_toggle,
+    slider: function(p, question) {
+        question
+            .append("div")
+            .append("input")
+            .attr("type", "range")
+            .attr("defaultValue", p.default)
+            .attr("min", p.min)
+            .attr("max", p.max)
+            .attr("step", p.step)
+            .on("change", d => {
+                update_data_functions[p.type](p, question)
+                update_results()
+            })
+
+        question.append("span")
+            .classed("slider-label", true)
+
+        eval('p.label = ' + p.label) // process label function
+
+        question.datum(p)
     }
 }
 
@@ -121,6 +141,14 @@ var update_data_functions = {
         question.datum(p)
 
         // update_results()
+    },
+    slider: function(p, question) {
+        p.value = question.select("input").property("value")
+
+        question.select("label.slider-label")
+            .text(p.label(p.value))
+
+        question.datum(p)
     }
 }
 
@@ -188,7 +216,7 @@ $.getJSON("../R/questions/json", function(data) {
         .data(category_data)
         .enter()
         .append("div")
-        .attr("class", "tab-pane fade")
+        .attr("class", "tab-pane")
         .classed("show", (d,i) => i == 0)
         .classed("active", (d,i) => i == 0)
         .attr("id", d => d.key)
@@ -295,17 +323,21 @@ var update_methods = function() {
                 .selectAll('th')
     		    .text(function (column) { return column.label });
 
-            var rows = methodsBody.selectAll('tr')
-              .data(methods_data.methods)
+            // remove old tds
+            methodsBody
+                .selectAll('tr')
+                .html("")
+
+            // add data to each row
+            var rows = methodsBody
+                .selectAll('tr')
+                .data(methods_data.methods)
 
             rows
                 .exit()
                 .remove()
 
-            rows
-                .selectAll("td")
-                .html("")
-
+            // render columns
             var cells = rows
                 .enter()
                 .append('tr')

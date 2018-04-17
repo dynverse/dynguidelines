@@ -16,45 +16,6 @@ all_free_programming_languages <- intersect(all_programming_languages, c("python
 
 questions <- list(
   list(
-    question_id = "programming_interface",
-    modifier = function(data, answer = NULL) {
-      if (answer == "No") {
-        data$methods <- data$methods %>% filter(gui > 0)
-      }
-
-      data
-    },
-    type = "radio",
-    choices = c("Yes", "No"),
-    title = "Can you work in a programming interface?",
-    activeIf = "true",
-    category = "programming"
-  ),
-  list(
-    question_id = "languages",
-    modifier = function(data, answer=NULL) {
-      data$methods <- data$methods %>% filter(map_lgl(platforms_split, ~length(intersect(answer, .)) > 0))
-      data
-    },
-    type = "checkbox",
-    choices = all_programming_languages,
-    special_choices = list(c("All", javascript_array(all_programming_languages)), c("Any free",  javascript_array(all_free_programming_languages))),
-    default = all_free_programming_languages,
-    title = "Which languages can you work with?",
-    activeIf = "survey_results['programming_interface'] == 'Yes'",
-    category = "programming"
-  ),
-  list(
-    question_id = "prior_information",
-    modifier = process_prior_information,
-    type = "checkbox",
-    choices = priors$prior_name,
-    special_choices = list(c("All", javascript_array(priors$prior_name)), c("None", "[]")),
-    title = "Are you willing to provide the following prior information?",
-    activeIf = "true",
-    category = "prior_information"
-  ),
-  list(
     question_id = "multiple_disconnected",
     modifier = function(data, answer=NULL) {
       data$methods <- data$methods %>% arrange(-overall_benchmark)
@@ -135,6 +96,75 @@ questions <- list(
     activeIf = "survey_results['expect_cycles'] == 'No'",
     title = "Do you expect a complex tree in the data?",
     category = "topology"
+  ),
+  list(
+    question_id = "programming_interface",
+    modifier = function(data, answer = NULL) {
+      if (answer == "No") {
+        data$methods <- data$methods %>% filter(gui > 0)
+      } else if (answer == "Yes") {
+        data$method_columns <- data$method_columns %>% add_row(column_id = "platforms", renderer = "text")
+      }
+
+      data
+    },
+    type = "radio",
+    choices = c("Yes", "No"),
+    title = "Can you work in a programming interface?",
+    activeIf = "true",
+    category = "availability"
+  ),
+  list(
+    question_id = "languages",
+    modifier = function(data, answer=NULL) {
+      data$methods <- data$methods %>% filter(map_lgl(platforms_split, ~length(intersect(answer, .)) > 0))
+
+      data
+    },
+    type = "checkbox",
+    choices = all_programming_languages,
+    special_choices = list(c("All", javascript_array(all_programming_languages)), c("Any free",  javascript_array(all_free_programming_languages)), c("Clear", "[]")),
+    default = all_free_programming_languages,
+    title = "Which languages can you work with?",
+    activeIf = "survey_results['programming_interface'] == 'Yes'",
+    category = "availability"
+  ),
+  list(
+    question_id = "user_friendliness",
+    modifier = function(data, answer=NULL) {
+      data$methods <- data$methods %>% filter(user_friendly >= as.numeric(answer)/100)
+
+      data
+    },
+    type = "slider",
+    default = 60,
+    label = "
+      function(x) {
+        if(x < 50) {
+          return 'Poor'
+        } else if (x < 70) {
+          return 'Fair'
+        } else if (x < 90) {
+          return 'Decent'
+        } else {
+          return 'Excellent'
+        }
+      }
+    ",
+
+    title = "Minimal user friendliness score",
+    activeIf = "true",
+    category = "availability"
+  ),
+  list(
+    question_id = "prior_information",
+    modifier = process_prior_information,
+    type = "checkbox",
+    choices = priors$prior_name,
+    special_choices = list(c("All", javascript_array(priors$prior_name)), c("None", "[]")),
+    title = "Are you willing to provide the following prior information?",
+    activeIf = "true",
+    category = "prior_information"
   )
 ) %>% {set_names(., map(., "question_id"))}
 
