@@ -13,6 +13,9 @@ var methodsTable
 var methodsHead
 var methodsBody
 
+
+
+/* Create survey questions */
 var enter_btn_toggle = function(p, question) {
     choices_container =  question
         .append("div")
@@ -87,6 +90,7 @@ var enter_survey_functions = {
     }
 }
 
+/* Update data from survey */
 var update_data_functions = {
     radio: function(p, question) {
         var activeOption = question
@@ -120,6 +124,7 @@ var update_data_functions = {
     }
 }
 
+/* Update results of survey */
 var update_results = function() {
     /* get results, only for active questions */
     /* then check dependencies */
@@ -139,6 +144,7 @@ var update_results = function() {
     update_methods()
 }
 
+/* Check dependencies between questions */
 var check_dependencies = function() {
     questions
         .classed("inactive-question", d => !eval(d.activeIf[0]))
@@ -147,7 +153,6 @@ var check_dependencies = function() {
 
 
 /* Load data and process questions */
-
 $.getJSON("../R/questions/json", function(data) {
     // console.log(data)
 
@@ -218,7 +223,7 @@ $.getJSON("../R/questions/json", function(data) {
 
 
 /* Table */
-
+/* Render table columns */
 topology_inference_type_colors = {"free":"green", "fixed":"red", "parameter":"orange"}
 var column_renderers = {
     "text": (td) => td.text(d => d.value),
@@ -265,16 +270,15 @@ var column_renderers = {
     "bool": (td) => td.text(d => if(d) {return "✔️"} else {return "❌"})
 }
 
+/* Update table */
 var update_methods = function() {
     methodsTable.transition(250).style("opacity", "0.1")
-    // d3.select("#methods-loader").style("visibility", "visible")
 
     ocpu.call("get_results", {"survey_results":survey_results}, function(session) {
 
         console.log("Your session id is :" + session.getKey())
 
         session.getObject(function(methods_data) {
-            // d3.select("#methods-loader").style("visibility", "hidden")
 
             methodsTable.transition(1).style("opacity", "1")
 
