@@ -302,6 +302,10 @@ var update_methods = function() {
                 .exit()
                 .remove()
 
+            rows
+                .selectAll("td")
+                .html("")
+
             var cells = rows
                 .enter()
                 .append('tr')
@@ -316,9 +320,6 @@ var update_methods = function() {
             cells = cells.enter()
                 .append("td")
                 .merge(cells)
-
-            cells.exit()
-                .remove()
 
 
             for (let column of methods_data.method_columns) {
