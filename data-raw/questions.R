@@ -1,0 +1,171 @@
+library(dplyr)
+library(purrr)
+library(dynguidelines)
+data(priors)
+data(methods)
+
+all_programming_languages <- unlist(methods$platforms_split) %>% unique()
+all_free_programming_languages <- intersect(all_programming_languages, c("python", "R", "C++"))
+
+questions <- list(
+  list(
+    question_id = "multiple_disconnected",
+    modifier = multiple_disconnected_modifier,
+    type = "radio",
+    choices = c("Yes", "No"),
+    modifier = function(data, answer=NULL) {},
+    activeIf = "true",
+    title = "Do you expect multiple disconnected trajectories in the data?",
+    category = "topology",
+    default = character()
+  ),
+  list(
+    question_id = "expect_topology",
+    modifier = expect_topology_modifier,
+    type = "radio",
+    choices = c("Yes", "No"),
+    activeIf = "input.multiple_disconnected == 'No'",
+    title = "Do you expect a particular topology in the data?",
+    category = "topology",
+    default = character()
+  ),
+  list(
+    question_id = "expected_topology",
+    modifier = expected_topology_modifier,
+    type = "radio",
+    choices = c("Linear", "Cyclic", "Bifurcating"),
+    activeIf = "
+      input.multiple_disconnected == 'No' &&
+      input.expect_topology == 'Yes'
+    ",
+    title = "What is the expected topology",
+    category = "topology",
+    default = character()
+  ),
+  list(
+    question_id = "expect_cycles",
+    modifier = expect_cycles_modifier,
+    type = "radio",
+    choices = c("It's possible", "No"),
+    activeIf = "
+      input.expect_topology == 'No'
+    ",
+    title = "Do you expect cycles in the data?",
+    category = "topology",
+    default = character()
+  ),
+  list(
+    question_id = "expect_complex_tree",
+    modifier = expect_complex_tree_modifier,
+    type = "radio",
+    choices = c("Yes", "Not necessarily"),
+    activeIf = "
+      input.expect_cycles == 'No' &&
+      input.expect_topology == 'No'
+    ",
+    title = "Do you expect a complex tree in the data?",
+    category = "topology",
+    default = character()
+  ),
+  list(
+    question_id = "prior_information",
+    modifier = prior_information_modifier,
+    type = "checkbox",
+    choices = priors$prior_name,
+    special_choices = list(c("All", priors$prior_name), c("None", "[]")),
+    title = "Are you willing to provide the following prior information?",
+    activeIf = "true",
+    category = "prior_information",
+    default = c()
+  ),
+  list(
+    question_id = "n_cells",
+    modifier = n_cells_modifier,
+    type = "textslider",
+    choices = c("< 100", "< 1000", "< 10000", "10000+"),
+    title = "Number of cells",
+    activeIf = "true",
+    category = "task",
+    default = "< 10000"
+  ),
+  list(
+    question_id = "n_genes",
+    modifier = n_genes_modifier,
+    type = "textslider",
+    choices = c("< 100", "< 1000", "< 10000", "10000+"),
+    title = "Number of genes",
+    activeIf = "true",
+    category = "task",
+    default = "< 1000"
+  ),
+  list(
+    question_id = "dynmethods",
+    modifier = function(data, answer) data,
+    type = "radio",
+    choices = c("Yes", "No"),
+    title = "Do you use dynmethods to run the methods?",
+    activeIf = "true",
+    category = "availability",
+    default = "Yes"
+  ),
+  list(
+    question_id = "programming_interface",
+    modifier = programming_interface_modifier,
+    type = "radio",
+    choices = c("Yes", "No"),
+    title = "Can you work in a programming interface?",
+    activeIf = "input.dynmethods == 'No'",
+    category = "availability",
+    default = "Yes"
+  ),
+  list(
+    question_id = "languages",
+    modifier = languages_modifier,
+    type = "checkbox",
+    choices = all_programming_languages,
+    special_choices = list(c("All", all_programming_languages), c("Any free",  all_free_programming_languages), c("Clear", "[]")),
+    default = all_free_programming_languages,
+    title = "Which languages can you work with?",
+    activeIf = "input.dynmethods == 'No' && input.programming_interface == 'Yes'",
+    category = "availability",
+    default = all_free_programming_languages
+  ),
+  list(
+    question_id = "user_friendliness",
+    modifier = user_friendliness_modifier,
+    type = "slider",
+    min = 0,
+    max = 100,
+    step = 10,
+    default = 60,
+    label = "
+      function(x) {
+        if(x < 50) {
+          return 'Poor'
+        } else if (x < 70) {
+          return 'Fair'
+        } else if (x < 90) {
+          return 'Decent'
+        } else {
+          return 'Excellent'
+        }
+      }
+    ",
+    title = "Minimal user friendliness score",
+    activeIf = "input.dynmethods == 'No'",
+    category = "availability"
+  ),
+  list(
+    question_id = "n_methods",
+    modifier = n_methods_modifier,
+    type = "slider",
+    min = 1,
+    max = 10,
+    default = 4,
+    title = "Number of methods",
+    activeIf = "true",
+    category = "methods"
+  )
+) %>% {set_names(., map(., "question_id"))}
+
+usethis::use_data(questions, overwrite = TRUE)

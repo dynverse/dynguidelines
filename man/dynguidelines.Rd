@@ -4,5 +4,6 @@
 \alias{dynguidelines}
 \title{Dynguidelines packages}
 \description{
-Dynguidelines packages
+The dynguidelines package can be used to find the most optimal TI methods on a given task.
+This can be done both directly in R or through a shiny interface.
 }

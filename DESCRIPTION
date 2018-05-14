@@ -2,15 +2,41 @@ Package: dynguidelines
 Type: Package
 Title: Practical guidelines for trajectory inference
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: c(
+    person(
+      "Wouter", 
+      "Saelens", 
+      email = "wouter.saelens@ugent.be", 
+      role = c("aut", "cre"), 
+      comment = c(ORCID = "0000-0002-7114-6248")
+    ),
+    person(
+      "Robrecht", 
+      "Cannoodt", 
+      email = "rcannood@gmail.com", 
+      role = c("aut"),
+      comment = c(ORCID = "0000-0003-3641-729X")
+    )
+  )
+Maintainer: Wouter Saelens <wt53em@gmail.com>
+Description: The dynguidelines package can be used to find the most optimal TI methods on a given task.
+   This can be done both directly in R or through a shiny interface.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 Depends:
+  R (>= 3.3)
+Imports:
   dplyr,
   tibble,
-  purrr
+  purrr,
+  shiny,
+  shinyWidgets,
+  knitr,
+  kableExtra,
+  Hmisc,
+  glue,
+  stringr
+URL: https://github.com/dynverse/dynguidelines
+BugReports: https://github.com/dynverse/dynguidelines/issues
