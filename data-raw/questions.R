@@ -71,7 +71,7 @@ questions <- list(
     question_id = "prior_information",
     modifier = prior_information_modifier,
     type = "checkbox",
-    choices = priors$prior_name,
+    choices = set_names(priors$prior_id, priors$prior_name),
     special_choices = list(c("All", priors$prior_name), c("None", "[]")),
     title = "Are you willing to provide the following prior information?",
     activeIf = "true",
@@ -167,5 +167,20 @@ questions <- list(
     category = "methods"
   )
 ) %>% {set_names(., map(., "question_id"))}
+
+questions <- map(questions, function(q) {
+  activeIf <- q$activeIf
+  if(activeIf == "true") {
+    activeIf <- "TRUE"
+  } else {
+    activeIf <- gsub("\\.", "$", activeIf)
+  }
+  activeIf <- parse(text=activeIf)
+  q$active_if <- function(input) {
+    active <- eval(activeIf)
+    length(active) && !is.na(active) && active
+  }
+  q
+})
 
 usethis::use_data(questions, overwrite = TRUE)

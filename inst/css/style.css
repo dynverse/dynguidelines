@@ -1,0 +1,37 @@
+.panel-collapse > div {
+  padding:10px 15px;
+  width:100%;
+}
+
+span.computed {
+  font-size: 0.8em;
+  font-variant: small-caps;
+  float:right;
+}
+
+div.computed {
+  opacity:0.5;
+}
+
+
+
+
+
+/***** Methods table ******/
+tr.selected {
+  background-color: #e6f5ff;
+}
+.table-striped>tbody>tr.selected:nth-of-type(odd) {
+  background-color: #dbf2ff;
+}
+
+/* Score */
+td > span.score {
+  border-radius: 4px;
+  padding-right: 4px;
+  padding-left: 4px;
+}
+
+td > img.trajectory_type {
+  width:40px;
+}

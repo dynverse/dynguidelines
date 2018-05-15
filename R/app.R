@@ -4,7 +4,11 @@
 #' @param method_columns The columns to return
 #'
 #' @export
-guidelines_shiny <- function(task=NULL, answers=NULL) {
+guidelines_shiny <- function(task=NULL, answers=list()) {
+  if (!is.null(task)) {
+    answers <- answers_task(task, answers)
+  }
+
   # trick from https://stackoverflow.com/questions/44999615/passing-parameters-into-shiny-server
   # this looks ugly though, but seems to me the most acceptable way to get variables into the shiny server
   file_path <- system.file("app/ui.R", package = "dynguidelines")
@@ -36,28 +40,71 @@ format_100 <- function(x) {
 }
 
 render_score <- function(x) {
-  kableExtra::cell_spec(
-    format_100(x),
-    background=kableExtra::spec_color(scale_01(x, lower=0), scale_from = c(0,1), option="A"),
-    color=ifelse(scale_01(x, lower=0) > 0.5, "black", "white"),
-    "html",
-    escape=F
+  y <- tibble(
+    x = x,
+    normalised = scale_01(x, lower=0),
+    formatted  = format_100(x),
+    background = viridisLite::magma(255)[ceiling(normalised*255)] %>% kableExtra:::html_color(),
+    color = ifelse(scale_01(normalised, lower=0) > 0.5, "black", "white"),
+    style = pmap(list(`background-color`=background, color=color), htmltools::css)
+  )
+
+  pmap(list(y$formatted, style=y$style, class="score"), span)
+}
+
+render_maximal_trajectory_type <- function(x) {
+  map(
+    x,
+    ~img(src=str_glue("img/trajectory_types/{.}.svg"), class="trajectory_type")
   )
 }
 
-renderers <- tribble(
-  ~column_id, ~renderer,
-  "selected", function(x) {
-    kableExtra::cell_spec(
-      ifelse(x, "<input type='checkbox' checked disabled>", "<input type='checkbox' disabled>"), "html", escape=F
+get_trajectory_type_renderer <- function(trajectory_type) {
+  function(x) {
+    map(
+      x,
+      function(x) {
+        if(x) {
+          class <- "trajectory_type"
+        } else {
+          class <- "trajectory_type inactive"
+        }
+        img(src=str_glue("img/trajectory_types/{trajectory_type}.svg"), class=class)
+      }
     )
-  },
-  "overall_benchmark", render_score,
-  "trajtype_directed_linear", render_score,
-  "trajtype_bifurcation", render_score,
-  "trajtype_directed_cycle", render_score,
-  "trajtype_rooted_tree", render_score
+  }
+}
+
+render_selected <- function(x) {
+  map(x, ~if(.) {icon("check")})
+}
+
+renderers <- tribble(
+  ~column_id, ~renderer, ~label,
+  "selected", render_selected, "",
+  "overall_benchmark", render_score, NA,
+  "maximal_trajectory_type", render_maximal_trajectory_type, "Topology",
+  "trajtype_directed_linear", render_score, NA,
+  "trajtype_bifurcation", render_score, NA,
+  "trajtype_directed_cycle", render_score, NA,
+  "trajtype_rooted_tree", render_score, NA,
+  "undirected_linear", get_trajectory_type_renderer("undirected_linear"), "",
+  "simple_fork", get_trajectory_type_renderer("simple_fork"), "",
+  "undirected_cycle", get_trajectory_type_renderer("undirected_cycle"), "",
+  "unrooted_tree", get_trajectory_type_renderer("unrooted_tree"), ""
 )
+
+
+add_icons <- function(label, conditions, icons) {
+  pmap(c(list(label=label), conditions), function(label, ...) {
+    icons <- list(...) %>%
+      keep(~!is.na(.) && .) %>%
+      names() %>%
+      {icons[.]}
+
+    span(c(list(label), icons))
+  })
+}
 
 get_guidelines_methods_table <- function(task = NULL, answers = list()) {
   data <- guidelines(task, answers)
@@ -71,17 +118,50 @@ get_guidelines_methods_table <- function(task = NULL, answers = list()) {
       mutate(renderer = map(renderer, ~ifelse(is.null(.), function(x) {x}, .)))
 
     methods <- data$methods %>% select(!!method_columns$column_id)
-    method_columns <- method_columns  %>%
-      mutate(label = column_id %>% gsub("_", " ", .) %>% Hmisc::capitalize())
+    method_columns <- method_columns %>%
+      mutate(label = ifelse(is.na(label),label_capitalise(column_id), label)) %>%
+      mutate(
+        label = add_icons(label, lst(filter, order), list(filter=icon("filter"), order=icon("sort-amount-asc")))
+      ) %>%
+      arrange(!column_id %in% c("selected", "method_name"), -filter, -order)
 
-    methods_table <- methods %>%
+    methods_rendered <- methods %>%
       map2(method_columns$renderer, function(col, renderer) renderer(col)) %>%
-      set_names(method_columns$label) %>%
-      as_tibble() %>%
-      knitr::kable("html", escape=FALSE) %>%
-      kableExtra::kable_styling("striped", full_width = TRUE) %>%
-      kableExtra::row_spec(which(methods$selected), background = "#DDDDDD") %>%
-      kableExtra::row_spec(0, extra_css = "font-size:0.7em")
+      as_tibble()
+
+    # construct html of table
+    methods_table <- tags$table(
+        class = "table table-striped table-responsive",
+        tags$tr(
+          map(method_columns$label, tags$th)
+        ),
+        map(
+          seq_len(nrow(methods)),
+          function(row_i) {
+            row_rendered <- extract_row_to_list(methods_rendered, row_i)
+            row <- extract_row_to_list(methods, row_i)
+            if (row$selected) {
+              class <- "selected"
+            } else {
+              class <- ""
+            }
+
+            tags$tr(
+              class = class,
+              map(row_rendered, .f=tags$td)
+            )
+          }
+        )
+      )
+
+    # methods_table <- methods %>%
+    #   map2(method_columns$renderer, function(col, renderer) renderer(col)) %>%
+    #   set_names(method_columns$label) %>%
+    #   as_tibble() %>%
+    #   knitr::kable("html", escape=FALSE) %>%
+    #   kableExtra::kable_styling("striped", full_width = TRUE) %>%
+    #   kableExtra::row_spec(which(methods$selected), background = "#E1EEEE") %>%
+    #   kableExtra::row_spec(0, extra_css = "font-size:0.7em")
 
     methods_table
   }

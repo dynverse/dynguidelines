@@ -33,7 +33,7 @@ guidelines_prompt <- function(task = NULL, answers = list()) {
     question_i <- question_i + 1
     question <- questions[[question_i]]
 
-    while(!check_active(question, answers)) {
+    while(!question$active_if(answers)) {
       question_i <- question_i + 1
       question <- questions[[question_i]]
     }

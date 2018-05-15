@@ -28,6 +28,7 @@ RoxygenNote: 6.0.1
 Depends:
   R (>= 3.3)
 Imports:
+  dynwrap,
   dplyr,
   tibble,
   purrr,
@@ -38,5 +39,7 @@ Imports:
   Hmisc,
   glue,
   stringr
+Remotes:
+  dynverse/dynwrap
 URL: https://github.com/dynverse/dynguidelines
 BugReports: https://github.com/dynverse/dynguidelines/issues

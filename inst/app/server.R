@@ -1,5 +1,9 @@
 server <- function(input, output, session) {
-  output$methods_table <- reactive(get_guidelines_methods_table(NULL,input))
+  # add path of images
+  addResourcePath("img", system.file("img/", package="dynguidelines"))
+
+  # add methods table
+  output$methods_table <- renderUI(get_guidelines_methods_table(NULL,input))
 
   # on exit, return the methods and answers
   return_methods <- function() {
