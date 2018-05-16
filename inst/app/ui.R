@@ -44,7 +44,7 @@ ui <- function(previous_answers=list()) {
     if (!is.null(previous_answers[[question$question_id]])) {
       question$default <- previous_answers[[question$question_id]]
 
-      if (attr(question$default, "computed")) {
+      if (!is.null(attr(question$default, "computed")) && attr(question$default, "computed")) {
         question$computed <- TRUE
       }
     }
@@ -81,24 +81,32 @@ ui <- function(previous_answers=list()) {
     )
   })
 
-  ## build the sidebar ----------------------------
+  ## build the page ----------------------------
   fluidPage(
     tags$head(includeScript("https://www.googletagmanager.com/gtag/js?id=UA-578149-3")),
     tags$head(includeScript(system.file("js/google-analytics.js", package="dynguidelines"))),
-
-    # tags$head(includeScript("https://code.jquery.com/jquery-3.3.1.slim.min.js")),
+    tags$head(includeScript(system.file("js/tooltips.js", package="dynguidelines"))),
 
     tags$head(includeCSS(system.file("css/style.css", package="dynguidelines"))),
 
-    titlePanel("Selecting the most optimal methods"),
+    titlePanel("Selecting the most optimal TI methods"),
 
-    fluidPage(
-      column(4,
-        questions_ui
+
+    column(4,
+      questions_ui,
+      `data-intro` = "First answer a set of questions depending on prior knowledge of the topology present within the data, the dataset size and own preferences"
+    ),
+    column(8,
+      actionButton(
+        "submit",
+        span(icon("chevron-circle-right"), " Use methods ",  icon("chevron-circle-right")),
+        width="100%",
+        class="btn-primary",
+        `data-intro` = "Click this button when ready to continue"
       ),
-      column(8,
-        actionButton("submit", "Use methods", icon("chevron-circle-right"), width="100%", class="btn-primary"),
-        uiOutput("methods_table")
+      div(
+        uiOutput("methods_table"),
+        `data-intro` = "Based on these answers, a top set of methods will be selected."
       )
     )
   )

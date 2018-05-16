@@ -7,15 +7,14 @@
 #' @import purrr
 #' @import tibble
 #' @import shiny
+#' @import stringr
+#' @importFrom dynutils add_class extract_row_to_list
 #'
 #' @name dynguidelines
 NULL
 
-
-
 #' The methods and their performance as generated from `dynalysis`
 "methods"
-
 
 #' The prior information
 "priors"

@@ -1,0 +1,38 @@
+library(tidyverse)
+library(shiny)
+library(dynguidelines)
+
+
+renderers <- tribble(
+  ~column_id, ~renderer, ~label, ~title, ~style, ~default,
+  "selected", render_selected, icon("check-circle"), "Selected methods for TI", NA, -100,
+  "method_name", render_identity, "Method", "Name of the method", "max-width:99%", -99,
+  "maximal_trajectory_type", render_maximal_trajectory_type, "Topology", "The most complex topology this method can predict", NA, NA,
+  "overall_benchmark", get_score_renderer(), "Overall score", "Overall score in the benchmark", "width:130px;", 98,
+  "user_friendly", get_score_renderer(viridis::viridis), "User friendliness", "User friendliness score", "width:130px;", NA,
+  "DOI", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99,
+  "code_location", render_code, icon("code"), "Code of method", NA, 100,
+  "platforms", render_identity, "Languages", "Languages", NA, NA
+) %>% bind_rows(
+  tibble(
+    column_id = c("undirected_cycle", "undirected_linear", "simple_fork", "unrooted_tree", "undirected_graph", "disconnected_undirected_graph"),
+    renderer = map(column_id, get_trajectory_type_renderer),
+    label = map(column_id, ~""),
+    title = str_glue("Whether this method can predict a {label_capitalise(column_id)} topology"),
+    style = NA
+  ) %>%
+    mutate(default = row_number() - 60)
+) %>% bind_rows(
+  tibble(
+    trajtype = c("directed_linear", "bifurcation", "directed_cycle"),
+    column_id = paste0("trajtype_", trajtype),
+    renderer = map(column_id, ~get_score_renderer()),
+    label = as.list(str_glue("{label_capitalise(trajtype)} score")),
+    title = str_glue("Score on datasets containing a {label_capitalise(trajtype)} topology"),
+    style = "width:130px;",
+    default = NA
+  )
+)
+
+
+usethis::use_data(renderers, overwrite=TRUE)

@@ -1,35 +1,33 @@
-# answers using a task
+#' @rdname guidelines
 answers_task <- function(task=NULL, answers=list()) {
-  if(!dynwrap::is_wrapper_with_expression(task)) {
-    stop("Task does not contain expression")
-  }
-
   new_answers <- list()
 
   # dataset size
-  n_cells <- nrow(task$expression)
-  n_genes <- nrow(task$expression)
+  if(dynwrap::is_wrapper_with_expression(task)) {
+    n_cells <- nrow(task$expression)
+    n_features <- nrow(task$expression)
 
-  new_answers$n_cells <- case_when(
-    n_cells < 100 ~"< 100",
-    n_cells < 1000 ~ "< 1000",
-    n_cells < 10000 ~ "< 10000",
-    TRUE ~ "10000+"
-  )
-  attr(new_answers$n_cells, "computed") <- TRUE
-  new_answers$n_genes <- case_when(
-    n_genes < 100 ~"< 100",
-    n_genes < 1000 ~ "< 1000",
-    n_genes < 10000 ~ "< 10000",
-    TRUE ~ "10000+"
-  )
-  attr(new_answers$n_genes, "computed") <- TRUE
+    new_answers$n_cells <- case_when(
+      n_cells < 100 ~"< 100",
+      n_cells < 1000 ~ "< 1000",
+      n_cells < 10000 ~ "< 10000",
+      TRUE ~ "10000+"
+    )
+    attr(new_answers$n_cells, "computed") <- TRUE
+    new_answers$n_features <- case_when(
+      n_features < 100 ~"< 100",
+      n_features < 1000 ~ "< 1000",
+      n_features < 10000 ~ "< 10000",
+      TRUE ~ "10000+"
+    )
+    attr(new_answers$n_features, "computed") <- TRUE
+  }
 
   # topology
-  if(dynwrap::is_wrapper_with_trajectory(task)) {
+  if(dynwrap::is_wrapper_with_expression(task)) {
     classification <- dynwrap::classify_milestone_network(task$milestone_network)
 
-    warning("Known milestone network not used, should do this in the future!")
+    message("Using the known topology is not yet implemented!")
   }
 
   # prior information
@@ -44,7 +42,11 @@ answers_task <- function(task=NULL, answers=list()) {
   purrr::list_modify(new_answers, !!!answers)
 }
 
-#' @rdname guidelines_shiny
+#' Select the top methods, optionally based on a given task
+#' @param task The task, optional
+#' @param answers Optional, pre-provided answers to the different questions
+#' @param method_columns The columns to return
+#'
 #' @export
 guidelines <- function(
   task = NULL,
@@ -57,14 +59,11 @@ guidelines <- function(
   data(methods, questions, envir = environment())
 
   # build data with default order and columns
-  method_columns <- tribble(
-    ~column_id, ~filter, ~order,
-    "selected", FALSE, FALSE,
-    "method_name", FALSE, FALSE,
-    # "topology_inference_type", FALSE , FALSE,
-    # "maximal_trajectory_type", FALSE, FALSE,
-    "overall_benchmark", FALSE, TRUE
-  )
+  data("renderers")
+  method_columns <- renderers %>%
+    filter(!is.na(default)) %>%
+    select(column_id) %>%
+    mutate(filter=FALSE, order = ifelse(column_id == "overall_benchmark", TRUE, FALSE))
 
   data <- lst(methods, method_columns)
   data$methods <- data$methods %>% arrange(-overall_benchmark)
@@ -80,5 +79,23 @@ guidelines <- function(
     }
   }
 
+  data$answers <- answers
+
+  data <- add_class(data, "dynguidelines::guidelines")
+
   data
+}
+
+#' Check whether object is guidelines
+#'
+#' @param guidelines The object to check
+#' @export
+is_guidelines <- function(guidelines) {
+  if("dynguidelines::guidelines" %in% class(x)) {
+    TRUE
+  } else if (all(c("methods", "answers") %in% names(x))) {
+    TRUE
+  } else {
+    FALSE
+  }
 }

@@ -1,4 +1,4 @@
-#' @rdname guidelines_shiny
+#' @rdname guidelines
 #' @export
 guidelines_prompt <- function(task = NULL, answers = list()) {
   string_is_integer <- function(x) {

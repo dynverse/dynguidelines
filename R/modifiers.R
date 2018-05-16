@@ -9,7 +9,12 @@ multiple_disconnected_modifier <- function(data, answer=NULL) {
 }
 
 
-expect_topology_modifier <- function(data, answer=NULL) {data}
+expect_topology_modifier <- function(data, answer=NULL) {
+  if (answer == "No") {
+
+  }
+  data
+}
 
 
 expected_topology_modifier <- function(data, answer=NULL) {
@@ -22,6 +27,8 @@ expected_topology_modifier <- function(data, answer=NULL) {
   } else if (answer == "Bifurcating") {
     trajectory_type_column <- "simple_fork"
     score_column <- "trajtype_bifurcation"
+  } else {
+    stop("Invalid answer to expected topology question")
   }
 
   data$methods <- data$methods[data$methods[[trajectory_type_column]], ] %>% arrange(-.[[score_column]])
@@ -50,18 +57,29 @@ expect_complex_tree_modifier <- function(data, answer=NULL) {
     data$method_columns <- data$method_columns %>%
       mutate(order = FALSE) %>%
       add_row(column_id = "trajtype_rooted_tree", order=TRUE, FALSE) %>%
-      add_row(column_id = "unrooted_tree", filter=TRUE, FALSE)
+      add_row(column_id = "unrooted_tree", filter=TRUE, order=FALSE)
   }
   data
 }
 
 
 
+dynmethods_modifier <- function(data, answer = NULL) {
+  if (answer == "No") {
+    data$method_columns <- data$method_columns %>%
+      add_row(column_id = "user_friendly", filter=TRUE, order=FALSE)
+  }
+
+  data
+}
+
+
 programming_interface_modifier <- function(data, answer = NULL) {
   if (answer == "No") {
     data$methods <- data$methods %>% filter(gui > 0)
   } else if (answer == "Yes") {
-    data$method_columns <- data$method_columns %>% add_row(column_id = "platforms", filter=TRUE, order=FALSE)
+    data$method_columns <- data$method_columns %>%
+      add_row(column_id = "platforms", filter=TRUE, order=FALSE)
   }
 
   data
@@ -104,6 +122,6 @@ n_cells_modifier <- function(data, answer) {
 }
 
 
-n_genes_modifier <- function(data, answer) {
+n_features_modifier <- function(data, answer) {
   data
 }

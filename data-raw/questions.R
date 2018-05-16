@@ -1,5 +1,4 @@
-library(dplyr)
-library(purrr)
+library(tidyverse)
 library(dynguidelines)
 data(priors)
 data(methods)
@@ -89,18 +88,18 @@ questions <- list(
     default = "< 10000"
   ),
   list(
-    question_id = "n_genes",
-    modifier = n_genes_modifier,
+    question_id = "n_features",
+    modifier = n_features_modifier,
     type = "textslider",
     choices = c("< 100", "< 1000", "< 10000", "10000+"),
-    title = "Number of genes",
+    title = "Number of features (genes)",
     activeIf = "true",
     category = "task",
     default = "< 1000"
   ),
   list(
     question_id = "dynmethods",
-    modifier = function(data, answer) data,
+    modifier = dynmethods_modifier,
     type = "radio",
     choices = c("Yes", "No"),
     title = "Do you use dynmethods to run the methods?",

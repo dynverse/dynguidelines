@@ -1,8 +1,4 @@
-#' Select the top methods, optionally based on a given task
-#' @param task The task, optional
-#' @param answers Optional, pre-provided answers to the different questions
-#' @param method_columns The columns to return
-#'
+#' @rdname guidelines
 #' @export
 guidelines_shiny <- function(task=NULL, answers=list()) {
   if (!is.null(task)) {
@@ -27,74 +23,6 @@ guidelines_shiny <- function(task=NULL, answers=list()) {
 }
 
 
-
-
-
-
-scale_01 <- function(x, lower=min(x), upper=max(x)) {
-  (x - lower) / (upper - lower)
-}
-
-format_100 <- function(x) {
-  round(x * 100)
-}
-
-render_score <- function(x) {
-  y <- tibble(
-    x = x,
-    normalised = scale_01(x, lower=0),
-    formatted  = format_100(x),
-    background = viridisLite::magma(255)[ceiling(normalised*255)] %>% kableExtra:::html_color(),
-    color = ifelse(scale_01(normalised, lower=0) > 0.5, "black", "white"),
-    style = pmap(list(`background-color`=background, color=color), htmltools::css)
-  )
-
-  pmap(list(y$formatted, style=y$style, class="score"), span)
-}
-
-render_maximal_trajectory_type <- function(x) {
-  map(
-    x,
-    ~img(src=str_glue("img/trajectory_types/{.}.svg"), class="trajectory_type")
-  )
-}
-
-get_trajectory_type_renderer <- function(trajectory_type) {
-  function(x) {
-    map(
-      x,
-      function(x) {
-        if(x) {
-          class <- "trajectory_type"
-        } else {
-          class <- "trajectory_type inactive"
-        }
-        img(src=str_glue("img/trajectory_types/{trajectory_type}.svg"), class=class)
-      }
-    )
-  }
-}
-
-render_selected <- function(x) {
-  map(x, ~if(.) {icon("check")})
-}
-
-renderers <- tribble(
-  ~column_id, ~renderer, ~label,
-  "selected", render_selected, "",
-  "overall_benchmark", render_score, NA,
-  "maximal_trajectory_type", render_maximal_trajectory_type, "Topology",
-  "trajtype_directed_linear", render_score, NA,
-  "trajtype_bifurcation", render_score, NA,
-  "trajtype_directed_cycle", render_score, NA,
-  "trajtype_rooted_tree", render_score, NA,
-  "undirected_linear", get_trajectory_type_renderer("undirected_linear"), "",
-  "simple_fork", get_trajectory_type_renderer("simple_fork"), "",
-  "undirected_cycle", get_trajectory_type_renderer("undirected_cycle"), "",
-  "unrooted_tree", get_trajectory_type_renderer("unrooted_tree"), ""
-)
-
-
 add_icons <- function(label, conditions, icons) {
   pmap(c(list(label=label), conditions), function(label, ...) {
     icons <- list(...) %>%
@@ -110,21 +38,35 @@ get_guidelines_methods_table <- function(task = NULL, answers = list()) {
   data <- guidelines(task, answers)
 
   if(nrow(data$methods) == 0) {
-    "<span class='text-danger'>No methods fullfilling selection</span>"
+    span(class="text-danger", "No methods fullfilling selection")
   } else {
-    # render columns
+    # remove duplicate columns
     method_columns <- data$method_columns %>%
+      group_by(column_id) %>%
+      filter(row_number() == n()) %>%
+      ungroup()
+
+    # add renderers
+    data("renderers", envir=environment())
+    method_columns <- method_columns %>%
       left_join(renderers, "column_id") %>%
       mutate(renderer = map(renderer, ~ifelse(is.null(.), function(x) {x}, .)))
 
-    methods <- data$methods %>% select(!!method_columns$column_id)
+    # add labels
     method_columns <- method_columns %>%
-      mutate(label = ifelse(is.na(label),label_capitalise(column_id), label)) %>%
       mutate(
         label = add_icons(label, lst(filter, order), list(filter=icon("filter"), order=icon("sort-amount-asc")))
-      ) %>%
-      arrange(!column_id %in% c("selected", "method_name"), -filter, -order)
+      )
 
+    # order columns
+    method_columns <- method_columns %>%
+      mutate(order = case_when(!is.na(default)~default, filter~1, order~2, TRUE~3)) %>%
+      arrange(order)
+
+    # extract correct columns from data
+    methods <- data$methods %>% select(!!method_columns$column_id)
+
+    # render columns
     methods_rendered <- methods %>%
       map2(method_columns$renderer, function(col, renderer) renderer(col)) %>%
       as_tibble()
@@ -133,7 +75,15 @@ get_guidelines_methods_table <- function(task = NULL, answers = list()) {
     methods_table <- tags$table(
         class = "table table-striped table-responsive",
         tags$tr(
-          map(method_columns$label, tags$th)
+          pmap(method_columns, function(label, title, style, ...) {
+            tags$th(
+              label,
+              `data-toggle`="tooltip",
+              `data-placement`="top",
+              title=title,
+              style=paste0("vertical-align:bottom;", ifelse(is.na(style), "width:20px;", style))
+            )
+          })
         ),
         map(
           seq_len(nrow(methods)),
@@ -151,7 +101,8 @@ get_guidelines_methods_table <- function(task = NULL, answers = list()) {
               map(row_rendered, .f=tags$td)
             )
           }
-        )
+        ),
+        tags$script('activeTooltips()')
       )
 
     # methods_table <- methods %>%
