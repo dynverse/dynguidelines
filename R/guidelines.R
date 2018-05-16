@@ -81,6 +81,8 @@ guidelines <- function(
 
   data$answers <- answers
 
+  data$methods_selected <- data$methods %>% filter(selected) %>% pull(method_id)
+
   data <- add_class(data, "dynguidelines::guidelines")
 
   data
