@@ -56,11 +56,20 @@ ui <- function(previous_answers=list()) {
 
   # build the questions ui
   questions_ui <- map(questions, function(questions_category) {
-    computed <- all(map_lgl(questions_category, "computed"))
+    computed <- all(map_lgl(questions_category %>% keep(~.$active_if(previous_answers)), "computed"))
 
     title <- questions_category[[1]]$category %>% label_capitalise
     if(computed) {
-      title <- span(title, span("computed", class="computed"))
+      title <- span(
+        title,
+        span(
+          "computed",
+          class="computed tooltippable",
+          `data-toggle`="tooltip",
+          `data-placement`="top",
+          title="Answers were computed based on information from the provided dataset"
+        )
+      )
     }
 
     collapsePanel(
@@ -93,20 +102,17 @@ ui <- function(previous_answers=list()) {
 
 
     column(4,
-      questions_ui,
-      `data-intro` = "First answer a set of questions depending on prior knowledge of the topology present within the data, the dataset size and own preferences"
+      questions_ui
     ),
     column(8,
       actionButton(
         "submit",
         span(icon("chevron-circle-right"), " Use methods ",  icon("chevron-circle-right")),
         width="100%",
-        class="btn-primary",
-        `data-intro` = "Click this button when ready to continue"
+        class="btn-primary"
       ),
       div(
-        uiOutput("methods_table"),
-        `data-intro` = "Based on these answers, a top set of methods will be selected."
+        uiOutput("methods_table")
       )
     )
   )

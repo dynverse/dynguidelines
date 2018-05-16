@@ -81,7 +81,8 @@ get_guidelines_methods_table <- function(task = NULL, answers = list()) {
               `data-toggle`="tooltip",
               `data-placement`="top",
               title=title,
-              style=paste0("vertical-align:bottom;", ifelse(is.na(style), "width:20px;", style))
+              style=paste0("vertical-align:bottom;", ifelse(is.na(style), "width:20px;", style)),
+              class="tooltippable"
             )
           })
         ),

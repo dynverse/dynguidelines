@@ -18,18 +18,13 @@ expect_topology_modifier <- function(data, answer=NULL) {
 
 
 expected_topology_modifier <- function(data, answer=NULL) {
-  if(answer == "Linear") {
-    trajectory_type_column <- "undirected_linear"
-    score_column <- "trajtype_directed_linear"
-  } else if (answer == "Cyclic") {
-    trajectory_type_column <- "undirected_cycle"
-    score_column <- "trajtype_directed_cycle"
-  } else if (answer == "Bifurcating") {
-    trajectory_type_column <- "simple_fork"
-    score_column <- "trajtype_bifurcation"
-  } else {
-    stop("Invalid answer to expected topology question")
-  }
+  data(trajectory_types, package="dynwrap", envir=environment())
+
+  trajectory_type_directed <- trajectory_types %>% filter(directed) %>% slice(match(answer, simplified)) %>% pull(id) %>% first()
+  trajectory_type_undirected <- trajectory_types %>% filter(!directed) %>% slice(match(answer, simplified)) %>% pull(id) %>% first()
+
+  trajectory_type_column <- trajectory_type_undirected
+  score_column <- paste0("trajtype_", trajectory_type_directed)
 
   data$methods <- data$methods[data$methods[[trajectory_type_column]], ] %>% arrange(-.[[score_column]])
   data$method_columns <- data$method_columns %>%

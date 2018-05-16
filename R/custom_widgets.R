@@ -4,11 +4,9 @@ collapsePanel <- function(..., title="", show_on_start = FALSE) {
     class = "panel panel-default",
     div(
       class = "panel-heading",
-      a(
-        href = paste0("#", collapse_id),
-        `data-toggle` = "collapse",
-        title
-      )
+      `data-target` = paste0("#", collapse_id),
+      `data-toggle` = "collapse",
+      span(icon("caret-down"), title)
     ),
     div(
       id = collapse_id,

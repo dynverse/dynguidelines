@@ -2,6 +2,7 @@ library(tidyverse)
 library(shiny)
 library(dynguidelines)
 
+data(trajectory_types, package="dynwrap", envir=environment())
 
 renderers <- tribble(
   ~column_id, ~renderer, ~label, ~title, ~style, ~default,
@@ -15,16 +16,17 @@ renderers <- tribble(
   "platforms", render_identity, "Languages", "Languages", NA, NA
 ) %>% bind_rows(
   tibble(
-    column_id = c("undirected_cycle", "undirected_linear", "simple_fork", "unrooted_tree", "undirected_graph", "disconnected_undirected_graph"),
+    column_id = trajectory_types$id,
+    undirected = !trajectory_types$directed,
     renderer = map(column_id, get_trajectory_type_renderer),
     label = map(column_id, ~""),
     title = str_glue("Whether this method can predict a {label_capitalise(column_id)} topology"),
     style = NA
   ) %>%
-    mutate(default = row_number() - 60)
+    mutate(default = ifelse(undirected, row_number() - 60, NA))
 ) %>% bind_rows(
   tibble(
-    trajtype = c("directed_linear", "bifurcation", "directed_cycle", "rooted_tree"),
+    trajtype = trajectory_types$id,
     column_id = paste0("trajtype_", trajtype),
     renderer = map(column_id, ~get_score_renderer()),
     label = as.list(str_glue("{label_capitalise(trajtype)} score")),

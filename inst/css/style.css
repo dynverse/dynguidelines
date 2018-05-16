@@ -19,6 +19,10 @@ div.computed {
   max-width: 100%;
 }
 
+.panel-heading {
+    cursor: pointer;
+}
+
 
 
 
@@ -42,5 +46,10 @@ td > img.trajectory_type {
 }
 
 td > img.trajectory_type.inactive {
-  opacity:0.2;
+  opacity:0.1;
+}
+
+
+.tooltippable {
+  text-decoration: dotted underline;
 }

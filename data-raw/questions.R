@@ -6,6 +6,9 @@ data(methods)
 all_programming_languages <- unlist(methods$platforms_split) %>% unique()
 all_free_programming_languages <- intersect(all_programming_languages, c("python", "R", "C++"))
 
+data(trajectory_types, package="dynwrap", envir=environment())
+all_simplified_trajectory_types <- trajectory_types %>% filter(!directed) %>% pull(simplified) %>% unique() %>% keep(~!. == "binary_tree")
+
 questions <- list(
   list(
     question_id = "multiple_disconnected",
@@ -32,7 +35,7 @@ questions <- list(
     question_id = "expected_topology",
     modifier = expected_topology_modifier,
     type = "radio",
-    choices = c("Linear", "Cyclic", "Bifurcating"),
+    choices = set_names(all_simplified_trajectory_types, label_capitalise(all_simplified_trajectory_types)),
     activeIf = "
       input.multiple_disconnected == 'No' &&
       input.expect_topology == 'Yes'

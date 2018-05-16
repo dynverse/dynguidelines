@@ -13,30 +13,36 @@ answers_task <- function(task=NULL, answers=list()) {
       n_cells < 10000 ~ "< 10000",
       TRUE ~ "10000+"
     )
-    attr(new_answers$n_cells, "computed") <- TRUE
     new_answers$n_features <- case_when(
       n_features < 100 ~"< 100",
       n_features < 1000 ~ "< 1000",
       n_features < 10000 ~ "< 10000",
       TRUE ~ "10000+"
     )
-    attr(new_answers$n_features, "computed") <- TRUE
   }
 
   # topology
   if(dynwrap::is_wrapper_with_expression(task)) {
-    classification <- dynwrap::classify_milestone_network(task$milestone_network)
+    trajectory_type <- dynwrap::classify_milestone_network(task$milestone_network)$network_type
+    data(trajectory_types, package="dynwrap", envir=environment())
+    trajectory_type_simplified <- trajectory_types$simplified[first(match(trajectory_type, trajectory_types$id))]
 
-    message("Using the known topology is not yet implemented!")
+    new_answers <- c(new_answers, list(
+      multiple_disconnected = "No",
+      expect_topology = "Yes",
+      expected_topology = trajectory_type_simplified
+    ))
   }
 
   # prior information
   if("prior_information" %in% names(task) || dynwrap::is_wrapper_with_prior_information(task)) {
     data(priors, envir = environment())
 
-    answers$prior_information <- priors %>% filter(prior_task_id %in% names(task$prior_information)) %>% pull(prior_id)
-    attr(answers$prior_information, "computed") <- TRUE
+    new_answers$prior_information <- priors %>% filter(prior_task_id %in% names(task$prior_information)) %>% pull(prior_id)
   }
+
+  # add computed attribute to answers
+  new_answers <- map(new_answers, function(.) {attr(., "computed") <- TRUE;.})
 
   # update with old answers, overwriting the new ones
   purrr::list_modify(new_answers, !!!answers)
