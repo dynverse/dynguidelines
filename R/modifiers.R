@@ -46,6 +46,16 @@ expect_cycles_modifier <- function(data, answer=NULL) {
     data$methods <- data$methods %>% filter(undirected_graph)
     data$method_columns <- data$method_columns %>%
       add_row(column_id = "undirected_graph", filter=TRUE, order=FALSE)
+  } else if (answer == "No") {
+    data$methods <- data$methods %>% filter(undirected_linear & simple_fork & unrooted_tree)
+    data$method_columns <- data$method_columns %>%
+      bind_rows(
+        tibble(
+          column_id = c("undirected_linear", "simple_fork", "unrooted_tree"),
+          filter = TRUE,
+          order = FALSE
+        )
+      )
   }
   data
 }
@@ -53,11 +63,10 @@ expect_cycles_modifier <- function(data, answer=NULL) {
 
 expect_complex_tree_modifier <- function(data, answer=NULL) {
   if(answer == "Yes") {
-    data$methods <- data$methods %>% filter(unrooted_tree) %>% arrange(-trajtype_rooted_tree)
+    data$methods <- data$methods %>% arrange(-trajtype_rooted_tree)
     data$method_columns <- data$method_columns %>%
       mutate(order = FALSE) %>%
-      add_row(column_id = "trajtype_rooted_tree", order=TRUE, FALSE) %>%
-      add_row(column_id = "unrooted_tree", filter=TRUE, order=FALSE)
+      add_row(column_id = "trajtype_rooted_tree", filter=FALSE, order=TRUE)
   }
   data
 }

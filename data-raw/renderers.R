@@ -24,7 +24,7 @@ renderers <- tribble(
     mutate(default = row_number() - 60)
 ) %>% bind_rows(
   tibble(
-    trajtype = c("directed_linear", "bifurcation", "directed_cycle"),
+    trajtype = c("directed_linear", "bifurcation", "directed_cycle", "rooted_tree"),
     column_id = paste0("trajtype_", trajtype),
     renderer = map(column_id, ~get_score_renderer()),
     label = as.list(str_glue("{label_capitalise(trajtype)} score")),
