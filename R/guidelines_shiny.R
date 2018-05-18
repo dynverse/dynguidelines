@@ -13,10 +13,34 @@ guidelines_shiny <- function(task=NULL, answers=list()) {
   source(file_path, local = TRUE)
   server_env <- environment(server)
 
-  server_env$task <- task
+  # get questions
+  data(questions, envir=environment())
+
+  # update defaults based on previous answers
+  questions <- map(questions, function(question) {
+    question$computed <- FALSE
+    if(!is.null(question$default) && length(question$default)) {
+      question$source <- "default"
+    }
+
+    if (!is.null(answers[[question$question_id]])) {
+      question$default <- answers[[question$question_id]]
+      if (!is.null(attr(question$default, "computed")) && attr(question$default, "computed")) {
+        question$source <- "computed"
+      }
+    }
+    question
+  })
+
+  # nest questions based on category
+  question_categories <- split(questions, factor(map_chr(questions, "category"), unique(map_chr(questions, "category"))))
+
+  server_env$answer_names <- names(questions)
+  server_env$question_categories <- question_categories
+  server_env$previous_answers <- answers
 
   app <- shiny::shinyApp(
-    ui(answers),
+    ui(),
     server
   )
   shiny::runApp(app)
@@ -34,14 +58,12 @@ add_icons <- function(label, conditions, icons) {
   })
 }
 
-get_guidelines_methods_table <- function(task = NULL, answers = list()) {
-  data <- guidelines(task, answers)
-
-  if(nrow(data$methods) == 0) {
+get_guidelines_methods_table <- function(guidelines) {
+  if(nrow(guidelines$methods) == 0) {
     span(class="text-danger", "No methods fullfilling selection")
   } else {
     # remove duplicate columns
-    method_columns <- data$method_columns %>%
+    method_columns <- guidelines$method_columns %>%
       group_by(column_id) %>%
       filter(row_number() == n()) %>%
       ungroup()
@@ -63,8 +85,8 @@ get_guidelines_methods_table <- function(task = NULL, answers = list()) {
       mutate(order = case_when(!is.na(default)~default, filter~1, order~2, TRUE~3)) %>%
       arrange(order)
 
-    # extract correct columns from data
-    methods <- data$methods %>% select(!!method_columns$column_id)
+    # extract correct columns from guidelines
+    methods <- guidelines$methods %>% select(!!method_columns$column_id)
 
     # render columns
     methods_rendered <- methods %>%
@@ -117,4 +139,117 @@ get_guidelines_methods_table <- function(task = NULL, answers = list()) {
 
     methods_table
   }
+}
+
+
+
+get_questions <- function(question_categories, answers) {
+  ## make the sidebar questions -------------------------
+  # different functions depending on the type of questions
+  make_ui <- list(
+    radio = function(q) {
+      radioButtons(
+        q$question_id,
+        q$title,
+        q$choices,
+        q$default
+      )
+    },
+    checkbox = function(q) {
+      checkboxGroupInput(
+        q$question_id,
+        q$title,
+        q$choices,
+        q$default
+      )
+    },
+    slider = function(q) {
+      sliderInput(
+        q$question_id,
+        q$title,
+        q$min,
+        q$max,
+        q$default,
+        q$step
+      )
+    },
+    textslider = function(q) {
+      shinyWidgets::sliderTextInput(
+        q$question_id,
+        q$title,
+        q$choices,
+        q$default
+      )
+    }
+  )
+
+  # build the questions ui
+
+  # loop over every category
+  questions_ui <- map(question_categories, function(question_category) {
+    category_id <- question_category[[1]]$category
+    category_title <- category_id %>% label_capitalise
+
+    computed <- all(map_lgl(question_category %>% keep(~.$active_if(answers)), "computed"))
+    if(computed) {
+      title <- span(
+        title,
+        span(
+          "computed",
+          class="computed tooltippable",
+          `data-toggle`="tooltip",
+          `data-placement`="top",
+          title="Answers were computed based on information from the provided dataset"
+        )
+      )
+    }
+
+    category_panel <- collapsePanel(
+      id = category_id,
+      title = category_title,
+      show_on_start = !computed,
+      # class = ifelse(!is.null(question_category[[1]]$answer()), "yay", "booo"),
+
+      map(question_category, function(question) {
+        if(!question$type %in% names(make_ui)) {stop("Invalid question type")}
+
+        question_panel <- div(
+          conditionalPanel(
+            question$activeIf,
+            make_ui[[question$type]](question)
+          ),
+          class=ifelse(question$computed, "computed", "")
+        )
+
+        question_panel
+      })
+    )
+
+    # observe changes in completion
+    observe({
+      category_sources <- question_category %>% keep(~.$active()) %>% map_chr(~.$dynamicsource())
+
+      if (all(category_sources != "none")) {
+        shinyjs::toggleClass(
+          category_panel$attr$id,
+          "default-category",
+          all(category_sources == "default")
+        )
+
+        shinyjs::toggleClass(
+          category_panel$attr$id,
+          "computed-category",
+          all(category_sources == "computed")
+        )
+
+        shinyjs::toggleClass(
+          category_panel$attr$id,
+          "completed-category",
+          any(category_sources == "given")
+        )
+      }
+    })
+
+    category_panel
+  })
 }

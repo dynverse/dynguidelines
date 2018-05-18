@@ -22,7 +22,7 @@ answers_task <- function(task=NULL, answers=list()) {
   }
 
   # topology
-  if(dynwrap::is_wrapper_with_expression(task)) {
+  if(dynwrap::is_wrapper_with_trajectory(task)) {
     trajectory_type <- dynwrap::classify_milestone_network(task$milestone_network)$network_type
     data(trajectory_types, package="dynwrap", envir=environment())
     trajectory_type_simplified <- trajectory_types$simplified[first(match(trajectory_type, trajectory_types$id))]
@@ -51,27 +51,32 @@ answers_task <- function(task=NULL, answers=list()) {
 #' Select the top methods, optionally based on a given task
 #' @param task The task, optional
 #' @param answers Optional, pre-provided answers to the different questions
-#' @param method_columns The columns to return
 #'
 #' @export
 guidelines <- function(
   task = NULL,
   answers = list()
 ) {
+  # get answers from task
   if (!is.null(task)) {
     answers <- answers_task(task, answers)
   }
 
+  # default for n_methods
+  if (is.null(answers$n_methods)) {answers$n_methods <- 4}
+
+  # load methods and questions
   data(methods, questions, envir = environment())
 
   # build data with default order and columns
-  data("renderers")
+  data("renderers", envir=environment())
   method_columns <- renderers %>%
     filter(!is.na(default)) %>%
     select(column_id) %>%
     mutate(filter=FALSE, order = ifelse(column_id == "overall_benchmark", TRUE, FALSE))
 
-  data <- lst(methods, method_columns)
+  # now modify the methods based on the answers
+  data <- lst(methods, method_columns, answers)
   data$methods <- data$methods %>% arrange(-overall_benchmark)
   data$methods$selected <- FALSE
 
@@ -85,12 +90,10 @@ guidelines <- function(
     }
   }
 
-  data$answers <- answers
-
+  # select methods
   data$methods_selected <- data$methods %>% filter(selected) %>% pull(method_id)
 
   data <- add_class(data, "dynguidelines::guidelines")
-
   data
 }
 

@@ -1,7 +1,5 @@
 library(tidyverse)
-library(dynguidelines)
-data(priors)
-data(methods)
+devtools::load_all()
 
 all_programming_languages <- unlist(methods$platforms_split) %>% unique()
 all_free_programming_languages <- intersect(all_programming_languages, c("python", "R", "C++"))
@@ -156,6 +154,17 @@ questions <- list(
     title = "Minimal user friendliness score",
     activeIf = "input.dynmethods == 'No'",
     category = "availability"
+  ),
+  list(
+    question_id = "running_time",
+    modifier = running_time_modifier,
+    type = "slider",
+    min = 1,
+    max = 240,
+    default = 5,
+    activeIf = "input.dynmethods == 'Yes'",
+    category = "availability",
+    title = "Maximal estimated running time (minutes)"
   ),
   list(
     question_id = "n_methods",

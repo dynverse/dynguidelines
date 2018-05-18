@@ -11,7 +11,15 @@ multiple_disconnected_modifier <- function(data, answer=NULL) {
 
 expect_topology_modifier <- function(data, answer=NULL) {
   if (answer == "No") {
-
+    data$methods <- data$methods %>% filter(undirected_linear & simple_fork & unrooted_tree)
+    data$method_columns <- data$method_columns %>%
+      bind_rows(
+        tibble(
+          column_id = c("undirected_linear", "simple_fork", "complex_fork", "unrooted_binary_tree", "unrooted_tree"),
+          filter = TRUE,
+          order = FALSE
+        )
+      )
   }
   data
 }
@@ -38,18 +46,15 @@ expected_topology_modifier <- function(data, answer=NULL) {
 
 expect_cycles_modifier <- function(data, answer=NULL) {
   if(answer == "It's possible") {
-    data$methods <- data$methods %>% filter(undirected_graph)
-    data$method_columns <- data$method_columns %>%
-      add_row(column_id = "undirected_graph", filter=TRUE, order=FALSE)
-  } else if (answer == "No") {
-    data$methods <- data$methods %>% filter(undirected_linear & simple_fork & unrooted_tree)
+    data$methods <- data$methods %>% filter(undirected_graph & undirected_cycle)
     data$method_columns <- data$method_columns %>%
       bind_rows(
         tibble(
-          column_id = c("undirected_linear", "simple_fork", "unrooted_tree"),
+          column_id = c("undirected_graph", "undirected_cycle"),
           filter = TRUE,
           order = FALSE
         )
+
       )
   }
   data
@@ -99,6 +104,18 @@ languages_modifier <- function(data, answer=NULL) {
 
 user_friendliness_modifier <- function(data, answer=NULL) {
   data$methods <- data$methods %>% filter(user_friendly >= as.numeric(answer)/100)
+
+  data
+}
+
+running_time_modifier <- function(data, answer=NULL) {
+  answer <- as.numeric(answer)
+  if (!is.na(answer)) {
+    data$methods <- data$methods %>%
+      filter((time_method/60) <= answer)
+    data$method_columns <- data$method_columns %>%
+      add_row(column_id = "time_method", filter = TRUE, order = FALSE)
+  }
 
   data
 }

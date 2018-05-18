@@ -20,8 +20,6 @@ guidelines_shiny(task = NULL, answers = list())
 \item{task}{The task, optional}
 
 \item{answers}{Optional, pre-provided answers to the different questions}
-
-\item{method_columns}{The columns to return}
 }
 \description{
 Select the top methods, optionally based on a given task

@@ -29,13 +29,15 @@ Depends:
   R (>= 3.3)
 Imports:
   dynwrap,
+  dynutils,
   dplyr,
   tibble,
+  htmltools,
   purrr,
   shiny,
   shinyWidgets,
+  shinyjs,
   knitr,
-  kableExtra,
   Hmisc,
   glue,
   stringr

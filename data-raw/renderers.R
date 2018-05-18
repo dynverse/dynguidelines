@@ -1,6 +1,6 @@
 library(tidyverse)
 library(shiny)
-library(dynguidelines)
+devtools::load_all()
 
 data(trajectory_types, package="dynwrap", envir=environment())
 
@@ -13,24 +13,27 @@ renderers <- tribble(
   "user_friendly", get_score_renderer(viridis::viridis), "User friendliness", "User friendliness score", "width:130px;", NA,
   "DOI", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99,
   "code_location", render_code, icon("code"), "Code of method", NA, 100,
-  "platforms", render_identity, "Languages", "Languages", NA, NA
+  "platforms", render_identity, "Languages", "Languages", NA, NA,
+  "time_method", render_time, icon("time", lib="glyphicon"), "Estimated running time", NA, NA
 ) %>% bind_rows(
   tibble(
     column_id = trajectory_types$id,
     undirected = !trajectory_types$directed,
+    simplified = trajectory_types$simplified,
     renderer = map(column_id, get_trajectory_type_renderer),
     label = map(column_id, ~""),
-    title = str_glue("Whether this method can predict a {label_capitalise(column_id)} topology"),
+    title = str_glue("Whether this method can predict a {label_split(simplified)} topology"),
     style = NA
   ) %>%
     mutate(default = ifelse(undirected, row_number() - 60, NA))
 ) %>% bind_rows(
   tibble(
     trajtype = trajectory_types$id,
+    simplified = trajectory_types$simplified,
     column_id = paste0("trajtype_", trajtype),
     renderer = map(column_id, ~get_score_renderer()),
     label = as.list(str_glue("{label_capitalise(trajtype)} score")),
-    title = str_glue("Score on datasets containing a {label_capitalise(trajtype)} topology"),
+    title = str_glue("Score on datasets containing a {label_split(simplified)} topology"),
     style = "width:130px;",
     default = NA
   )

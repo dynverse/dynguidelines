@@ -21,3 +21,6 @@ NULL
 
 #' The different questions
 "questions"
+
+#' Renderers
+"renderers"

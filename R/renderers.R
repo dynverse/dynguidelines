@@ -14,7 +14,7 @@ get_score_renderer <- function(palette = viridis::magma) {
       rounded = format_100(x),
       formatted = rounded,
       width = paste0(rounded, "px"),
-      background = palette(255)[ceiling(normalised*255)] %>% kableExtra:::html_color(),
+      background = palette(255)[ceiling(normalised*255)] %>% html_color(),
       color = ifelse(scale_01(normalised, lower=0) > 0.5, "black", "white"),
       style = pmap(list(`background-color`=background, color=color, display="block", width=width), htmltools::css)
     )
@@ -58,4 +58,17 @@ render_article <- function(x) {
 
 render_code <- function(x) {
   map(x, ~if(!is.na(.)) {tags$a(href=., icon("code"))} else {""})
+}
+
+
+render_time <- function(x) {
+  map_chr(x, function(x) {
+    if(x < 60) {
+      paste0(round(x), "s")
+    } else if (x < (60*60)) {
+      paste0(round(x/60), "m")
+    } else {
+      paste0(round(x/60/60), "h")
+    }
+  })
 }

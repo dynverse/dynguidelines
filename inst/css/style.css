@@ -14,16 +14,47 @@ div.computed {
 }
 
 
+/***** Questions ******/
 .shiny-input-container:not(.shiny-input-container-inline) {
   width: auto !important;
   max-width: 100%;
 }
 
-.panel-heading {
-    cursor: pointer;
+
+div.panel-heading {
+  cursor: pointer;
 }
 
 
+.completed-category div.panel-heading {
+  background-color: #d0e0b6;
+}
+.completed-category div.panel-heading span:after {
+  float: right;
+  font-size: 0.8em;
+  font-variant: small-caps;
+  content: "adapted";
+}
+
+.default-category div.panel-heading {
+  background-color: #f1d4a5;
+}
+.default-category div.panel-heading span:after {
+  float: right;
+  font-size: 0.8em;
+  font-variant: small-caps;
+  content: "default";
+}
+
+.computed-category div.panel-heading {
+  background-color: #a5ccf1;
+}
+.computed-category div.panel-heading span:after {
+  float: right;
+  font-size: 0.8em;
+  font-variant: small-caps;
+  content: "computed";
+}
 
 
 /***** Methods table ******/
