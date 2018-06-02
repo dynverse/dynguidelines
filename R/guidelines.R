@@ -36,7 +36,7 @@ answers_task <- function(task=NULL, answers=list()) {
 
   # prior information
   if("prior_information" %in% names(task) || dynwrap::is_wrapper_with_prior_information(task)) {
-    data(priors, envir = environment())
+    data(priors, envir = environment(), package = "dynguidelines")
 
     new_answers$prior_information <- priors %>% filter(prior_task_id %in% names(task$prior_information)) %>% pull(prior_id)
   }
@@ -66,10 +66,10 @@ guidelines <- function(
   if (is.null(answers$n_methods)) {answers$n_methods <- 4}
 
   # load methods and questions
-  data(methods, questions, envir = environment())
+  data(methods, questions, envir = environment(), package = "dynguidelines")
 
   # build data with default order and columns
-  data("renderers", envir=environment())
+  data("renderers", envir=environment(), package = "dynguidelines")
   method_columns <- renderers %>%
     filter(!is.na(default)) %>%
     select(column_id) %>%
