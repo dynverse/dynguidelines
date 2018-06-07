@@ -2,11 +2,11 @@ ui <- function() {
   ## build the page ----------------------------
   fluidPage(
     shinyjs::useShinyjs(),
-    tags$head(includeScript("https://www.googletagmanager.com/gtag/js?id=UA-578149-3")),
-    tags$head(includeScript(system.file("js/google-analytics.js", package="dynguidelines"))),
-    tags$head(includeScript(system.file("js/tooltips.js", package="dynguidelines"))),
+    tags$head(includeScript("https://www.googletagmanager.com/gtag/js?id = UA-578149-3")),
+    tags$head(includeScript(system.file("js/google-analytics.js", package = "dynguidelines"))),
+    tags$head(includeScript(system.file("js/tooltips.js", package = "dynguidelines"))),
 
-    tags$head(includeCSS(system.file("css/style.css", package="dynguidelines"))),
+    tags$head(includeCSS(system.file("css/style.css", package = "dynguidelines"))),
 
     titlePanel("Selecting the most optimal TI methods"),
 
@@ -17,8 +17,8 @@ ui <- function() {
       actionButton(
         "submit",
         span(icon("chevron-circle-right"), " Use methods ",  icon("chevron-circle-right")),
-        width="100%",
-        class="btn-primary"
+        width = "100%",
+        class = "btn-primary"
       ),
       div(
         uiOutput("methods_table")

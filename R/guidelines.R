@@ -1,5 +1,5 @@
 #' @rdname guidelines
-answers_task <- function(task=NULL, answers=list()) {
+answers_task <- function(task = NULL, answers = list()) {
   new_answers <- list()
 
   # dataset size
@@ -24,7 +24,7 @@ answers_task <- function(task=NULL, answers=list()) {
   # topology
   if(dynwrap::is_wrapper_with_trajectory(task)) {
     trajectory_type <- dynwrap::classify_milestone_network(task$milestone_network)$network_type
-    data(trajectory_types, package="dynwrap", envir=environment())
+    data(trajectory_types, package = "dynwrap", envir = environment())
     trajectory_type_simplified <- trajectory_types$simplified[first(match(trajectory_type, trajectory_types$id))]
 
     new_answers <- c(new_answers, list(
@@ -69,11 +69,11 @@ guidelines <- function(
   data(methods, questions, envir = environment(), package = "dynguidelines")
 
   # build data with default order and columns
-  data("renderers", envir=environment(), package = "dynguidelines")
+  data("renderers", envir = environment(), package = "dynguidelines")
   method_columns <- renderers %>%
     filter(!is.na(default)) %>%
     select(column_id) %>%
-    mutate(filter=FALSE, order = ifelse(column_id == "overall_benchmark", TRUE, FALSE))
+    mutate(filter = FALSE, order = ifelse(column_id == "overall_benchmark", TRUE, FALSE))
 
   # now modify the methods based on the answers
   data <- lst(methods, method_columns, answers)

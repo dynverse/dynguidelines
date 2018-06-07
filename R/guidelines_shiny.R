@@ -1,6 +1,6 @@
 #' @rdname guidelines
 #' @export
-guidelines_shiny <- function(task=NULL, answers=list()) {
+guidelines_shiny <- function(task = NULL, answers = list()) {
   if (!is.null(task)) {
     answers <- answers_task(task, answers)
   }
@@ -14,7 +14,7 @@ guidelines_shiny <- function(task=NULL, answers=list()) {
   server_env <- environment(server)
 
   # get questions
-  data(questions, envir=environment(), package = "dynguidelines")
+  data(questions, envir = environment(), package = "dynguidelines")
 
   # update defaults based on previous answers
   questions <- map(questions, function(question) {
@@ -48,7 +48,7 @@ guidelines_shiny <- function(task=NULL, answers=list()) {
 
 
 add_icons <- function(label, conditions, icons) {
-  pmap(c(list(label=label), conditions), function(label, ...) {
+  pmap(c(list(label = label), conditions), function(label, ...) {
     icons <- list(...) %>%
       keep(~!is.na(.) && .) %>%
       names() %>%
@@ -60,7 +60,7 @@ add_icons <- function(label, conditions, icons) {
 
 get_guidelines_methods_table <- function(guidelines) {
   if(nrow(guidelines$methods) == 0) {
-    span(class="text-danger", "No methods fullfilling selection")
+    span(class = "text-danger", "No methods fullfilling selection")
   } else {
     # remove duplicate columns
     method_columns <- guidelines$method_columns %>%
@@ -69,7 +69,7 @@ get_guidelines_methods_table <- function(guidelines) {
       ungroup()
 
     # add renderers
-    data("renderers", envir=environment(), package = "dynguidelines")
+    data("renderers", envir = environment(), package = "dynguidelines")
     method_columns <- method_columns %>%
       left_join(renderers, "column_id") %>%
       mutate(renderer = map(renderer, ~ifelse(is.null(.), function(x) {x}, .)))
@@ -77,7 +77,7 @@ get_guidelines_methods_table <- function(guidelines) {
     # add labels
     method_columns <- method_columns %>%
       mutate(
-        label = add_icons(label, lst(filter, order), list(filter=icon("filter"), order=icon("sort-amount-asc")))
+        label = add_icons(label, lst(filter, order), list(filter = icon("filter"), order = icon("sort-amount-asc")))
       )
 
     # order columns
@@ -100,11 +100,11 @@ get_guidelines_methods_table <- function(guidelines) {
           pmap(method_columns, function(label, title, style, ...) {
             tags$th(
               label,
-              `data-toggle`="tooltip",
-              `data-placement`="top",
-              title=title,
-              style=paste0("vertical-align:bottom;", ifelse(is.na(style), "width:20px;", style)),
-              class="tooltippable"
+              `data-toggle` = "tooltip",
+              `data-placement` = "top",
+              title = title,
+              style = paste0("vertical-align:bottom;", ifelse(is.na(style), "width:20px;", style)),
+              class = "tooltippable"
             )
           })
         ),
@@ -121,7 +121,7 @@ get_guidelines_methods_table <- function(guidelines) {
 
             tags$tr(
               class = class,
-              map(row_rendered, .f=tags$td)
+              map(row_rendered, .f = tags$td)
             )
           }
         ),
@@ -132,7 +132,7 @@ get_guidelines_methods_table <- function(guidelines) {
     #   map2(method_columns$renderer, function(col, renderer) renderer(col)) %>%
     #   set_names(method_columns$label) %>%
     #   as_tibble() %>%
-    #   knitr::kable("html", escape=FALSE) %>%
+    #   knitr::kable("html", escape = FALSE) %>%
     #   kableExtra::kable_styling("striped", full_width = TRUE) %>%
     #   kableExtra::row_spec(which(methods$selected), background = "#E1EEEE") %>%
     #   kableExtra::row_spec(0, extra_css = "font-size:0.7em")
@@ -196,10 +196,10 @@ get_questions <- function(question_categories, answers) {
         title,
         span(
           "computed",
-          class="computed tooltippable",
-          `data-toggle`="tooltip",
-          `data-placement`="top",
-          title="Answers were computed based on information from the provided dataset"
+          class = "computed tooltippable",
+          `data-toggle` = "tooltip",
+          `data-placement` = "top",
+          title = "Answers were computed based on information from the provided dataset"
         )
       )
     }
@@ -218,7 +218,7 @@ get_questions <- function(question_categories, answers) {
             question$activeIf,
             make_ui[[question$type]](question)
           ),
-          class=ifelse(question$computed, "computed", "")
+          class = ifelse(question$computed, "computed", "")
         )
 
         question_panel

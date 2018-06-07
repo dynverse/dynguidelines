@@ -26,4 +26,4 @@ methods <- methods %>%
   ) %>%
   filter(type %in% c("algorithm", "control"))
 
-usethis::use_data(methods, overwrite=TRUE)
+usethis::use_data(methods, overwrite = TRUE)
