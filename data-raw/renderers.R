@@ -2,7 +2,7 @@ library(tidyverse)
 library(shiny)
 devtools::load_all()
 
-data(trajectory_types, package="dynwrap", envir=environment())
+data(trajectory_types, package = "dynwrap", envir = environment())
 
 renderers <- tribble(
   ~column_id, ~renderer, ~label, ~title, ~style, ~default,
@@ -14,7 +14,7 @@ renderers <- tribble(
   "DOI", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99,
   "code_location", render_code, icon("code"), "Code of method", NA, 100,
   "platforms", render_identity, "Languages", "Languages", NA, NA,
-  "time_method", render_time, icon("time", lib="glyphicon"), "Estimated running time", NA, NA
+  "time_method", render_time, icon("time", lib = "glyphicon"), "Estimated running time", NA, NA
 ) %>% bind_rows(
   tibble(
     column_id = trajectory_types$id,
@@ -40,4 +40,4 @@ renderers <- tribble(
 )
 
 
-usethis::use_data(renderers, overwrite=TRUE)
+usethis::use_data(renderers, overwrite = TRUE)
