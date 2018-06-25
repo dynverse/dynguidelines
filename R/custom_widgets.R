@@ -1,4 +1,4 @@
-collapsePanel <- function(..., title="", show_on_start = FALSE, id = "") {
+collapsePanel <- function(..., title = "", show_on_start = FALSE, id = "") {
   collapse_id <- paste0("collapse", sample(1:100000000, 1))
   div(
     class = "panel panel-default",

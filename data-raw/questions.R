@@ -6,7 +6,7 @@ devtools::load_all()
 all_programming_languages <- unlist(methods$platforms_split) %>% unique()
 all_free_programming_languages <- intersect(all_programming_languages, c("python", "R", "C++"))
 
-data(trajectory_types, package="dynwrap", envir=environment())
+data(trajectory_types, package = "dynwrap", envir = environment())
 all_simplified_trajectory_types <- trajectory_types %>% filter(!directed) %>% pull(simplified) %>% unique() %>% keep(~!. == "binary_tree")
 
 questions <- list(
@@ -15,7 +15,7 @@ questions <- list(
     modifier = multiple_disconnected_modifier,
     type = "radio",
     choices = c("Yes", "No"),
-    modifier = function(data, answer=NULL) {},
+    modifier = function(data, answer = NULL) {},
     activeIf = "true",
     title = "Do you expect multiple disconnected trajectories in the data?",
     category = "topology",
@@ -198,7 +198,7 @@ questions <- map(questions, function(q) {
   } else {
     activeIf <- gsub("\\.", "$", activeIf)
   }
-  activeIf <- parse(text=activeIf)
+  activeIf <- parse(text = activeIf)
   q$active_if <- function(input) {
     active <- eval(activeIf)
     length(active) && !is.na(active) && active

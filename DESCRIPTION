@@ -42,6 +42,7 @@ Imports:
   glue,
   stringr
 Remotes:
-  dynverse/dynwrap
+  dynverse/dynwrap,
+  dynverse/dynutils
 URL: https://github.com/dynverse/dynguidelines
 BugReports: https://github.com/dynverse/dynguidelines/issues
