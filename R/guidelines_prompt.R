@@ -42,12 +42,15 @@ guidelines_prompt <- function(task = NULL, answers = list()) {
     prompt <- stringr::str_glue("{crayon::italic(question$title)}")
 
     # default value
-    if(!is.null(question$default) & length(question$default)) {
-      default <- question$default
+    default <- NULL
+    if(!is.null(question$default)) {
+      if (is.function(question$default)) {
+        default <- question$default()
+      } else if (length(question$default)) {
+        default <- question$default
+      }
     } else if (question$type %in% c("radio", "textslider")) {
       default <- question$choices[[1]]
-    } else {
-      default <- NULL
     }
 
     if (!is.null(default)) {

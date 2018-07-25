@@ -1,3 +1,5 @@
+# different questions
+
 library(tidyverse)
 devtools::load_all()
 
@@ -107,6 +109,16 @@ questions <- list(
     activeIf = "true",
     category = "availability",
     default = "Yes"
+  ),
+  list(
+    question_id = "docker",
+    modifier = docker_modifier,
+    type = "radio",
+    choices = c("Yes", "No"),
+    title = "Is docker installed?",
+    activeIf = "true",
+    category = "availability",
+    default = function() {ifelse(dynwrap::test_docker_installation(), "Yes", "No")}
   ),
   list(
     question_id = "programming_interface",

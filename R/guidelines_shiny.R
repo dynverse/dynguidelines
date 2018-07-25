@@ -19,6 +19,11 @@ guidelines_shiny <- function(task = NULL, answers = list()) {
   # update defaults based on previous answers
   questions <- map(questions, function(question) {
     question$computed <- FALSE
+
+    if (is.function(question$default)) {
+      question$default <- question$default()
+    }
+
     if(!is.null(question$default) && length(question$default)) {
       question$source <- "default"
     }
