@@ -21,6 +21,7 @@ questions <- list(
     modifier = function(data, answer = NULL) {},
     activeIf = "true",
     title = "Do you expect multiple disconnected trajectories in the data?",
+    help = "Disconnected trajectories are trajectories which are not connected, eg: <img src='img/disconnected.png'>",
     category = "topology",
     default = character()
   ),
@@ -31,6 +32,7 @@ questions <- list(
     choices = c("Yes", "No"),
     activeIf = "input.multiple_disconnected == 'No'",
     title = "Do you expect a particular topology in the data?",
+    help = "Select 'Yes' if you already know what topology can be expected in the data.",
     category = "topology",
     default = character()
   ),
@@ -44,6 +46,7 @@ questions <- list(
       input.expect_topology == 'Yes'
     ",
     title = "What is the expected topology",
+    help = "Select the expected topology <img src='img/topologies.png'>",
     category = "topology",
     default = character()
   ),
@@ -56,6 +59,7 @@ questions <- list(
       input.expect_topology == 'No'
     ",
     title = "Do you expect cycles in the data?",
+    help = "Cells within a cyclic topology can go back to their original state. Apart from the cell cycle, such trajectories can also include sucessive stages of activation and a return to steady state.",
     category = "topology",
     default = character()
   ),
@@ -69,6 +73,7 @@ questions <- list(
       input.expect_topology == 'No'
     ",
     title = "Do you expect a complex tree in the data?",
+    help = "A complex tree can include two or more bifurcations.",
     category = "topology",
     default = character()
   ),
@@ -79,6 +84,7 @@ questions <- list(
     choices = set_names(priors$prior_id, priors$prior_name),
     special_choices = list(c("All", priors$prior_name), c("None", "[]")),
     title = "Are you willing to provide the following prior information?",
+    help = "Some methods require some prior information, such as the start cells, to help with the construction of the trajectory. Although this can help the method with finding the right trajectory, prior information can also bias the trajectory towards what is already known. Prior information should therefore be given with great care.",
     activeIf = "true",
     category = "prior_information",
     default = c()
@@ -109,6 +115,7 @@ questions <- list(
     type = "radio",
     choices = c("Yes", "No"),
     title = "Do you use dynmethods to run the methods?",
+    help = "Dynmethods is an R package which contains wraps TI methods into a common interface. While we highly recommend the use of this package, as it eases interpretation, some users may prefer to work in other programming languages.",
     activeIf = "true",
     category = "availability",
     default = "Yes"
@@ -119,6 +126,7 @@ questions <- list(
     type = "radio",
     choices = c("Yes", "No"),
     title = "Is docker installed?",
+    help = "Docker makes it easy to run each TI method without dependency issues, apart from the installation of docker itself.",
     activeIf = "input.dynmethods == 'Yes'",
     category = "availability",
     default = function() {ifelse(dynwrap::test_docker_installation(), "Yes", "No")}
@@ -194,6 +202,7 @@ questions <- list(
   )
 ) %>% {set_names(., map(., "question_id"))}
 
+# make the R active_if function from the javascript activeIf function
 questions <- map(questions, function(q) {
   activeIf <- q$activeIf
   if(activeIf == "true") {
