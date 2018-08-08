@@ -2,7 +2,7 @@
 #' @export
 guidelines_shiny <- function(task = NULL, answers = list()) {
   if (!is.null(task)) {
-    answers <- answers_task(task, answers)
+    answers <- get_defaults_task(task, answers)
   }
 
   # trick from https://stackoverflow.com/questions/44999615/passing-parameters-into-shiny-server
@@ -12,9 +12,6 @@ guidelines_shiny <- function(task = NULL, answers = list()) {
   file_path <- system.file("app/server.R", package = "dynguidelines")
   source(file_path, local = TRUE)
   server_env <- environment(server)
-
-  # get questions
-  data(questions, envir = environment(), package = "dynguidelines")
 
   # update defaults based on previous answers
   questions <- map(questions, function(question) {
@@ -70,11 +67,10 @@ get_guidelines_methods_table <- function(guidelines) {
     # remove duplicate columns
     method_columns <- guidelines$method_columns %>%
       group_by(column_id) %>%
-      filter(row_number() == n()) %>%
+      slice(n()) %>%
       ungroup()
 
     # add renderers
-    data("renderers", envir = environment(), package = "dynguidelines")
     method_columns <- method_columns %>%
       left_join(renderers, "column_id") %>%
       mutate(renderer = map(renderer, ~ifelse(is.null(.), function(x) {x}, .)))

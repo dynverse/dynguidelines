@@ -1,14 +1,17 @@
-# different questions
+## Generates a list which contains all different questions and their modifiers
 
 library(tidyverse)
 devtools::load_all()
 
+# possible programming languages
 all_programming_languages <- unlist(methods$platforms_split) %>% unique()
 all_free_programming_languages <- intersect(all_programming_languages, c("python", "R", "C++"))
 
+# possible trajectory types
 data(trajectory_types, package = "dynwrap", envir = environment())
 all_simplified_trajectory_types <- trajectory_types %>% filter(!directed) %>% pull(simplified) %>% unique() %>% keep(~!. == "binary_tree")
 
+# the questions
 questions <- list(
   list(
     question_id = "multiple_disconnected",
@@ -116,7 +119,7 @@ questions <- list(
     type = "radio",
     choices = c("Yes", "No"),
     title = "Is docker installed?",
-    activeIf = "true",
+    activeIf = "input.dynmethods == 'Yes'",
     category = "availability",
     default = function() {ifelse(dynwrap::test_docker_installation(), "Yes", "No")}
   ),
@@ -205,5 +208,6 @@ questions <- map(questions, function(q) {
   }
   q
 })
+
 
 usethis::use_data(questions, overwrite = TRUE)

@@ -6,8 +6,6 @@ guidelines_prompt <- function(task = NULL, answers = list()) {
   }
 
   # process questions to R
-  data(questions, envir = environment(), package = "dynguidelines")
-
   questions <- questions %>% map(
     function(q) {
       if(q$activeIf == "true") {

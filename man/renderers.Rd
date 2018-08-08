@@ -4,7 +4,7 @@
 \name{renderers}
 \alias{renderers}
 \title{Renderers}
-\format{An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 46 rows and 9 columns.}
+\format{An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 47 rows and 9 columns.}
 \usage{
 renderers
 }
