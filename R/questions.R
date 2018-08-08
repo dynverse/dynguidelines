@@ -65,23 +65,23 @@ get_default <- function(question_id) {
 
 
 
-# function which generates the documentation for the answers function
-answers_docs <- function() {
-  paste0(
-    "@param ",
-    names(questions),
-    " ",
-    map_chr(questions, "title"),
-    " Defaults to ",
-    get_defaults(names(questions)) %>% as.character()
-  )
-}
-
-#' Provide answers to various questions
+#' # function which generates the documentation for the answers function
+#' answers_docs <- function() {
+#'   paste0(
+#'     "@param ",
+#'     names(questions),
+#'     " ",
+#'     map_chr(questions, "title"),
+#'     " Defaults to ",
+#'     get_defaults(names(questions)) %>% as.character()
+#'   )
+#' }
 #'
-#' @evalRd answers_docs()
-answers <- function() {
-  browser()
-  print(match.call())
-}
-formals(answers) <- get_defaults(names(questions))
+#' #' Provide answers to various questions
+#' #'
+#' #' @evalRd answers_docs()
+#' answers <- function() {
+#'   browser()
+#'   print(match.call())
+#' }
+#' formals(answers) <- get_defaults(names(questions))
