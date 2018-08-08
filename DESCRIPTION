@@ -38,9 +38,10 @@ Imports:
   shinyWidgets,
   shinyjs,
   knitr,
-  Hmisc,
   glue,
   stringr
+Suggests:
+  shinyTest
 Remotes:
   dynverse/dynwrap,
   dynverse/dynutils
