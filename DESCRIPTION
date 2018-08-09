@@ -41,8 +41,7 @@ Imports:
   glue,
   stringr
 Suggests:
-    shinyTest,
-    testthat
+  testthat
 Remotes:
   dynverse/dynwrap,
   dynverse/dynutils
