@@ -137,8 +137,6 @@ n_methods_modifier <- function(data, answer = NULL) {
 }
 
 
-
-
 n_cells_modifier <- function(data, answer) {
   data
 }
@@ -149,7 +147,11 @@ n_features_modifier <- function(data, answer) {
 }
 
 
-
 docker_modifier <- function(data, answer) {
+  data
+}
+
+
+metric_importance_modifier <- function(data, answer) {
   data
 }

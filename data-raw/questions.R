@@ -11,6 +11,13 @@ all_free_programming_languages <- intersect(all_programming_languages, c("python
 data(trajectory_types, package = "dynwrap", envir = environment())
 all_simplified_trajectory_types <- trajectory_types %>% filter(!directed) %>% pull(simplified) %>% unique() %>% keep(~!. == "binary_tree")
 
+# metrics, TODO: import from dyneval
+metrics <- tibble(
+  id = c("correlation", "edge_flip", "featureimp_cor"),
+  name = c("Ordering", "Topology", "Important features/genes")
+)
+
+
 # the questions
 questions <- list(
   list(
@@ -108,6 +115,21 @@ questions <- list(
     activeIf = "true",
     category = "task",
     default = "< 1000"
+  ),
+  list(
+    question_id = "metric_importance",
+    modifier = metric_importance_modifier,
+    type = "balancing_sliders",
+    title = "How important are the following aspects of the trajectory?",
+    help = "We assessed ...........",
+    activeIf = "true",
+    category = "metric_importance",
+    labels = metrics$name %>% set_names(metrics$id),
+    slider_ids = metrics$id %>% set_names(metrics$id),
+    default = rep(1/nrow(metrics), nrow(metrics)) %>% set_names(metrics$id),
+    mins = rep(0, nrow(metrics)) %>% set_names(metrics$id),
+    maxs = rep(1, nrow(metrics)) %>% set_names(metrics$id),
+    steps = rep(0.1, nrow(metrics)) %>% set_names(metrics$id)
   ),
   list(
     question_id = "dynmethods",

@@ -181,6 +181,19 @@ get_questions <- function(question_categories, answers) {
         q$choices,
         q$default
       )
+    },
+    balancing_sliders = function(q) {
+      balancingSliders(
+        inputId = q$question_id,
+        label = q$title,
+        labels = q$labels,
+        inputIds = q$slider_ids,
+        mins = q$mins,
+        maxs = q$maxs,
+        sum = q$sum,
+        values = q$default,
+        steps = q$steps
+      )
     }
   )
 
