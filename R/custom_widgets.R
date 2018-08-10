@@ -18,3 +18,35 @@ collapsePanel <- function(..., title = "", show_on_start = FALSE, id = "") {
     id = id
   )
 }
+
+
+
+balancingSliders <- function(
+  inputId,
+  label = NULL,
+  labels,
+  inputIds,
+  mins,
+  maxs,
+  sum,
+  values,
+  steps,
+  tooltips = TRUE
+) {
+  print(length(mins))
+  print(length(maxs))
+  print(length(values))
+  print(length(labels))
+  print(length(inputIds))
+  pmap(
+    lst(
+      label = labels,
+      inputId = inputIds,
+      min = mins,
+      max = maxs,
+      value = values,
+      step = steps
+    ),
+    shiny::sliderInput
+  )
+}
