@@ -10,19 +10,26 @@ ui <- function() {
 
     titlePanel("Selecting the most optimal TI methods"),
 
-    column(4,
-      uiOutput("questions_panel")
-    ),
-    column(8,
-      actionButton(
-        "submit",
-        span(icon("chevron-circle-right"), " Use methods ",  icon("chevron-circle-right")),
-        width = "100%",
-        class = "btn-primary"
+    sidebarLayout(
+      column(
+        4,
+        uiOutput("questions_panel"),
+        style = "overflow-y:scroll; max-height:100vh;"
       ),
-      div(
-        uiOutput("methods_table")
+      column(
+        8,
+        actionButton(
+          "submit",
+          span(icon("chevron-circle-right"), " Use methods ",  icon("chevron-circle-right")),
+          width = "100%",
+          class = "btn-primary"
+        ),
+        div(
+          uiOutput("methods_table")
+        )
       )
     )
+
+
   )
 }

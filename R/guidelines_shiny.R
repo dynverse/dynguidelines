@@ -1,16 +1,20 @@
 #' @rdname guidelines
 #' @export
 guidelines_shiny <- function(task = NULL, answers = list()) {
+  # get defaults from the task
   if (!is.null(task)) {
     answers <- get_defaults_task(task, answers)
   }
 
-  # trick from https://stackoverflow.com/questions/44999615/passing-parameters-into-shiny-server
-  # this looks ugly though, but seems to me the most acceptable way to get variables into the shiny server
+  # load in the ui and the server
   file_path <- system.file("app/ui.R", package = "dynguidelines")
   source(file_path, local = TRUE)
   file_path <- system.file("app/server.R", package = "dynguidelines")
   source(file_path, local = TRUE)
+
+  # create a server environment, in which we will put certain variables such as the previous answers
+  # trick from https://stackoverflow.com/questions/44999615/passing-parameters-into-shiny-server
+  # this looks ugly though, but seems to me the most acceptable way to get variables into the shiny server
   server_env <- environment(server)
 
   # update defaults based on previous answers
@@ -72,7 +76,7 @@ get_guidelines_methods_table <- function(guidelines) {
 
     # add renderers
     method_columns <- method_columns %>%
-      left_join(renderers, "column_id") %>%
+      left_join(renderers, c("column_id" = "column_id")) %>%
       mutate(renderer = map(renderer, ~ifelse(is.null(.), function(x) {x}, .)))
 
     # add labels
@@ -149,6 +153,8 @@ get_questions <- function(question_categories, answers) {
   # different functions depending on the type of questions
   make_ui <- list(
     radio = function(q) {
+      if (is.null(q$default)) q$default <- character()
+
       radioButtons(
         q$question_id,
         q$title,

@@ -12,9 +12,6 @@ guidelines <- function(
     answers <- get_defaults_task(task, answers)
   }
 
-  # default for n_methods
-  if (is.null(answers$n_methods)) {answers$n_methods <- 4}
-
   # build data with default order and columns
   method_columns <- renderers %>%
     filter(!is.na(default)) %>%
