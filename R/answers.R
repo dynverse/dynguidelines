@@ -66,25 +66,28 @@ get_default <- function(question_id) {
 
 
 # function which generates the documentation for the answers function based on all the questions
-answers_docs <- function() {
+answer_questions_docs <- function() {
   parameters <- paste0(
     "@param ",
     names(questions),
     " ",
     map_chr(questions, "title"),
     " Defaults to ",
-    get_defaults(questions$id) %>% as.character()
+    get_defaults(names(questions)) %>% as.character()
   )
 }
 
 #' Provide answers to various questions
 #'
 #' @include questions.R
-#' @eval answers_docs()
-answers <- function() {
-  print(match.call())
+#' @eval answer_questions_docs()
+answer_questions <- function() {
+  called_arguments <- names(match.call())
+  answers <- as.list(environment())
   tibble(
-    answer = as.list(environment())
+    question_id = names(answers),
+    answer = answers,
+    type = case_when(question_id %in% called_arguments ~ "given", TRUE ~ "default")
   )
 }
-# formals(answers) <- get_defaults(names(questions))
+formals(answer_questions) <- get_defaults(names(questions))
