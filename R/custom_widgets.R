@@ -31,13 +31,9 @@ balancingSliders <- function(
   sum,
   values,
   steps,
-  tooltips = TRUE
+  tooltips = TRUE,
+  ticks = FALSE
 ) {
-  print(length(mins))
-  print(length(maxs))
-  print(length(values))
-  print(length(labels))
-  print(length(inputIds))
   pmap(
     lst(
       label = labels,
@@ -45,7 +41,8 @@ balancingSliders <- function(
       min = mins,
       max = maxs,
       value = values,
-      step = steps
+      step = steps,
+      ticks = ticks
     ),
     shiny::sliderInput
   )

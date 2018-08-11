@@ -152,6 +152,26 @@ get_questions <- function(question_categories, answers) {
   ## make the sidebar questions -------------------------
   # different functions depending on the type of questions
   make_ui <- list(
+    radiobuttons = function(q) {
+      if (is.null(q$default)) q$default <- character()
+
+      # default choiceNames is simply the choices
+      if (is.null(names(q$choices))) {
+        choiceNames <- q$choices
+      } else {
+        choiceNames <- names(q$choices)
+      }
+      choiceValues <- unname(q$choices)
+
+      shinyWidgets::radioGroupButtons(
+        inputId = q$question_id,
+        label = q$title,
+        selected = q$default,
+        choiceNames = choiceNames,
+        choiceValues = choiceValues,
+        status = "default"
+      )
+    },
     radio = function(q) {
       if (is.null(q$default)) q$default <- character()
 
@@ -170,14 +190,30 @@ get_questions <- function(question_categories, answers) {
         q$default
       )
     },
+    picker = function(q) {
+      shinyWidgets::pickerInput(
+        inputId = q$question_id,
+        label = q$title,
+        choices = q$choices,
+        selected = q$default,
+        multiple = q$multiple %||% TRUE,
+        options = list(
+          `actions-box` = TRUE,
+          `deselect-all-text` = "None",
+          `select-all-text` = "All",
+          `none-selected-text` = "None"
+        )
+      )
+    },
     slider = function(q) {
       sliderInput(
-        q$question_id,
-        q$title,
-        q$min,
-        q$max,
-        q$default,
-        q$step
+        inputId = q$question_id,
+        label = q$title,
+        min = q$min,
+        max = q$max,
+        value = q$default,
+        step = q$step,
+        ticks = FALSE
       )
     },
     textslider = function(q) {
@@ -198,7 +234,8 @@ get_questions <- function(question_categories, answers) {
         maxs = q$maxs,
         sum = q$sum,
         values = q$default,
-        steps = q$steps
+        steps = q$steps,
+        ticks = q$ticks %||% FALSE
       )
     }
   )

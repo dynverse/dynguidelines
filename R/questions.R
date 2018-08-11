@@ -31,19 +31,19 @@ questions <- list(
   list(
     question_id = "multiple_disconnected",
     modifier = multiple_disconnected_modifier,
-    type = "radio",
+    type = "radiobuttons",
     choices = c("Yes", "No"),
     modifier = function(data, answer = NULL) {},
     activeIf = "true",
     title = "Do you expect multiple disconnected trajectories in the data?",
     help = "Disconnected trajectories are trajectories which are not connected, eg: <img src='img/disconnected.png'>",
     category = "topology",
-    default = NULL
+    default = TRUE
   ),
   list(
     question_id = "expect_topology",
     modifier = expect_topology_modifier,
-    type = "radio",
+    type = "radiobuttons",
     choices = c("Yes", "No"),
     activeIf = "input.multiple_disconnected == 'No'",
     title = "Do you expect a particular topology in the data?",
@@ -54,8 +54,11 @@ questions <- list(
   list(
     question_id = "expected_topology",
     modifier = expected_topology_modifier,
-    type = "radio",
-    choices = set_names(all_simplified_trajectory_types, label_capitalise(all_simplified_trajectory_types)),
+    type = "radiobuttons",
+    choices = map(all_simplified_trajectory_types, function(trajectory_type) {
+      directed_trajectory_type <- trajectory_types %>% filter(simplified == trajectory_type, directed == TRUE) %>% pull(id) %>% first()
+      img(src = str_glue("img/trajectory_types/{directed_trajectory_type}.svg"), class = "trajectory_type")
+    }),
     activeIf = "
     input.multiple_disconnected == 'No' &&
     input.expect_topology == 'Yes'
@@ -68,7 +71,7 @@ questions <- list(
   list(
     question_id = "expect_cycles",
     modifier = expect_cycles_modifier,
-    type = "radio",
+    type = "radiobuttons",
     choices = c("It's possible", "No"),
     activeIf = "
     input.expect_topology == 'No'
@@ -81,7 +84,7 @@ questions <- list(
   list(
     question_id = "expect_complex_tree",
     modifier = expect_complex_tree_modifier,
-    type = "radio",
+    type = "radiobuttons",
     choices = c("Yes", "Not necessarily"),
     activeIf = "
     input.expect_cycles == 'No' &&
@@ -95,9 +98,9 @@ questions <- list(
   list(
     question_id = "prior_information",
     modifier = prior_information_modifier,
-    type = "checkbox",
+    type = "picker",
     choices = set_names(priors$prior_id, priors$prior_name),
-    special_choices = list(c("All", priors$prior_name), c("None", "[]")),
+    multiple = TRUE,
     title = "Are you willing to provide the following prior information?",
     help = "Some methods require some prior information, such as the start cells, to help with the construction of the trajectory. Although this can help the method with finding the right trajectory, prior information can also bias the trajectory towards what is already known. Prior information should therefore be given with great care.",
     activeIf = "true",
@@ -142,7 +145,7 @@ questions <- list(
   list(
     question_id = "dynmethods",
     modifier = dynmethods_modifier,
-    type = "radio",
+    type = "radiobuttons",
     choices = c("Yes", "No"),
     title = "Do you use dynmethods to run the methods?",
     help = "Dynmethods is an R package which contains wraps TI methods into a common interface. While we highly recommend the use of this package, as it eases interpretation, some users may prefer to work in other programming languages.",
@@ -153,7 +156,7 @@ questions <- list(
   list(
     question_id = "docker",
     modifier = docker_modifier,
-    type = "radio",
+    type = "radiobuttons",
     choices = c("Yes", "No"),
     title = "Is docker installed?",
     help = "Docker makes it easy to run each TI method without dependency issues, apart from the installation of docker itself.",
@@ -164,7 +167,7 @@ questions <- list(
   list(
     question_id = "programming_interface",
     modifier = programming_interface_modifier,
-    type = "radio",
+    type = "radiobuttons",
     choices = c("Yes", "No"),
     title = "Can you work in a programming interface?",
     activeIf = "input.dynmethods == 'No'",
@@ -174,7 +177,7 @@ questions <- list(
   list(
     question_id = "languages",
     modifier = languages_modifier,
-    type = "checkbox",
+    type = "picker",
     choices = all_programming_languages,
     special_choices = list(c("All", all_programming_languages), c("Any free",  all_free_programming_languages), c("Clear", "[]")),
     default = all_free_programming_languages,
