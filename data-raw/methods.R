@@ -1,5 +1,7 @@
 library(tidyverse)
-library(dynalysis)
+library(dynbenchmark)
+
+## TODO: THIS HAS TO BE SYNCHRONISED WITH THE NEW DYNBENCHMARK ##
 
 experiment("7-user_guidelines")
 
