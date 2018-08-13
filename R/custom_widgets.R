@@ -37,7 +37,7 @@ balancingSliders <- function(
   tags$div(
     class = "form-group shiny-input-container balancing-sliders",
     id = inputId,
-    # singleton(tags$head(includeScript(system.file("js/balancing-sliders.js", package = "dynguidelines")))),
+    singleton(tags$head(includeScript(system.file("js/balancing-sliders.js", package = "dynguidelines")))),
     tags$label(
       class = "control-label",
       `for` = inputId,
