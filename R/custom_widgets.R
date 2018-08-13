@@ -23,7 +23,7 @@ collapsePanel <- function(..., title = "", show_on_start = FALSE, id = "") {
 
 balancingSliders <- function(
   inputId,
-  label = NULL,
+  label,
   labels,
   inputIds,
   mins,
@@ -34,16 +34,26 @@ balancingSliders <- function(
   tooltips = TRUE,
   ticks = FALSE
 ) {
-  pmap(
-    lst(
-      label = labels,
-      inputId = inputIds,
-      min = mins,
-      max = maxs,
-      value = values,
-      step = steps,
-      ticks = ticks
+  tags$div(
+    class = "form-group shiny-input-container balancing-sliders",
+    id = inputId,
+    # singleton(tags$head(includeScript(system.file("js/balancing-sliders.js", package = "dynguidelines")))),
+    tags$label(
+      class = "control-label",
+      `for` = inputId,
+      label
     ),
-    shiny::sliderInput
+    pmap(
+      lst(
+        label = labels,
+        inputId = inputIds,
+        min = mins,
+        max = maxs,
+        value = values,
+        step = steps,
+        ticks = ticks
+      ),
+      shiny::sliderInput
+    )
   )
 }

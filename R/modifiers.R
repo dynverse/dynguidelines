@@ -153,5 +153,6 @@ docker_modifier <- function(data, answer) {
 
 
 metric_importance_modifier <- function(data, answer) {
+  print(answer)
   data
 }

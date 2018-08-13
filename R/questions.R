@@ -140,7 +140,7 @@ questions <- list(
     default = rep(1/nrow(metrics), nrow(metrics)) %>% set_names(metrics$id),
     mins = rep(0, nrow(metrics)) %>% set_names(metrics$id),
     maxs = rep(1, nrow(metrics)) %>% set_names(metrics$id),
-    steps = rep(0.1, nrow(metrics)) %>% set_names(metrics$id)
+    steps = rep(0.01, nrow(metrics)) %>% set_names(metrics$id)
   ),
   list(
     question_id = "dynmethods",

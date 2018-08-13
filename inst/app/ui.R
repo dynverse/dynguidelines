@@ -5,6 +5,9 @@ ui <- function() {
     tags$head(includeScript("https://www.googletagmanager.com/gtag/js?id=UA-578149-3")),
     tags$head(includeScript(system.file("js/google-analytics.js", package = "dynguidelines"))),
     tags$head(includeScript(system.file("js/tooltips.js", package = "dynguidelines"))),
+    tags$head(includeScript(system.file("js/balancing-sliders.js", package = "dynguidelines"))),
+
+    tags$head(includeScript("https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js")),
 
     tags$head(includeCSS(system.file("css/style.css", package = "dynguidelines"))),
 
