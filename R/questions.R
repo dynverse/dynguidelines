@@ -21,8 +21,8 @@ all_simplified_trajectory_types <- trajectory_types %>% filter(!directed) %>% pu
 
 # metrics, TODO: import from dyneval
 metrics <- tibble(
-  id = c("correlation", "edge_flip", "featureimp_cor"),
-  name = c("Ordering", "Topology", "Important features/genes")
+  id = c("correlation", "edge_flip", "featureimp_cor", "F1_branches"),
+  name = c("Ordering", "Topology", "Important features/genes", "Clustering quality")
 )
 
 #' @include modifiers.R
@@ -57,8 +57,11 @@ questions <- list(
     type = "radiobuttons",
     choices = map(all_simplified_trajectory_types, function(trajectory_type) {
       directed_trajectory_type <- trajectory_types %>% filter(simplified == trajectory_type, directed == TRUE) %>% pull(id) %>% first()
-      img(src = str_glue("img/trajectory_types/{directed_trajectory_type}.svg"), class = "trajectory_type")
-    }),
+      span(
+        img(src = str_glue("img/trajectory_types/{directed_trajectory_type}.svg"), class = "trajectory_type"),
+        label_capitalise(trajectory_type)
+      )
+    }) %>% set_names(all_simplified_trajectory_types),
     activeIf = "
     input.multiple_disconnected == 'No' &&
     input.expect_topology == 'Yes'
@@ -127,21 +130,21 @@ questions <- list(
     category = "dataset",
     default = "< 1000"
   ),
-  list(
-    question_id = "metric_importance",
-    modifier = metric_importance_modifier,
-    type = "balancing_sliders",
-    title = "How important are the following aspects of the trajectory?",
-    help = "We assessed ...........",
-    activeIf = "true",
-    category = "metric_importance",
-    labels = metrics$name %>% set_names(metrics$id),
-    slider_ids = metrics$id %>% set_names(metrics$id),
-    default = rep(1/nrow(metrics), nrow(metrics)) %>% set_names(metrics$id),
-    mins = rep(0, nrow(metrics)) %>% set_names(metrics$id),
-    maxs = rep(1, nrow(metrics)) %>% set_names(metrics$id),
-    steps = rep(0.01, nrow(metrics)) %>% set_names(metrics$id)
-  ),
+  # list(
+  #   question_id = "metric_importance",
+  #   modifier = metric_importance_modifier,
+  #   type = "balancing_sliders",
+  #   title = "How important are the following aspects of the trajectory?",
+  #   help = "We assessed ...........",
+  #   activeIf = "true",
+  #   category = "metric_importance",
+  #   labels = metrics$name %>% set_names(metrics$id),
+  #   slider_ids = metrics$id %>% set_names(metrics$id),
+  #   default = rep(1/nrow(metrics), nrow(metrics)) %>% set_names(metrics$id),
+  #   mins = rep(0, nrow(metrics)) %>% set_names(metrics$id),
+  #   maxs = rep(1, nrow(metrics)) %>% set_names(metrics$id),
+  #   steps = rep(0.01, nrow(metrics)) %>% set_names(metrics$id)
+  # ),
   list(
     question_id = "dynmethods",
     modifier = dynmethods_modifier,
@@ -262,6 +265,7 @@ get_questions <- function() {
 }
 
 #' @rdname get_questions
+#' @param question_id The id of the questions
 get_question <- function(question_id) {
   questions[[question_id]]
 }

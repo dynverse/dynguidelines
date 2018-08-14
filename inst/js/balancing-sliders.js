@@ -1,19 +1,37 @@
+var lockListener = function(e) {
+  console.log("hi")
+  $(e.currentTarget).toggleClass("locked")
+
+  e.stopPropagation();
+}
+
+
+
+
 var balancingSliders = new Shiny.InputBinding();
 $.extend(balancingSliders, {
   find: function(scope) {
     return $(scope).find(".balancing-sliders");
   },
   getValue: function(el) {
-    console.log("hi")
-    return parseInt($(el).text());
+    var inputs = $(el).find(".js-range-slider");
+    var vals = inputs.map(function() {return Number($(this).val())}).get();
+
+    return vals;
   },
   setValue: function(el, value) {
     $(el).text(value);
   },
   subscribe: function(el, callback) {
+
+    $(el).find("input").find("finish.balancing-sliders", function(e) {
+      console.log("jhsldkjfhqlsdkjf")
+    })
+
     $(el).find("input").on("change.balancing-sliders", function(e) {
       // get the changed input and the non-changed inputs (otherInputs)
       var changedInput = $(e.currentTarget);
+      $(el).find("span.irs-slider.single").on("click", lockListener)
 
       if (changedInput.attr("data-dependent") != "true") {
         var otherInputs = $(el).find(".js-range-slider:not(#" + changedInput.attr("id") + ")");
@@ -44,7 +62,7 @@ $.extend(balancingSliders, {
           });
         }
 
-        callback();
+        callback(true);
       } else {
         changedInput.attr("data-dependent", "false");
       }
@@ -54,6 +72,12 @@ $.extend(balancingSliders, {
   },
   unsubscribe: function(el) {
     $(el).off(".balancing-sliders");
+  },
+  getRatePolicy: function() {
+    return {
+      policy: "throttle",
+      delay: 1000
+    };
   }
 });
 

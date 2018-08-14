@@ -30,8 +30,18 @@ ui <- function() {
           uiOutput("methods_table")
         )
       )
+    ),
+    div(
+      div(
+        class = "footer",
+        "Part of",
+        a(
+          href = "https://github.com/dynverse/dynverse",
+          img(
+            src = "img/logo_dynverse.png"
+          )
+        )
+      )
     )
-
-
   )
 }

@@ -24,20 +24,39 @@ collapsePanel <- function(..., title = "", show_on_start = FALSE, id = "") {
 balancingSliders <- function(
   inputId,
   label,
-  labels,
-  inputIds,
-  mins,
-  maxs,
-  sum,
-  values,
-  steps,
+  sliders,
   tooltips = TRUE,
   ticks = FALSE
 ) {
+
+
+  sliderTags <- lmap(sliders, function(slider) {
+    sliderProprs <- shiny:::dropNulls(list(
+      class = "js-range-slider",
+      id = slider$inputId,
+      `data-type` = "double",
+      `data-min` = slider$min,
+      `data-max` = slider$max,
+      `data-from` = slider$value,
+      `data-step` = slider$step,
+      `data-grid` = slider$ticks
+    ))
+
+    sliderTag <- div(
+      class = "form-group shiny-input-container",
+      style = paste0("width: 100%;"),
+      if (!is.null(label)) controlLabel(inputId, label),
+      do.call(tags$input, sliderProps)
+    )
+  })
+
+
+
   tags$div(
     class = "form-group shiny-input-container balancing-sliders",
     id = inputId,
     singleton(tags$head(includeScript(system.file("js/balancing-sliders.js", package = "dynguidelines")))),
+    singleton(tags$head(includeCSS(system.file("css/balancing-sliders.css", package = "dynguidelines")))),
     tags$label(
       class = "control-label",
       `for` = inputId,
@@ -53,7 +72,18 @@ balancingSliders <- function(
         step = steps,
         ticks = ticks
       ),
-      shiny::sliderInput
+      function(label, inputId, min, max, value, step, ticks) {
+        sliderTag <- div(
+          class = "form-group shiny-input-container",
+          style = if (!is.null(width)) paste0("width: ", validateCssUnit(width), ";"),
+          if (!is.null(label)) controlLabel(inputId, label),
+          do.call(tags$input, sliderProps)
+        )
+
+
+        list(shiny::sliderInput(...))
+
+      }
     )
   )
 }

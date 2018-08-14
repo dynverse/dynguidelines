@@ -148,7 +148,7 @@ get_guidelines_methods_table <- function(guidelines) {
 
 
 
-get_questions <- function(question_categories, answers) {
+get_questions_ui <- function(question_categories, answers) {
   ## make the sidebar questions -------------------------
   # different functions depending on the type of questions
   make_ui <- list(
@@ -157,11 +157,11 @@ get_questions <- function(question_categories, answers) {
 
       # default choiceNames is simply the choices
       if (is.null(names(q$choices))) {
-        choiceNames <- q$choices
+        choiceValues <- q$choices
       } else {
-        choiceNames <- names(q$choices)
+        choiceValues <- names(q$choices)
       }
-      choiceValues <- unname(q$choices)
+      choiceNames <- unname(q$choices)
 
       shinyWidgets::radioGroupButtons(
         inputId = q$question_id,

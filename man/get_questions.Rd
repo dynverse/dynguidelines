@@ -5,9 +5,12 @@
 \alias{get_question}
 \title{Load in the questions}
 \usage{
-get_questions(question_categories, answers)
+get_questions()
 
 get_question(question_id)
+}
+\arguments{
+\item{question_id}{The id of the questions}
 }
 \description{
 Load in the questions
