@@ -4,7 +4,7 @@
 \name{questions}
 \alias{questions}
 \title{The different questions}
-\format{An object of class \code{list} of length 16.}
+\format{An object of class \code{list} of length 15.}
 \usage{
 questions
 }

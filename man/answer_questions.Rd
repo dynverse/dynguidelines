@@ -7,9 +7,7 @@
 answer_questions(multiple_disconnected = TRUE, expect_topology = NULL,
   expected_topology = NULL, expect_cycles = NULL,
   expect_complex_tree = NULL, prior_information = NULL,
-  n_cells = "< 10000", n_features = "< 1000",
-  metric_importance = c(correlation = 0.25, edge_flip = 0.25,
-  featureimp_cor = 0.25, F1_branches = 0.25), dynmethods = "Yes",
+  n_cells = "< 10000", n_features = "< 1000", dynmethods = "Yes",
   docker = "Yes", programming_interface = "Yes",
   languages = c("python", "C++", "R"), user_friendliness = 60,
   running_time = 5, n_methods = 4)
@@ -30,8 +28,6 @@ answer_questions(multiple_disconnected = TRUE, expect_topology = NULL,
 \item{n_cells}{Number of cells Defaults to < 10000}
 
 \item{n_features}{Number of features (genes) Defaults to < 1000}
-
-\item{metric_importance}{How important are the following aspects of the trajectory? Defaults to c(correlation = 0.25, edge_flip = 0.25, featureimp_cor = 0.25, F1_branches = 0.25)}
 
 \item{dynmethods}{Do you use dynmethods to run the methods? Defaults to Yes}
 
