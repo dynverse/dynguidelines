@@ -12,9 +12,6 @@ guidelines <- function(
     answers <- get_defaults_task(task, answers)
   }
 
-  # default for n_methods
-  if (is.null(answers$n_methods)) {answers$n_methods <- 4}
-
   # build data with default order and columns
   method_columns <- renderers %>%
     filter(!is.na(default)) %>%
@@ -27,8 +24,8 @@ guidelines <- function(
   data$methods$selected <- FALSE
 
   for (question in questions) {
-    # only modify if question is checkbox (and can therefore be NULL) or if answers is not NULL
-    if(question$type == "checkbox" || !is.null(answers[[question$question_id]])) {
+    # only modify if question is checkbox/picker (and therefore NULL can be a valid answer) or if answers is not NULL
+    if(question$type %in% c("checkbox", "picker") || !is.null(answers[[question$question_id]])) {
       # only modify if question is active
       if(question$active_if(answers)) {
         data <- question$modifier(data, answers[[question$question_id]])

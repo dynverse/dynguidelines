@@ -6,22 +6,41 @@ ui <- function() {
     tags$head(includeScript(system.file("js/google-analytics.js", package = "dynguidelines"))),
     tags$head(includeScript(system.file("js/tooltips.js", package = "dynguidelines"))),
 
+    tags$head(includeScript("https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js")),
+
     tags$head(includeCSS(system.file("css/style.css", package = "dynguidelines"))),
 
     titlePanel("Selecting the most optimal TI methods"),
 
-    column(4,
-      uiOutput("questions_panel")
-    ),
-    column(8,
-      actionButton(
-        "submit",
-        span(icon("chevron-circle-right"), " Use methods ",  icon("chevron-circle-right")),
-        width = "100%",
-        class = "btn-primary"
+    sidebarLayout(
+      column(
+        4,
+        uiOutput("questions_panel"),
+        style = "overflow-y:scroll; max-height:100vh;"
       ),
+      column(
+        8,
+        actionButton(
+          "submit",
+          span(icon("chevron-circle-right"), " Use methods ",  icon("chevron-circle-right")),
+          width = "100%",
+          class = "btn-primary"
+        ),
+        div(
+          uiOutput("methods_table")
+        )
+      )
+    ),
+    div(
       div(
-        uiOutput("methods_table")
+        class = "footer",
+        "Part of",
+        a(
+          href = "https://github.com/dynverse/dynverse",
+          img(
+            src = "img/logo_dynverse.png"
+          )
+        )
       )
     )
   )

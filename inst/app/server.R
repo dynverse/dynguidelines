@@ -2,6 +2,8 @@ server <- function(input, output, session) {
   # add path of images
   addResourcePath("img", system.file("img/", package = "dynguidelines"))
 
+  # questions, previous_answers and question_categories were provided by guidelines_shiny into the environment
+
   # load question + update questions after a user answers it
   question_categories <- map(question_categories, function(question_category) {
     map(question_category, function(question) {
@@ -25,8 +27,7 @@ server <- function(input, output, session) {
   })
 
   # add questions
-  # questions and previous_answers were provided by guidelines_shiny into the environment
-  output$questions_panel <- renderUI(get_questions(question_categories, previous_answers))
+  output$questions_panel <- renderUI(get_questions_ui(question_categories, previous_answers))
 
   answers <- reactive(map(answer_names, ~input[[.]]) %>% set_names(answer_names))
   current_guidelines <- reactive(guidelines(task = NULL, answers = answers()))

@@ -20,12 +20,12 @@ div.computed {
   max-width: 100%;
 }
 
-
+/* Header of panels */
 div.panel-heading {
   cursor: pointer;
 }
 
-
+/* Category completion */
 .completed-category div.panel-heading {
   background-color: #d0e0b6;
 }
@@ -56,6 +56,13 @@ div.panel-heading {
   content: "computed";
 }
 
+/** Modifications to components **/
+
+/* Hiding ugly minor tick marks */
+.irs-grid-pol.small {
+    height: 0 !important;
+}
+
 
 /***** Methods table ******/
 tr.selected {
@@ -83,4 +90,15 @@ td > img.trajectory_type.inactive {
 
 .tooltippable {
   text-decoration: dotted underline;
+}
+
+
+/* Footer */
+.footer {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footer img {
+  max-height: 75px;
 }
