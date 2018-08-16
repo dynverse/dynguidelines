@@ -1,3 +1,5 @@
+library(dynguidelines)
+
 ui <- function() {
   ## build the page ----------------------------
   fluidPage(
