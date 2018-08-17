@@ -8,42 +8,13 @@ answer_questions(dataset = NULL, multiple_disconnected = NULL,
   expect_topology = NULL, expected_topology = NULL,
   expect_cycles = NULL, expect_complex_tree = NULL,
   prior_information = NULL, n_cells = "< 10000",
-  n_features = "< 1000", dynmethods = TRUE, docker = TRUE,
-  programming_interface = TRUE, languages = c("python", "C++", "R"),
-  user_friendliness = 60, running_time = 5, n_methods = 4)
+  n_features = "< 1000", metric_importance = c(0.25, 0.25, 0.25, 0.25),
+  dynmethods = TRUE, docker = TRUE, programming_interface = TRUE,
+  languages = c("python", "C++", "R"), user_friendliness = 60,
+  running_time = 5, n_methods = 4)
 }
 \arguments{
 \item{dataset}{The dataset from which the answers will be computed}
-
-\item{multiple_disconnected}{Do you expect multiple disconnected trajectories in the data? Defaults to NULL}
-
-\item{expect_topology}{Do you expect a particular topology in the data? Defaults to NULL}
-
-\item{expected_topology}{What is the expected topology Defaults to NULL}
-
-\item{expect_cycles}{Do you expect cycles in the data? Defaults to NULL}
-
-\item{expect_complex_tree}{Do you expect a complex tree in the data? Defaults to NULL}
-
-\item{prior_information}{Are you willing to provide the following prior information? Defaults to NULL}
-
-\item{n_cells}{Number of cells Defaults to < 10000}
-
-\item{n_features}{Number of features (genes) Defaults to < 1000}
-
-\item{dynmethods}{Do you use dynmethods to run the methods? Defaults to TRUE}
-
-\item{docker}{Is docker installed? Defaults to TRUE}
-
-\item{programming_interface}{Can you work in a programming interface? Defaults to TRUE}
-
-\item{languages}{Which languages can you work with? Defaults to c("python", "C++", "R")}
-
-\item{user_friendliness}{Minimal user friendliness score Defaults to 60}
-
-\item{running_time}{Maximal estimated running time (minutes) Defaults to 5}
-
-\item{n_methods}{Number of methods Defaults to 4}
 }
 \description{
 Provide answers to various questions

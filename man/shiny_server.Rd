@@ -4,19 +4,16 @@
 \alias{shiny_server}
 \title{The shiny server}
 \usage{
-shiny_server(input, output, session, questions = get_questions(),
-  answers = answer_questions())
+shiny_server(questions = get_questions(), answers = answer_questions())
 }
 \arguments{
+\item{answers}{Previous answers other than default, see the [answer_questions()] function}
+
 \item{input}{Shiny input}
 
 \item{output}{Shiny output}
 
 \item{session}{Shiny session}
-
-\item{questions}{The questions}
-
-\item{answers}{Previous answers other than default, see the [answer_questions()] function}
 }
 \description{
 The shiny server

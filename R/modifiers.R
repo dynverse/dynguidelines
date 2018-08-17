@@ -122,8 +122,7 @@ running_time_modifier <- function(data, answer = NULL) {
 
 
 prior_information_modifier <- function(data, answer = NULL) {
-  data(priors, envir = environment(), package = "dynguidelines")
-  unavailable_priors <- priors %>% filter(!prior_id %in% answer) %>% pull(prior_id)
+  unavailable_priors <- dynwrap::priors %>% filter(!prior_id %in% answer) %>% pull(prior_id)
   data$methods <- data$methods[data$methods[, unavailable_priors] %>% apply(1, function(x) all(x != "required", na.rm = T)), ]
 
   data

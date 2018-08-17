@@ -13,37 +13,90 @@ shiny_ui <- function() {
 
     tags$head(includeCSS(system.file("css/style.css", package = "dynguidelines"))),
 
-    titlePanel("Selecting the most optimal TI methods"),
+    title = "Selecting the most optimal TI methods - dynguidelines",
 
-    sidebarLayout(
-      column(
-        4,
-        uiOutput("questions_panel"),
-        style = "overflow-y:scroll; max-height:100vh;"
-      ),
-      column(
-        8,
-        actionButton(
-          "submit",
-          span(icon("chevron-circle-right"), " Use methods ",  icon("chevron-circle-right")),
-          width = "100%",
-          class = "btn-primary"
+    # navbar
+    tags$nav(
+      class = "navbar navbar-default",
+      div(
+        class = "container-fluid",
+        div(
+          class = "navbar-header",
+          tags$a(
+            class = "",
+            href = "#",
+            img(src = "man_img/logo_horizontal.png")
+          )
         ),
         div(
-          uiOutput("methods_table")
+          class = "navbar-collapse collapse",
+          tags$ul(
+            class = "nav navbar-nav",
+            tags$li(
+              class = "active",
+              tags$a(
+                `data-toggle` = "tab",
+                href = "#tab-methods",
+                "Select the optimal methods"
+              )
+            ),
+            tags$li(
+              tags$a(
+                `data-toggle` = "tab",
+                href = "#tab-info",
+                "Information"
+                )
+              )
+          ),
+          tags$ul(
+            class = "nav navbar-nav navbar-right",
+            tags$li(
+              "Part of",
+              a(
+                style = "display: inline;",
+                href = "https://github.com/dynverse/dynverse",
+                img(
+                  src = "img/logo_dynverse.png"
+                )
+              )
+            )
+          )
         )
       )
     ),
+
+
     div(
+      class = "tab-content",
       div(
-        class = "footer",
-        "Part of",
-        a(
-          href = "https://github.com/dynverse/dynverse",
-          img(
-            src = "img/logo_dynverse.png"
+        id = "tab-methods",
+        class = "tab-pane active",
+        sidebarLayout(
+          column(
+            4,
+            uiOutput("questions_panel"),
+            style = "overflow-y:scroll; max-height:100vh;"
+          ),
+          column(
+            8,
+            actionButton(
+              "submit",
+              span(icon("chevron-circle-right"), " Ready ",  icon("chevron-circle-right")),
+              class = "btn-primary",
+              width = "100%"
+            ),
+            div(
+              uiOutput("methods_table")
+            )
           )
         )
+      ),
+
+
+      div(
+        id = "tab-info",
+        class = "tab-pane",
+        "Dynguidelines allows you to select the most optimal trajectory inference (TI) methods given a particular dataset and user provided information."
       )
     )
   )
@@ -157,7 +210,7 @@ input_functions <- list(
 
     shinyWidgets::radioGroupButtons(
       inputId = q$question_id,
-      label = q$title,
+      label = q$label,
       selected = as.character(q$default),
       choiceNames = choiceNames,
       choiceValues = choiceValues,
@@ -169,7 +222,7 @@ input_functions <- list(
 
     radioButtons(
       q$question_id,
-      q$title,
+      q$label,
       q$choices,
       q$default
     )
@@ -177,7 +230,7 @@ input_functions <- list(
   checkbox = function(q) {
     checkboxGroupInput(
       q$question_id,
-      q$title,
+      q$label,
       q$choices,
       q$default
     )
@@ -185,7 +238,7 @@ input_functions <- list(
   picker = function(q) {
     shinyWidgets::pickerInput(
       inputId = q$question_id,
-      label = q$title,
+      label = q$label,
       choices = q$choices,
       selected = q$default,
       multiple = q$multiple %||% TRUE,
@@ -200,7 +253,7 @@ input_functions <- list(
   slider = function(q) {
     sliderInput(
       inputId = q$question_id,
-      label = q$title,
+      label = q$label,
       min = q$min,
       max = q$max,
       value = q$default,
@@ -211,7 +264,7 @@ input_functions <- list(
   textslider = function(q) {
     shinyWidgets::sliderTextInput(
       q$question_id,
-      q$title,
+      q$label,
       q$choices,
       q$default
     )
@@ -219,15 +272,23 @@ input_functions <- list(
   balancing_sliders = function(q) {
     balancingSliders(
       inputId = q$question_id,
-      label = q$title,
+      label = q$label,
       labels = q$labels,
-      inputIds = q$slider_ids,
-      mins = q$mins,
-      maxs = q$maxs,
-      sum = q$sum,
+      ids = q$ids,
       values = q$default,
-      steps = q$steps,
-      ticks = q$ticks %||% FALSE
+      min = q$min,
+      max = q$max,
+      sum = q$sum,
+      step = q$step,
+      ticks = q$ticks
+    )
+  },
+  numeric = function(q) {
+    numericInput(
+      inputId = q$question_id,
+      label = q$label,
+      value = q$default,
+      min = 0
     )
   }
 )
@@ -238,29 +299,9 @@ get_questions_ui <- function(question_categories, answers) {
 
   # create every category
   questions_ui <- map(question_categories, function(question_category) {
-    # get the title of the panel
+    # get the header of the panel
     category_id <- question_category[[1]]$category
-    category_title <- category_id %>% label_capitalise
-
-    # is_computed <- function(x) {!is.null(x$computed) && x$computed}
-    # computed <- question_category %>%
-    #   keep(~.$active_if(answers)) %>%
-    #   map_lgl(is_computed) %>%
-    #   all()
-#
-#     if(computed) {
-#       title <- span(
-#         title,
-#         span(
-#           "computed",
-#           class = "computed tooltippable",
-#           `data-toggle` = "tooltip",
-#           `data-placement` = "top",
-#           title = "Answers were computed based on information from the provided dataset"
-#         )
-#       )
-#     }
-#
+    category_header <- category_id %>% label_capitalise
 
     # check if the panel has to be opened from the start
     show_on_start <- question_category %>%
@@ -270,10 +311,22 @@ get_questions_ui <- function(question_categories, answers) {
     # create the panel of the category
     category_panel <- collapsePanel(
       id = category_id,
-      title = category_title,
+      header = category_header,
       show_on_start = show_on_start,
       map(question_category, function(question) {
         if(!question$type %in% names(input_functions)) {stop("Invalid question type")}
+
+        # if this question has a label and title, add the collapsible help information
+        if (!is.null(question$label) && !is.null(question$title)) {
+          question$label <-
+            tags$span(
+              class = "tooltippable",
+              title = question$title,
+              question$label,
+              `data-toggle` = "tooltip",
+              `data-placement` = "right"
+            )
+        }
 
         question_panel <- div(
           conditionalPanel(

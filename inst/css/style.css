@@ -1,3 +1,29 @@
+/*** Title bar ***/
+
+/* title */
+.navbar img {
+  max-height: 70px;
+}
+
+.navbar-header {
+  margin-right: 20px !important;
+}
+
+
+
+/* navbar elements */
+.navbar-nav>li>a {
+  padding-bottom: 25px;
+  padding-top: 25px;
+}
+
+
+
+
+
+
+
+/*** collapse panels ***/
 .panel-collapse > div {
   padding:10px 15px;
   width:100%;
@@ -88,8 +114,22 @@ td > img.trajectory_type.inactive {
 }
 
 
+/***** Tooltips ******/
+
 .tooltippable {
   text-decoration: dotted underline;
+}
+
+.tooltip-inner {
+  background-color: #EEE;
+  border: 1px solid black;
+  color: black;
+  max-width: 400px;
+  font-size: 14px;
+}
+
+.tooltip-inner img{
+  max-width: 380px;
 }
 
 

@@ -15,12 +15,3 @@ NULL
 
 #' The methods and their performance as generated from `dynalysis`
 "methods"
-
-#' The prior information
-"priors"
-
-#' The different questions
-"questions"
-
-#' Renderers
-"renderers"

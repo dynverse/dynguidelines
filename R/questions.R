@@ -1,15 +1,4 @@
-# all priors
-priors <- tribble(
-  ~prior_id, ~prior_name, ~prior_dataset_id,
-  "start_id", "Start cell","start_cells",
-  "end_id", "End cell(s)","end_cells",
-  "end_n", "# end states","n_end_states",
-  "states_id", "Cell clustering","grouping_assignment",
-  "states_n", "# states","n_branches",
-  "states_network", "State network","grouping_network",
-  "time_id", "Time course","time",
-  "genes_id", "Marker genes","marker_feature_ids"
-)
+priors <- dynwrap::priors
 
 # possible programming languages
 all_programming_languages <-c("python", "Matlab", "C++", "R")
@@ -32,11 +21,11 @@ questions <- list(
     question_id = "multiple_disconnected",
     modifier = multiple_disconnected_modifier,
     type = "radiobuttons",
-    choices = c("Yes" = TRUE, "No" = FALSE),
+    choices = c("Yes" = TRUE, "It's possible" = TRUE, "No" = FALSE),
     modifier = function(data, answer = NULL) {},
     activeIf = "true",
-    title = "Do you expect multiple disconnected trajectories in the data?",
-    help = "Disconnected trajectories are trajectories which are not connected, eg: <img src='img/disconnected.png'>",
+    label = "Do you expect multiple disconnected trajectories in the data?",
+    title = tags$p("Disconnected trajectories are trajectories which are not connected", tags$im(src='img/disconnected_example.png')),
     category = "topology",
     default = NULL,
     default_dataset = function(dataset, default) {
@@ -53,8 +42,8 @@ questions <- list(
     type = "radiobuttons",
     choices = c("Yes" = TRUE, "No" = FALSE),
     activeIf = "input.multiple_disconnected == 'FALSE'",
-    title = "Do you expect a particular topology in the data?",
-    help = "Select 'Yes' if you already know the expected topology in the data.",
+    label = "Do you expect a particular topology in the data?",
+    title = "Select 'Yes' if you already know the expected topology in the data.",
     category = "topology",
     default = NULL,
     default_dataset = function(dataset, default) {
@@ -81,8 +70,8 @@ questions <- list(
     input.multiple_disconnected == 'FALSE' &&
     input.expect_topology == 'TRUE'
     ",
-    title = "What is the expected topology",
-    help = "Select the expected topology <img src='img/topologies.png'>",
+    label = "What is the expected topology",
+    title = "Select the expected topology <img src='img/topologies.png'>",
     category = "topology",
     default = NULL,
     default_dataset = function(dataset, default) {
@@ -105,8 +94,14 @@ questions <- list(
     input.multiple_disconnected == 'FALSE' &&
     input.expect_topology == 'FALSE'
     ",
-    title = "Do you expect cycles in the data?",
-    help = "Cells within a cyclic topology can go back to their original state. Apart from the cell cycle, such trajectories can also include sucessive stages of activation and a return to steady state.",
+    label = "Do you expect cycles in the data?",
+    title = p(
+      "Select 'Yes' or 'It's possible' if cyclic could be present in the trajectory.",
+      tags$br(),
+      "Cells within a cyclic topology can go back to their original state. A cycle can be part of a larger trajectory topology, for example:",
+      tags$img(src = "img/cyclic_example.png"),
+      "Examples of cyclic trajectories can be: cell cycle or cell activation and deactivation"
+    ),
     category = "topology",
     default = NULL
   ),
@@ -120,8 +115,8 @@ questions <- list(
     input.expect_cycles == 'FALSE' &&
     input.expect_topology == 'FALSE'
     ",
-    title = "Do you expect a complex tree in the data?",
-    help = "A complex tree can include two or more bifurcations.",
+    label = "Do you expect a complex tree in the data?",
+    title = "A complex tree can include two or more bifurcations.",
     category = "topology",
     default = NULL
   ),
@@ -129,17 +124,16 @@ questions <- list(
     question_id = "prior_information",
     modifier = prior_information_modifier,
     type = "picker",
-    choices = set_names(priors$prior_id, priors$prior_name),
+    choices = set_names(priors$prior_id, priors$name),
     multiple = TRUE,
-    title = "Are you willing to provide the following prior information?",
-    help = "Some methods require some prior information, such as the start cells, to help with the construction of the trajectory. Although this can help the method with finding the right trajectory, prior information can also bias the trajectory towards what is already known. Prior information should therefore be given with great care.",
+    label = "Are you able to provide the following prior information?",
+    title = "Some methods require some prior information, such as the start cells, to help with the construction of the trajectory. Although this can help the method with finding the right trajectory, prior information can also bias the trajectory towards what is already known. <br> Prior information should therefore be given with great care.",
     activeIf = "true",
     category = "prior_information",
     default = c(),
     default_dataset = function(dataset, default) {
       if("prior_information" %in% names(dataset) || dynwrap::is_wrapper_with_prior_information(dataset)) {
-        data(priors, envir = environment(), package = "dynguidelines")
-        priors %>% filter(prior_dataset_id %in% names(dataset$prior_information)) %>% pull(prior_id)
+        priors %>% filter(prior_id %in% names(dataset$prior_information)) %>% pull(prior_id)
       } else {
         default
       }
@@ -148,12 +142,11 @@ questions <- list(
   list(
     question_id = "n_cells",
     modifier = n_cells_modifier,
-    type = "textslider",
-    choices = c("< 100", "< 1000", "< 10000", "10000+"),
-    title = "Number of cells",
+    type = "numeric",
+    label = "Number of cells",
     activeIf = "true",
     category = "dataset",
-    default = "< 10000",
+    default = 1000,
     default_dataset = function(dataset, default) {
       if(dynwrap::is_wrapper_with_expression(dataset)) {
         nrow(dataset$expression)
@@ -165,12 +158,11 @@ questions <- list(
   list(
     question_id = "n_features",
     modifier = n_features_modifier,
-    type = "textslider",
-    choices = c("< 100", "< 1000", "< 10000", "10000+"),
-    title = "Number of features (genes)",
+    type = "numeric",
+    label = "Number of features (genes)",
     activeIf = "true",
     category = "dataset",
-    default = "< 1000",
+    default = 1000,
     default_dataset = function(dataset, default) {
       if(dynwrap::is_wrapper_with_expression(dataset)) {
         ncol(dataset$expression)
@@ -179,28 +171,29 @@ questions <- list(
       }
     }
   ),
-  # list(
-  #   question_id = "metric_importance",
-  #   modifier = metric_importance_modifier,
-  #   type = "balancing_sliders",
-  #   title = "How important are the following aspects of the trajectory?",
-  #   help = "We assessed ...........",
-  #   activeIf = "true",
-  #   category = "metric_importance",
-  #   labels = metrics$name %>% set_names(metrics$id),
-  #   slider_ids = metrics$id %>% set_names(metrics$id),
-  #   default = rep(1/nrow(metrics), nrow(metrics)) %>% set_names(metrics$id),
-  #   mins = rep(0, nrow(metrics)) %>% set_names(metrics$id),
-  #   maxs = rep(1, nrow(metrics)) %>% set_names(metrics$id),
-  #   steps = rep(0.01, nrow(metrics)) %>% set_names(metrics$id)
-  # ),
+  list(
+    question_id = "metric_importance",
+    modifier = metric_importance_modifier,
+    type = "balancing_sliders",
+    label = "How important are the following aspects of the trajectory?",
+    title = "We assessed ...........",
+    activeIf = "true",
+    category = "metric_importance",
+    labels = metrics$name,
+    ids = metrics$id,
+    default = rep(1/nrow(metrics), nrow(metrics)),
+    min = 0,
+    max = 1,
+    step = 0.01,
+    sum = 1
+  ),
   list(
     question_id = "dynmethods",
     modifier = dynmethods_modifier,
     type = "radiobuttons",
     choices = c("Yes" = TRUE, "No" = FALSE),
-    title = "Do you use dynmethods to run the methods?",
-    help = "Dynmethods is an R package which contains wraps TI methods into a common interface. While we highly recommend the use of this package, as it eases interpretation, some users may prefer to work in other programming languages.",
+    label = "Do you use dynmethods to run the methods?",
+    title = "Dynmethods is an R package which contains wraps TI methods into a common interface. While we highly recommend the use of this package, as it eases interpretation, some users may prefer to work in other programming languages.",
     activeIf = "true",
     category = "availability",
     default = TRUE
@@ -210,8 +203,8 @@ questions <- list(
     modifier = docker_modifier,
     type = "radiobuttons",
     choices = c("Yes" = TRUE, "No" = FALSE),
-    title = "Is docker installed?",
-    help = "Docker makes it easy to run each TI method without dependency issues, apart from the installation of docker itself.",
+    label = "Is docker installed?",
+    title = "Docker makes it easy to run each TI method without dependency issues, apart from the installation of docker itself.",
     activeIf = "input.dynmethods == 'TRUE'",
     category = "availability",
     default = function() {dynwrap::test_docker_installation()}
@@ -221,7 +214,7 @@ questions <- list(
     modifier = programming_interface_modifier,
     type = "radiobuttons",
     choices = c("Yes" = TRUE, "No" = FALSE),
-    title = "Can you work in a programming interface?",
+    label = "Can you work in a programming interface?",
     activeIf = "input.dynmethods == 'FALSE'",
     category = "availability",
     default = TRUE
@@ -233,7 +226,7 @@ questions <- list(
     choices = all_programming_languages,
     special_choices = list(c("All", all_programming_languages), c("Any free",  all_free_programming_languages), c("Clear", "[]")),
     default = all_free_programming_languages,
-    title = "Which languages can you work with?",
+    label = "Which languages can you work with?",
     activeIf = "input.dynmethods == 'FALSE' && input.programming_interface == 'TRUE'",
     category = "availability",
     default = all_free_programming_languages
@@ -246,7 +239,7 @@ questions <- list(
     max = 100,
     step = 10,
     default = 60,
-    label = "
+    slider_label = "
     function(x) {
     if(x < 50) {
     return 'Poor'
@@ -259,7 +252,7 @@ questions <- list(
     }
     }
     ",
-    title = "Minimal user friendliness score",
+    label = "Minimal user friendliness score",
     activeIf = "input.dynmethods == 'FALSE'",
     category = "availability"
   ),
@@ -272,7 +265,7 @@ questions <- list(
     default = 5,
     activeIf = "input.dynmethods == 'TRUE'",
     category = "availability",
-    title = "Maximal estimated running time (minutes)"
+    label = "Maximal estimated running time (minutes)"
   ),
   list(
     question_id = "n_methods",
@@ -281,7 +274,7 @@ questions <- list(
     min = 1,
     max = 10,
     default = 4,
-    title = "Number of methods",
+    label = "Number of methods",
     activeIf = "true",
     category = "methods"
   )
