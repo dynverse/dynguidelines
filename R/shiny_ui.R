@@ -131,15 +131,6 @@ get_guidelines_methods_table <- function(guidelines) {
       tags$script('activeTooltips()')
     )
 
-    # methods_table <- methods %>%
-    #   map2(method_columns$renderer, function(col, renderer) renderer(col)) %>%
-    #   set_names(method_columns$label) %>%
-    #   as_tibble() %>%
-    #   knitr::kable("html", escape = FALSE) %>%
-    #   kableExtra::kable_styling("striped", full_width = TRUE) %>%
-    #   kableExtra::row_spec(which(methods$selected), background = "#E1EEEE") %>%
-    #   kableExtra::row_spec(0, extra_css = "font-size:0.7em")
-
     methods_table
   }
 }

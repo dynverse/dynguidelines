@@ -39,7 +39,8 @@ Imports:
   shinyjs,
   knitr,
   glue,
-  stringr
+  stringr,
+  viridis
 Suggests:
   testthat
 Remotes:
