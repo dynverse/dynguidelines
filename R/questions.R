@@ -30,7 +30,7 @@ questions <- list(
     default = NULL,
     default_dataset = function(dataset, default) {
       if(dynwrap::is_wrapper_with_trajectory(dataset)) {
-        "No"
+        FALSE
       } else {
         default
       }
@@ -48,7 +48,7 @@ questions <- list(
     default = NULL,
     default_dataset = function(dataset, default) {
       if(dynwrap::is_wrapper_with_trajectory(dataset)) {
-        "No"
+        FALSE
       } else {
         default
       }
@@ -207,7 +207,7 @@ questions <- list(
     title = "Docker makes it easy to run each TI method without dependency issues, apart from the installation of docker itself.",
     activeIf = "input.dynmethods == 'TRUE'",
     category = "availability",
-    default = function() {dynwrap::test_docker_installation()}
+    default =  quote(dynwrap::test_docker_installation())
   ),
   list(
     question_id = "programming_interface",

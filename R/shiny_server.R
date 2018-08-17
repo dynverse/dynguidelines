@@ -12,7 +12,6 @@ shiny_server <- function(
 
     # add path of images
     addResourcePath("img", system.file("img/", package = "dynguidelines"))
-    addResourcePath("man_img", system.file("man/img/", package = "dynguidelines"))
 
     # make sure questions and answers match
     testthat::expect_setequal(names(questions), answers$question_id)
@@ -22,14 +21,14 @@ shiny_server <- function(
     questions <- map(questions, function(question) {
       question_answer <- answers %>% extract_row_to_list(which(question_id == question$question_id))
 
-      question$default <- question_answer$answer
-      question$default_source <- question_answer$source
+      question[["default"]] <- question_answer$answer
+      question$source_default <- question_answer$source
 
       question$answer <- reactive(parse_answers(input[[question$question_id]]))
 
       question$source <- reactive({
-        if (isTRUE(all.equal(question$answer(), question$default))) {
-          question$default_source
+        if (isTRUE(all.equal(question$answer(), question[["default"]]))) {
+          question$source_default
         } else {
           "adapted"
         }
@@ -57,6 +56,9 @@ shiny_server <- function(
 
     # methods table
     output$methods_table <- renderUI(get_guidelines_methods_table(current_guidelines()))
+
+    # code
+    output$code <- renderText(get_answers_code(answers = reactive_answers()))
 
     # toggleClass(id = NULL, class = NULL, condition = NULL, selector = NULL)
 

@@ -9,9 +9,9 @@ answer_questions(dataset = NULL, multiple_disconnected = NULL,
   expect_cycles = NULL, expect_complex_tree = NULL,
   prior_information = NULL, n_cells = 1000, n_features = 1000,
   metric_importance = c(0.25, 0.25, 0.25, 0.25), dynmethods = TRUE,
-  docker = TRUE, programming_interface = TRUE,
-  languages = c("python", "C++", "R"), user_friendliness = 60,
-  running_time = 5, n_methods = 4)
+  docker = dynwrap::test_docker_installation(),
+  programming_interface = TRUE, languages = c("python", "C++", "R"),
+  user_friendliness = 60, running_time = 5, n_methods = 4)
 }
 \arguments{
 \item{dataset}{The dataset from which the answers will be computed}
@@ -36,7 +36,7 @@ answer_questions(dataset = NULL, multiple_disconnected = NULL,
 
 \item{dynmethods}{Do you use dynmethods to run the methods? Defaults to TRUE}
 
-\item{docker}{Is docker installed? Defaults to TRUE}
+\item{docker}{Is docker installed? Defaults to dynwrap::test_docker_installation()}
 
 \item{programming_interface}{Can you work in a programming interface? Defaults to TRUE}
 

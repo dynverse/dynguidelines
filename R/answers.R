@@ -5,11 +5,7 @@ get_defaults <- function(question_ids = names(get_questions())) {
 }
 
 get_default <- function(question_id) {
-  default <- questions[[question_id]]$default
-
-  if (is.function(default)) {
-    default <- default()
-  }
+  default <- questions[[question_id]][["default"]]
 
   default
 }
@@ -46,7 +42,7 @@ answer_questions <- function(dataset = NULL, ...) {
   if (!is.null(dataset)) {
     for (question_id in setdiff(names(questions), given_question_ids)) {
       if (is.function(questions[[question_id]]$default_dataset)) {
-        answers[[question_id]] <- questions[[question_id]]$default_dataset(dataset, answers[[question_id]])
+        answers[[question_id]][["default"]] <- list(questions[[question_id]]$default_dataset(dataset, answers[[question_id]])) # use list here to avoid xxx <- NULL removing the element
         computed_question_ids <- c(computed_question_ids, question_id)
       }
     }
@@ -56,10 +52,35 @@ answer_questions <- function(dataset = NULL, ...) {
     question_id = names(answers),
     answer = answers,
     source = case_when(
-      question_id %in% given_question_ids ~ "given",
+      question_id %in% given_question_ids ~ "adapted",
       question_id %in% computed_question_ids ~ "computed",
       TRUE ~ "default"
     )
   )
 }
 formals(answer_questions) <- c(list(dataset = NULL), get_defaults(names(questions)))
+
+
+
+# Get the code to reproducte a particular set of answers
+get_answers_code <- function(answers = answer_questions()) {
+  params <- c()
+
+  adapted_answers <- answers %>% filter(source %in% c("computed", "adapted"))
+  params <-
+    map2_chr(adapted_answers$question_id, adapted_answers$answer, function(question_id, answer) {
+      glue::glue("{question_id} = {glue::glue_collapse(deparse(answer, width.cutoff = 80L))}")
+    })
+
+  if (length(params) == 0) {
+    "dynguidelines::answer_questions()"
+  } else {
+    glue::glue(
+      "dynguidelines::answer_questions(",
+      glue::glue_collapse(paste0("  ", params), ", \n"),
+      ")",
+      .sep = "\n",
+      .trim = FALSE
+    )
+  }
+}

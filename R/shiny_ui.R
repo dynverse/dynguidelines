@@ -25,7 +25,7 @@ shiny_ui <- function() {
           tags$a(
             class = "",
             href = "#",
-            img(src = "man_img/logo_horizontal.png")
+            img(src = "img/logo_horizontal.png")
           )
         ),
         div(
@@ -79,12 +79,47 @@ shiny_ui <- function() {
           ),
           column(
             8,
-            actionButton(
-              "submit",
-              span(icon("chevron-circle-right"), " Ready ",  icon("chevron-circle-right")),
-              class = "btn-primary",
-              width = "100%"
+
+            # top buttons
+            tags$div(
+              class = "btn-group",
+              style = "width:100%",
+              tags$button(
+                "Show code ",
+                icon("code"),
+                class = "btn btn-default",
+                style = "width:50%;",
+                `data-target` = "#code",
+                `data-toggle` = "collapse"
+              ),
+              actionButton(
+                "submit",
+                span("Use in dyno ",  icon("chevron-circle-right")),
+                class = "btn-primary",
+                width = "50%"
+              )
             ),
+
+            # code collapsible
+            tags$div(
+              class = "panel-collapse collapse",
+              id = "code",
+              style = "width:100%;",
+
+              # copy button
+              singleton(tags$head(includeScript("https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"))),
+              tags$button(
+                class = "btn btn-default btn-xs btn-copy",
+                style = "float:left",
+                icon("copy"),
+                `data-clipboard-target`="#code"
+              ),
+              tags$script("$(document).ready(function() {new ClipboardJS('.btn-copy')});"),
+
+              # actual code
+              textOutput("code", container = tags$pre)
+            ),
+
             div(
               uiOutput("methods_table")
             )
@@ -192,7 +227,7 @@ get_guidelines_methods_table <- function(guidelines) {
 # Functions to create each type of input
 input_functions <- list(
   radiobuttons = function(q) {
-    if (is.null(q$default)) q$default <- character()
+    if (is.null(q[["default"]])) q[["default"]] <- character()
 
     # if choices not defined, use choiceNames and choiceValues
     if (is.null(q$choices)) {
@@ -211,20 +246,20 @@ input_functions <- list(
     shinyWidgets::radioGroupButtons(
       inputId = q$question_id,
       label = q$label,
-      selected = as.character(q$default),
+      selected = as.character(q[["default"]]),
       choiceNames = choiceNames,
       choiceValues = choiceValues,
       status = "default"
     )
   },
   radio = function(q) {
-    if (is.null(q$default)) q$default <- character()
+    if (is.null(q[["default"]])) q[["default"]] <- character()
 
     radioButtons(
       q$question_id,
       q$label,
       q$choices,
-      q$default
+      q[["default"]]
     )
   },
   checkbox = function(q) {
@@ -232,7 +267,7 @@ input_functions <- list(
       q$question_id,
       q$label,
       q$choices,
-      q$default
+      q[["default"]]
     )
   },
   picker = function(q) {
@@ -240,7 +275,7 @@ input_functions <- list(
       inputId = q$question_id,
       label = q$label,
       choices = q$choices,
-      selected = q$default,
+      selected = q[["default"]],
       multiple = q$multiple %||% TRUE,
       options = list(
         `actions-box` = TRUE,
@@ -256,7 +291,7 @@ input_functions <- list(
       label = q$label,
       min = q$min,
       max = q$max,
-      value = q$default,
+      value = q[["default"]],
       step = q$step,
       ticks = FALSE
     )
@@ -266,7 +301,7 @@ input_functions <- list(
       q$question_id,
       q$label,
       q$choices,
-      q$default
+      q[["default"]]
     )
   },
   balancing_sliders = function(q) {
@@ -275,7 +310,7 @@ input_functions <- list(
       label = q$label,
       labels = q$labels,
       ids = q$ids,
-      values = q$default,
+      values = q[["default"]],
       min = q$min,
       max = q$max,
       sum = q$sum,
@@ -287,7 +322,7 @@ input_functions <- list(
     numericInput(
       inputId = q$question_id,
       label = q$label,
-      value = q$default,
+      value = q[["default"]],
       min = 0
     )
   }
@@ -305,7 +340,7 @@ get_questions_ui <- function(question_categories, answers) {
 
     # check if the panel has to be opened from the start
     show_on_start <- question_category %>%
-      map_chr("default_source") %>%
+      map_chr("source_default") %>%
       {!all(. %in% c("computed"))}
 
     # create the panel of the category
@@ -332,8 +367,7 @@ get_questions_ui <- function(question_categories, answers) {
           conditionalPanel(
             question$activeIf,
             input_functions[[question$type]](question)
-          ),
-          class = ifelse(question$computed, "computed", "")
+          )
         )
 
         question_panel
