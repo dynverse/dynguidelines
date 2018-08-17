@@ -1,13 +1,9 @@
 #' The shiny server
 #'
-#' @param input Shiny input
-#' @param output Shiny output
-#' @param session Shiny session
 #' @param answers Previous answers other than default, see the [answer_questions()] function
 #'
 #' @export
 shiny_server <- function(
-  questions = get_questions(),
   answers = answer_questions()
 ) {
   # create the server function, which will be called by shiny internally

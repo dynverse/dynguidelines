@@ -20,7 +20,7 @@ answer_questions_docs <- function() {
     "@param ",
     names(questions),
     " ",
-    map_chr(questions, "title"),
+    map_chr(questions, "label"),
     " Defaults to ",
     get_defaults(names(questions)) %>% as.character()
   )
