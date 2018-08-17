@@ -7,7 +7,8 @@
 \alias{guidelines_shiny}
 \title{Select the top methods, optionally based on a given dataset}
 \usage{
-guidelines(dataset = NULL, answers = answer_questions())
+guidelines(dataset = NULL, answers = answer_questions(dataset =
+  dataset))
 
 guidelines_prompt(dataset = NULL, answers = list())
 
@@ -17,7 +18,7 @@ guidelines_shiny(dataset = NULL, answers = answer_questions(dataset =
 \arguments{
 \item{dataset}{The dataset, optional}
 
-\item{answers}{Optional, pre-provided answers to the different questions}
+\item{answers}{Optional, pre-provided answers to the different questions. See [answer_questions()]}
 }
 \value{
 Returns a dynguidelines::guidelines object, containing
