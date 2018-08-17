@@ -5,6 +5,6 @@ account: dynverse
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 400915
-bundleId: 1540228
+bundleId: 1540233
 url: https://dynverse.shinyapps.io/dynguidelines/
-when: 1534502258.80107
+when: 1534502559.63304
