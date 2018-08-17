@@ -55,7 +55,6 @@ Collate:
     'answers.R'
     'custom_widgets.R'
     'guidelines.R'
-    'guidelines_prompt.R'
     'guidelines_shiny.R'
     'package.R'
     'renderers.R'
