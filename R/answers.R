@@ -1,52 +1,5 @@
-get_defaults_task <- function(task = NULL, answers = list()) {
-  new_answers <- list()
-
-  # dataset size
-  if(dynwrap::is_wrapper_with_expression(task)) {
-    n_cells <- nrow(task$expression)
-    n_features <- nrow(task$expression)
-
-    new_answers$n_cells <- case_when(
-      n_cells < 100 ~"< 100",
-      n_cells < 1000 ~ "< 1000",
-      n_cells < 10000 ~ "< 10000",
-      TRUE ~ "10000+"
-    )
-    new_answers$n_features <- case_when(
-      n_features < 100 ~"< 100",
-      n_features < 1000 ~ "< 1000",
-      n_features < 10000 ~ "< 10000",
-      TRUE ~ "10000+"
-    )
-  }
-
-  # topology
-  if(dynwrap::is_wrapper_with_trajectory(task)) {
-    trajectory_type <- dynwrap::classify_milestone_network(task$milestone_network)$network_type
-    data(trajectory_types, package = "dynwrap", envir = environment())
-    trajectory_type_simplified <- trajectory_types$simplified[first(match(trajectory_type, trajectory_types$id))]
-
-    new_answers <- c(new_answers, list(
-      multiple_disconnected = "No",
-      expect_topology = "Yes",
-      expected_topology = trajectory_type_simplified
-    ))
-  }
-
-  # prior information
-  if("prior_information" %in% names(task) || dynwrap::is_wrapper_with_prior_information(task)) {
-    data(priors, envir = environment(), package = "dynguidelines")
-
-    new_answers$prior_information <- priors %>% filter(prior_task_id %in% names(task$prior_information)) %>% pull(prior_id)
-  }
-
-  # add computed attribute to answers
-  new_answers <- map(new_answers, function(.) {attr(., "computed") <- TRUE;.})
-
-  # update with old answers, overwriting the new ones
-  purrr::list_modify(new_answers, !!!answers)
-}
-
+## Answer questions
+# get default answers based on questions
 get_defaults <- function(question_ids = names(get_questions())) {
   map(question_ids, get_default) %>% set_names(question_ids)
 }
@@ -60,10 +13,6 @@ get_default <- function(question_id) {
 
   default
 }
-
-
-
-
 
 # function which generates the documentation for the answers function based on all the questions
 answer_questions_docs <- function() {
@@ -80,15 +29,35 @@ answer_questions_docs <- function() {
 #' Provide answers to various questions
 #'
 #' @include questions.R
+#' @param dataset The dataset from which the answers will be computed
 #' @eval answer_questions_docs()
-answer_questions <- function() {
-  called_arguments <- names(match.call())
+answer_questions <- function(dataset = NULL, ...) {
+  # get either the defaults or the arguments given by the user
   answers <- as.list(environment())
+  answers <- answers[names(answers) != "dataset"]
+
+  # get the question ids that were given by the user
+  given_question_ids <- names(match.call())
+
+  # get computed answers from dataset
+  computed_question_ids <- character()
+  if (!is.null(dataset)) {
+    for (question_id in setdiff(names(questions), given_question_ids)) {
+      if (is.function(questions[[question_id]]$default_dataset)) {
+        answers[[question_id]] <- questions[[question_id]]$default_dataset(dataset, answers[[question_id]])
+        computed_question_ids <- c(computed_question_ids, question_id)
+      }
+    }
+  }
+
   tibble(
     question_id = names(answers),
     answer = answers,
-    type = case_when(question_id %in% called_arguments ~ "given", TRUE ~ "default")
+    source = case_when(
+      question_id %in% given_question_ids ~ "given",
+      question_id %in% computed_question_ids ~ "computed",
+      TRUE ~ "default"
+    )
   )
 }
-formals(answer_questions) <- get_defaults(names(questions))
-
+formals(answer_questions) <- c(list(dataset = NULL), get_defaults(names(questions)))

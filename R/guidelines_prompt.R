@@ -1,6 +1,6 @@
 #' @rdname guidelines
 #' @export
-guidelines_prompt <- function(task = NULL, answers = list()) {
+guidelines_prompt <- function(dataset = NULL, answers = list()) {
   string_is_integer <- function(x) {
     stringr::str_detect(x, "^[0-9]*$")
   }

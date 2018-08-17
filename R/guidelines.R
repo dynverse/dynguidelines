@@ -1,15 +1,21 @@
-#' Select the top methods, optionally based on a given task
-#' @param task The task, optional
+#' Select the top methods, optionally based on a given dataset
+#' @param dataset The dataset, optional
 #' @param answers Optional, pre-provided answers to the different questions
+#'
+#' @return Returns a dynguidelines::guidelines object, containing
+#'   - `methods`: Ordered tibble containing information about the selected methods
+#'   - `method_columns`: Information about what columns in methods are given and whether the were used for filtering or ordering
+#'   - `answers`: An answers object, can be further modified.
+#'   - `methods_selected`: Identifiers for all selected methods
 #'
 #' @export
 guidelines <- function(
-  task = NULL,
-  answers = list()
+  dataset = NULL,
+  answers = answer_questions()
 ) {
-  # get answers from task
-  if (!is.null(task)) {
-    answers <- get_defaults_task(task, answers)
+  # get answers from dataset
+  if (!is.null(dataset)) {
+    answers <- get_defaults_dataset(dataset, answers)
   }
 
   # build data with default order and columns
@@ -18,17 +24,21 @@ guidelines <- function(
     select(column_id) %>%
     mutate(filter = FALSE, order = ifelse(column_id == "overall_benchmark", TRUE, FALSE))
 
-  # now modify the methods based on the answers
+  # default ordering
   data <- lst(methods, method_columns, answers)
   data$methods <- data$methods %>% arrange(-overall_benchmark)
   data$methods$selected <- FALSE
 
+  # get the answers in a list
+  question_answers <- answers %>% select(question_id, answer) %>% deframe()
+
+  # call the modifiers if the question is active
   for (question in questions) {
     # only modify if question is checkbox/picker (and therefore NULL can be a valid answer) or if answers is not NULL
-    if(question$type %in% c("checkbox", "picker") || !is.null(answers[[question$question_id]])) {
+    if(question$type %in% c("checkbox", "picker") || !is.null(question_answers[[question$question_id]])) {
       # only modify if question is active
-      if(question$active_if(answers)) {
-        data <- question$modifier(data, answers[[question$question_id]])
+      if(question$active_if(question_answers)) {
+        data <- question$modifier(data, question_answers[[question$question_id]])
       }
     }
   }

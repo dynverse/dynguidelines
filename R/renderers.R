@@ -8,6 +8,12 @@ format_100 <- function(x) {
 
 get_score_renderer <- function(palette = viridis::magma) {
   function(x) {
+    if (any(is.na(x))) {
+      warning("Some NA values in score renderer! ", x)
+      x[is.na(x)] <- 0.00000000000001
+      # browser()
+    }
+
     y <- tibble(
       x = x,
       normalised = scale_01(x, lower = 0),

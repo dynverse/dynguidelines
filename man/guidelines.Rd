@@ -5,19 +5,27 @@
 \alias{guidelines}
 \alias{guidelines_prompt}
 \alias{guidelines_shiny}
-\title{Select the top methods, optionally based on a given task}
+\title{Select the top methods, optionally based on a given dataset}
 \usage{
-guidelines(task = NULL, answers = list())
+guidelines(dataset = NULL, answers = answer_questions())
 
-guidelines_prompt(task = NULL, answers = list())
+guidelines_prompt(dataset = NULL, answers = list())
 
-guidelines_shiny(task = NULL, answers = list())
+guidelines_shiny(dataset = NULL, answers = answer_questions(dataset =
+  dataset))
 }
 \arguments{
-\item{task}{The task, optional}
+\item{dataset}{The dataset, optional}
 
 \item{answers}{Optional, pre-provided answers to the different questions}
 }
+\value{
+Returns a dynguidelines::guidelines object, containing
+  - `methods`: Ordered tibble containing information about the selected methods
+  - `method_columns`: Information about what columns in methods are given and whether the were used for filtering or ordering
+  - `answers`: An answers object, can be further modified.
+  - `methods_selected`: Identifiers for all selected methods
+}
 \description{
-Select the top methods, optionally based on a given task
+Select the top methods, optionally based on a given dataset
 }
