@@ -116,7 +116,10 @@ questions <- list(
     input.expect_topology == 'FALSE'
     ",
     label = "Do you expect a complex tree in the data?",
-    title = "A complex tree can include two or more bifurcations.",
+    title = tags$p(
+      "A complex tree can include two or more bifurcations.",
+      tags$img(src = "img/complex_tree_example.png")
+    ),
     category = "topology",
     default = NULL
   ),
@@ -170,6 +173,60 @@ questions <- list(
         default
       }
     }
+  ),
+  list(
+    question_id = "running_time",
+    modifier = running_time_modifier,
+    type = "slider",
+    min = 1,
+    max = 240,
+    default = 5,
+    category = "scalability",
+    activeIf = "true",
+    label = "Maximal estimated running time (minutes)"
+  ),
+  list(
+    question_id = "memory",
+    modifier = memory_modifier,
+    type = "slider",
+    min = 1,
+    max = 128,
+    default = 4,
+    category = "scalability",
+    activeIf = "true",
+    label = "Maximal estimated memory usage (GB)"
+  ),
+  list(
+    question_id = "method_selection",
+    modifier = method_selection_modifier,
+    type = "radiobuttons",
+    choices = c("Probability of selecting the top method" = "probability", "# methods" = "n_methods"),
+    label = "How to select the number of methods",
+    default = "probability",
+    activeIf = "true",
+    category = "method_selection"
+  ),
+  list(
+    question_id = "top_model_coverage",
+    modifier = top_model_coverage_modifier,
+    type = "slider",
+    min = 1,
+    max = 100,
+    default = 80,
+    label = "Minimal probability of selecting the top model for the task",
+    activeIf = "input.method_selection  == 'probability'",
+    category = "method_selection"
+  ),
+  list(
+    question_id = "n_methods",
+    modifier = n_methods_modifier,
+    type = "slider",
+    min = 1,
+    max = 10,
+    default = 4,
+    label = "Number of methods",
+    activeIf = "input.method_selection  == 'n_methods'",
+    category = "method_selection"
   ),
   list(
     question_id = "metric_importance",
@@ -255,28 +312,6 @@ questions <- list(
     label = "Minimal user friendliness score",
     activeIf = "input.dynmethods == 'FALSE'",
     category = "availability"
-  ),
-  list(
-    question_id = "running_time",
-    modifier = running_time_modifier,
-    type = "slider",
-    min = 1,
-    max = 240,
-    default = 5,
-    activeIf = "input.dynmethods == 'TRUE'",
-    category = "availability",
-    label = "Maximal estimated running time (minutes)"
-  ),
-  list(
-    question_id = "n_methods",
-    modifier = n_methods_modifier,
-    type = "slider",
-    min = 1,
-    max = 10,
-    default = 4,
-    label = "Number of methods",
-    activeIf = "true",
-    category = "methods"
   )
 ) %>% {set_names(., map(., "question_id"))}
 
