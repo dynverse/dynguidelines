@@ -1,0 +1,20 @@
+context("Testing answers")
+
+
+test_that("answer_questions", {
+  answers <- answer_questions()
+  testthat::expect_true(all(answers$source == "default"))
+
+  answers <- answer_questions(multiple_disconnected = TRUE)
+  testthat::expect_false(all(answers$source == "default"))
+  testthat::expect_true(answers$source[answers$question_id == "multiple_disconnected"] == "adapted")
+})
+
+test_that("get_answers_code", {
+  answers <- answer_questions()
+  testthat::expect_true(get_answers_code(answers) == "dynguidelines::answer_questions()")
+
+  answers <- answer_questions(multiple_disconnected = TRUE)
+  testthat::expect_false(get_answers_code(answers) == "dynguidelines::answer_questions()")
+
+})
