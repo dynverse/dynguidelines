@@ -31,6 +31,8 @@ answer_questions_docs <- function() {
 #' @include questions.R
 #' @param dataset The dataset from which the answers will be computed
 #' @eval answer_questions_docs()
+#'
+#' @export
 answer_questions <- function(dataset = NULL, ...) {
   # get either the defaults or the arguments given by the user
   answers <- as.list(environment())
