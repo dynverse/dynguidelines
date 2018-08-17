@@ -1,6 +1,6 @@
 #' Select the top methods, optionally based on a given dataset
 #' @param dataset The dataset, optional
-#' @param answers Optional, pre-provided answers to the different questions
+#' @param answers Optional, pre-provided answers to the different questions. See [answer_questions()]
 #'
 #' @return Returns a dynguidelines::guidelines object, containing
 #'   - `methods`: Ordered tibble containing information about the selected methods
@@ -11,13 +11,8 @@
 #' @export
 guidelines <- function(
   dataset = NULL,
-  answers = answer_questions()
+  answers = answer_questions(dataset = dataset)
 ) {
-  # get answers from dataset
-  if (!is.null(dataset)) {
-    answers <- get_defaults_dataset(dataset, answers)
-  }
-
   # build data with default order and columns
   method_columns <- renderers %>%
     filter(!is.na(default)) %>%
