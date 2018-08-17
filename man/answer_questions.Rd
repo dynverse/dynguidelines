@@ -4,16 +4,19 @@
 \alias{answer_questions}
 \title{Provide answers to various questions}
 \usage{
-answer_questions(multiple_disconnected = TRUE, expect_topology = NULL,
-  expected_topology = NULL, expect_cycles = NULL,
-  expect_complex_tree = NULL, prior_information = NULL,
-  n_cells = "< 10000", n_features = "< 1000", dynmethods = "Yes",
-  docker = "Yes", programming_interface = "Yes",
-  languages = c("python", "C++", "R"), user_friendliness = 60,
-  running_time = 5, n_methods = 4)
+answer_questions(dataset = NULL, multiple_disconnected = NULL,
+  expect_topology = NULL, expected_topology = NULL,
+  expect_cycles = NULL, expect_complex_tree = NULL,
+  prior_information = NULL, n_cells = 1000, n_features = 1000,
+  metric_importance = c(0.25, 0.25, 0.25, 0.25), dynmethods = TRUE,
+  docker = dynwrap::test_docker_installation(),
+  programming_interface = TRUE, languages = c("python", "C++", "R"),
+  user_friendliness = 60, running_time = 5, n_methods = 4)
 }
 \arguments{
-\item{multiple_disconnected}{Do you expect multiple disconnected trajectories in the data? Defaults to TRUE}
+\item{dataset}{The dataset from which the answers will be computed}
+
+\item{multiple_disconnected}{Do you expect multiple disconnected trajectories in the data? Defaults to NULL}
 
 \item{expect_topology}{Do you expect a particular topology in the data? Defaults to NULL}
 
@@ -23,17 +26,19 @@ answer_questions(multiple_disconnected = TRUE, expect_topology = NULL,
 
 \item{expect_complex_tree}{Do you expect a complex tree in the data? Defaults to NULL}
 
-\item{prior_information}{Are you willing to provide the following prior information? Defaults to NULL}
+\item{prior_information}{Are you able to provide the following prior information? Defaults to NULL}
 
-\item{n_cells}{Number of cells Defaults to < 10000}
+\item{n_cells}{Number of cells Defaults to 1000}
 
-\item{n_features}{Number of features (genes) Defaults to < 1000}
+\item{n_features}{Number of features (genes) Defaults to 1000}
 
-\item{dynmethods}{Do you use dynmethods to run the methods? Defaults to Yes}
+\item{metric_importance}{How important are the following aspects of the trajectory? Defaults to c(0.25, 0.25, 0.25, 0.25)}
 
-\item{docker}{Is docker installed? Defaults to Yes}
+\item{dynmethods}{Do you use dynmethods to run the methods? Defaults to TRUE}
 
-\item{programming_interface}{Can you work in a programming interface? Defaults to Yes}
+\item{docker}{Is docker installed? Defaults to dynwrap::test_docker_installation()}
+
+\item{programming_interface}{Can you work in a programming interface? Defaults to TRUE}
 
 \item{languages}{Which languages can you work with? Defaults to c("python", "C++", "R")}
 

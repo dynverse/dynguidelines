@@ -1,6 +1,6 @@
 #' Dynguidelines packages
 #'
-#' The dynguidelines package can be used to find the most optimal TI methods on a given task.
+#' The dynguidelines package can be used to find the most optimal TI methods on a given dataset
 #' This can be done both directly in R or through a shiny interface.
 #'
 #' @import dplyr
@@ -15,12 +15,3 @@ NULL
 
 #' The methods and their performance as generated from `dynalysis`
 "methods"
-
-#' The prior information
-"priors"
-
-#' The different questions
-"questions"
-
-#' Renderers
-"renderers"

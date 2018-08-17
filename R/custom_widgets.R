@@ -1,4 +1,4 @@
-collapsePanel <- function(..., title = "", show_on_start = FALSE, id = "") {
+collapsePanel <- function(..., header = "", show_on_start = FALSE, id = "") {
   collapse_id <- paste0("collapse", sample(1:100000000, 1))
   div(
     class = "panel panel-default",
@@ -6,7 +6,7 @@ collapsePanel <- function(..., title = "", show_on_start = FALSE, id = "") {
       class = "panel-heading",
       `data-target` = paste0("#", collapse_id),
       `data-toggle` = "collapse",
-      span(icon("caret-down"), title)
+      span(icon("caret-down"), header)
     ),
     div(
       id = collapse_id,
@@ -24,33 +24,37 @@ collapsePanel <- function(..., title = "", show_on_start = FALSE, id = "") {
 balancingSliders <- function(
   inputId,
   label,
-  sliders,
+  labels,
+  ids,
+  values,
+  min = 0,
+  max = 1,
+  sum = 1,
+  step = 0.01,
   tooltips = TRUE,
   ticks = FALSE
 ) {
-
-
-  sliderTags <- lmap(sliders, function(slider) {
-    sliderProprs <- shiny:::dropNulls(list(
+  sliderTags <- pmap(lst(label = labels, id = ids, value = values), function(label, id, value) {
+    sliderProps <- shiny:::dropNulls(list(
+      id = id,
       class = "js-range-slider",
-      id = slider$inputId,
-      `data-type` = "double",
-      `data-min` = slider$min,
-      `data-max` = slider$max,
-      `data-from` = slider$value,
-      `data-step` = slider$step,
-      `data-grid` = slider$ticks
+      `data-type` = "single",
+      `data-from` = value,
+      `data-min` = min,
+      `data-max` = max,
+      `data-step` = step,
+      `data-grid` = ticks
     ))
 
     sliderTag <- div(
       class = "form-group shiny-input-container",
       style = paste0("width: 100%;"),
-      if (!is.null(label)) controlLabel(inputId, label),
+      `data-sum` = 1,
+      tags$button(id = id, class = "lock btn btn-xs", icon("lock")),
+      tags$label(label),
       do.call(tags$input, sliderProps)
     )
   })
-
-
 
   tags$div(
     class = "form-group shiny-input-container balancing-sliders",
@@ -62,28 +66,6 @@ balancingSliders <- function(
       `for` = inputId,
       label
     ),
-    pmap(
-      lst(
-        label = labels,
-        inputId = inputIds,
-        min = mins,
-        max = maxs,
-        value = values,
-        step = steps,
-        ticks = ticks
-      ),
-      function(label, inputId, min, max, value, step, ticks) {
-        sliderTag <- div(
-          class = "form-group shiny-input-container",
-          style = if (!is.null(width)) paste0("width: ", validateCssUnit(width), ";"),
-          if (!is.null(label)) controlLabel(inputId, label),
-          do.call(tags$input, sliderProps)
-        )
-
-
-        list(shiny::sliderInput(...))
-
-      }
-    )
+    sliderTags
   )
 }

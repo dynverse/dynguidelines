@@ -1,6 +1,6 @@
 multiple_disconnected_modifier <- function(data, answer = NULL) {
   data$methods <- data$methods %>% arrange(-overall_benchmark)
-  if(answer == "Yes") {
+  if(isTRUE(answer)) {
     data$methods <- data$methods %>% filter(disconnected_undirected_graph)
     data$method_columns <- data$method_columns %>%
       add_row(column_id = "disconnected_undirected_graph", filter = TRUE, order = FALSE)
@@ -10,7 +10,7 @@ multiple_disconnected_modifier <- function(data, answer = NULL) {
 
 
 expect_topology_modifier <- function(data, answer = NULL) {
-  if (answer == "No") {
+  if (!isTRUE(answer)) {
     data$methods <- data$methods %>% filter(undirected_linear & simple_fork & unrooted_tree)
     data$method_columns <- data$method_columns %>%
       bind_rows(
@@ -45,7 +45,7 @@ expected_topology_modifier <- function(data, answer = NULL) {
 
 
 expect_cycles_modifier <- function(data, answer = NULL) {
-  if(answer == "It's possible") {
+  if(isTRUE(answer)) {
     data$methods <- data$methods %>% filter(undirected_graph & undirected_cycle)
     data$method_columns <- data$method_columns %>%
       bind_rows(
@@ -62,7 +62,7 @@ expect_cycles_modifier <- function(data, answer = NULL) {
 
 
 expect_complex_tree_modifier <- function(data, answer = NULL) {
-  if(answer == "Yes") {
+  if(isTRUE(answer)) {
     data$methods <- data$methods %>% arrange(-trajtype_rooted_tree)
     data$method_columns <- data$method_columns %>%
       mutate(order = FALSE) %>%
@@ -74,7 +74,7 @@ expect_complex_tree_modifier <- function(data, answer = NULL) {
 
 
 dynmethods_modifier <- function(data, answer = NULL) {
-  if (answer == "No") {
+  if (!isTRUE(answer)) {
     data$method_columns <- data$method_columns %>%
       add_row(column_id = "user_friendly", filter = TRUE, order = FALSE)
   }
@@ -84,9 +84,9 @@ dynmethods_modifier <- function(data, answer = NULL) {
 
 
 programming_interface_modifier <- function(data, answer = NULL) {
-  if (answer == "No") {
+  if (!isTRUE(answer)) {
     data$methods <- data$methods %>% filter(gui > 0)
-  } else if (answer == "Yes") {
+  } else if (isTRUE(answer)) {
     data$method_columns <- data$method_columns %>%
       add_row(column_id = "platforms", filter = TRUE, order = FALSE)
   }
@@ -122,8 +122,7 @@ running_time_modifier <- function(data, answer = NULL) {
 
 
 prior_information_modifier <- function(data, answer = NULL) {
-  data(priors, envir = environment(), package = "dynguidelines")
-  unavailable_priors <- priors %>% filter(!prior_id %in% answer) %>% pull(prior_id)
+  unavailable_priors <- dynwrap::priors %>% filter(!prior_id %in% answer) %>% pull(prior_id)
   data$methods <- data$methods[data$methods[, unavailable_priors] %>% apply(1, function(x) all(x != "required", na.rm = T)), ]
 
   data

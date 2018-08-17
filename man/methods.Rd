@@ -4,7 +4,7 @@
 \name{methods}
 \alias{methods}
 \title{The methods and their performance as generated from `dynalysis`}
-\format{An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 35 rows and 189 columns.}
+\format{An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 35 rows and 197 columns.}
 \usage{
 methods
 }

@@ -19,7 +19,7 @@ Authors@R: c(
     )
   )
 Maintainer: Wouter Saelens <wt53em@gmail.com>
-Description: The dynguidelines package can be used to find the most optimal TI methods on a given task.
+Description: The dynguidelines package can be used to find the most optimal TI methods on a given dataset.
    This can be done both directly in R or through a shiny interface.
 License: GPL-3
 Encoding: UTF-8
@@ -39,7 +39,8 @@ Imports:
   shinyjs,
   knitr,
   glue,
-  stringr
+  stringr,
+  viridis
 Suggests:
   testthat
 Remotes:
@@ -54,7 +55,8 @@ Collate:
     'answers.R'
     'custom_widgets.R'
     'guidelines.R'
-    'guidelines_prompt.R'
     'guidelines_shiny.R'
     'package.R'
     'renderers.R'
+    'shiny_server.R'
+    'shiny_ui.R'

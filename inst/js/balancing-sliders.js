@@ -1,8 +1,12 @@
 var lockListener = function(e) {
   console.log("hi")
-  $(e.currentTarget).toggleClass("locked")
+  $(this).toggleClass("locked")
 
-  e.stopPropagation();
+  var id = $(this).attr("id");
+
+  // find the input with the same id
+  var slider = $(this).parent().parent().find("input#" + id).data("ionRangeSlider");
+  slider.update({block:!slider.options.block});
 }
 
 
@@ -23,42 +27,64 @@ $.extend(balancingSliders, {
     $(el).text(value);
   },
   subscribe: function(el, callback) {
+    // activate lock listener
+    $(el).find("button").on("click", lockListener)
 
-    $(el).find("input").find("finish.balancing-sliders", function(e) {
-      console.log("jhsldkjfhqlsdkjf")
-    })
-
+    // activate drag listener
     $(el).find("input").on("change.balancing-sliders", function(e) {
       // get the changed input and the non-changed inputs (otherInputs)
       var changedInput = $(e.currentTarget);
-      $(el).find("span.irs-slider.single").on("click", lockListener)
 
       if (changedInput.attr("data-dependent") != "true") {
+        // fixed inputs = changedInput + all locked inputs
         var otherInputs = $(el).find(".js-range-slider:not(#" + changedInput.attr("id") + ")");
 
+        // these inputs can be changed
+        var changeableInputs = otherInputs.filter(function() {
+          return !$(this).data("ionRangeSlider").options.block;
+        });
+
+        // these inputs cannot be changed
+        var fixedInputs = otherInputs.filter(function() {
+          return $(this).data("ionRangeSlider").options.block;
+        });
+        fixedInputs = fixedInputs.add(changedInput)
+
         // make the other inputs "dependent", so that their change event won't induce a recursion
-        otherInputs.attr("data-dependent", "true");
+        changeableInputs.attr("data-dependent", "true");
 
-        window.ch = changedInput;
+        // calculate the scaling of all other values, based on what is left over of the values of fixedInputs
+        var fixedVals = fixedInputs.map(function() {return Number($(this).val())});
+        var fixedSum = _.sum(fixedVals)
 
-        // calculate the scaling of all other values, based on what is left over if the values of the current slider chages
-        var changedVal = Number(ch.val());
-        var otherVals = otherInputs.map(function() {return Number($(this).val())});
+        var changeableVals = changeableInputs.map(function() {return Number($(this).val())});
+        var changeableSum = _.sum(changeableVals);
 
-        var otherSum = _.sum(otherVals);
-        var otherScale = (1-changedVal) / otherSum;
+        var scale = (1-fixedSum) / changeableSum;
 
-        // special case where all otherVals are 0, but the changedVal is lower than 1
+        // special case where a slider goes out of possible bounds (eg. everything is locked)
+        // this is also triggered when there are no other available sliders
+        // this will reset the value of the changed slider
+        if ((fixedSum > 1 && changeableSum === 0) || (changeableInputs.length === 0)) {
+          changedInput.attr("data-dependent", "true");
+          changeableInputs.attr("data-dependent", "false");
+          var changedVal = Number(changedInput.val());
+
+          console.log("trigger")
+
+          changedInput.data("ionRangeSlider").update({"from": changedVal + (1-fixedSum)});
+
+        // special case where all otherVals are 0, but the fixedVal is lower than 1
         // in that case, the otherVals should become (1-changeVal)/nOthers
-        if (changedVal < 1 && otherSum == 0) {
-          otherInputs.each(function() {
-            var otherVal = (1 - changedVal) / otherVals.length;
-            $(this).data("ionRangeSlider").update({"from":otherVal});
+        } else if (fixedSum < 1 && changeableSum === 0) {
+          changeableInputs.each(function() {
+            var changeableVal = (1 - fixedSum) / changeableVals.length;
+            $(this).data("ionRangeSlider").update({"from":changeableVal});
           });
         } else {
-          otherInputs.each(function() {
-            var otherVal = $(this).val() * otherScale;
-            $(this).data("ionRangeSlider").update({"from":otherVal});
+          changeableInputs.each(function() {
+            var changeableVal = $(this).val() * scale;
+            $(this).data("ionRangeSlider").update({"from":changeableVal});
           });
         }
 
