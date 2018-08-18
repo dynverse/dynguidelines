@@ -46,7 +46,8 @@ Suggests:
   shinytest
 Remotes:
   dynverse/dynwrap,
-  dynverse/dynutils
+  dynverse/dynutils,
+  rstudio/shinytest
 URL: https://github.com/dynverse/dynguidelines
 BugReports: https://github.com/dynverse/dynguidelines/issues
 Collate: 
