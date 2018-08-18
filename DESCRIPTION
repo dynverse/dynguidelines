@@ -42,7 +42,8 @@ Imports:
   stringr,
   viridis
 Suggests:
-  testthat
+  testthat,
+  shinytest
 Remotes:
   dynverse/dynwrap,
   dynverse/dynutils
