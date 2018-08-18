@@ -8,10 +8,12 @@ answer_questions(dataset = NULL, multiple_disconnected = NULL,
   expect_topology = NULL, expected_topology = NULL,
   expect_cycles = NULL, expect_complex_tree = NULL,
   prior_information = NULL, n_cells = 1000, n_features = 1000,
-  metric_importance = c(0.25, 0.25, 0.25, 0.25), dynmethods = TRUE,
+  running_time = 5, memory = 4, method_selection = "probability",
+  top_model_coverage = 80, n_methods = 4, metric_importance = c(0.25,
+  0.25, 0.25, 0.25), dynmethods = TRUE,
   docker = dynwrap::test_docker_installation(),
   programming_interface = TRUE, languages = c("python", "C++", "R"),
-  user_friendliness = 60, running_time = 5, n_methods = 4)
+  user_friendliness = 60)
 }
 \arguments{
 \item{dataset}{The dataset from which the answers will be computed}
@@ -32,6 +34,16 @@ answer_questions(dataset = NULL, multiple_disconnected = NULL,
 
 \item{n_features}{Number of features (genes) Defaults to 1000}
 
+\item{running_time}{Maximal estimated running time (minutes) Defaults to 5}
+
+\item{memory}{Maximal estimated memory usage (GB) Defaults to 4}
+
+\item{method_selection}{How to select the number of methods Defaults to probability}
+
+\item{top_model_coverage}{Minimal probability of selecting the top model for the task Defaults to 80}
+
+\item{n_methods}{Number of methods Defaults to 4}
+
 \item{metric_importance}{How important are the following aspects of the trajectory? Defaults to c(0.25, 0.25, 0.25, 0.25)}
 
 \item{dynmethods}{Do you use dynmethods to run the methods? Defaults to TRUE}
@@ -43,10 +55,6 @@ answer_questions(dataset = NULL, multiple_disconnected = NULL,
 \item{languages}{Which languages can you work with? Defaults to c("python", "C++", "R")}
 
 \item{user_friendliness}{Minimal user friendliness score Defaults to 60}
-
-\item{running_time}{Maximal estimated running time (minutes) Defaults to 5}
-
-\item{n_methods}{Number of methods Defaults to 4}
 }
 \description{
 Provide answers to various questions

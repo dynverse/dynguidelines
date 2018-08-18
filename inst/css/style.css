@@ -92,10 +92,10 @@ div.panel-heading {
 
 /***** Methods table ******/
 tr.selected {
-  background-color: #e6f5ff;
+  background-color: #e7dbf8;
 }
 .table-striped>tbody>tr.selected:nth-of-type(odd) {
-  background-color: #dbf2ff;
+  background-color: #f4eefb;
 }
 
 /* Score */
@@ -141,4 +141,22 @@ td > img.trajectory_type.inactive {
 
 .footer img {
   max-height: 75px;
+}
+
+
+
+/*** Arrow animation ***/
+
+.arrow4 {
+  animation: slide4 4s linear infinite;
+}
+
+@keyframes slide4 {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

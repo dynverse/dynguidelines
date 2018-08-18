@@ -50,9 +50,9 @@ guidelines <- function(
 #' @param guidelines The object to check
 #' @export
 is_guidelines <- function(guidelines) {
-  if("dynguidelines::guidelines" %in% class(x)) {
+  if("dynguidelines::guidelines" %in% class(guidelines)) {
     TRUE
-  } else if (all(c("methods", "answers") %in% names(x))) {
+  } else if (all(c("methods", "answers") %in% names(guidelines))) {
     TRUE
   } else {
     FALSE

@@ -31,30 +31,34 @@ shiny_ui <- function() {
         div(
           class = "navbar-collapse collapse",
           tags$ul(
-            class = "nav navbar-nav",
+            class = "nav navbar-nav navbar-right",
             tags$li(
-              class = "active",
+              style = "background-color:#cab1ef",
               tags$a(
-                `data-toggle` = "tab",
-                href = "#tab-methods",
-                "Select the optimal methods"
+                "Show code ",
+                icon("code"),
+                href = "#toggle-code",
+                `data-target` = "#code",
+                `data-toggle` = "collapse"
               )
             ),
             tags$li(
-              tags$a(
-                `data-toggle` = "tab",
-                href = "#tab-info",
-                "Information"
-                )
+              style = "background-color:#9362e0",
+              actionLink(
+                "submit",
+                label = span(
+                  icon("chevron-circle-right", class = "arrow4"),
+                  " Close & use ",
+                  icon("chevron-circle-right", class = "arrow4")
+                ),
+                style = "color: white;font-weight: bold;"
               )
-          ),
-          tags$ul(
-            class = "nav navbar-nav navbar-right",
+            ),
             tags$li(
-              "Part of",
               a(
                 style = "display: inline;",
                 href = "https://github.com/dynverse/dynverse",
+                "Part of",
                 img(
                   src = "img/logo_dynverse.png"
                 )
@@ -65,73 +69,38 @@ shiny_ui <- function() {
       )
     ),
 
-
-    div(
-      class = "tab-content",
-      div(
-        id = "tab-methods",
-        class = "tab-pane active",
-        sidebarLayout(
-          column(
-            4,
-            uiOutput("questions_panel"),
-            style = "overflow-y:scroll; max-height:100vh;"
-          ),
-          column(
-            8,
-
-            # top buttons
-            tags$div(
-              class = "btn-group",
-              style = "width:100%",
-              tags$button(
-                "Show code ",
-                icon("code"),
-                class = "btn btn-default",
-                style = "width:50%;",
-                `data-target` = "#code",
-                `data-toggle` = "collapse"
-              ),
-              actionButton(
-                "submit",
-                span("Use in dyno ",  icon("chevron-circle-right")),
-                class = "btn-primary",
-                width = "50%"
-              )
-            ),
-
-            # code collapsible
-            tags$div(
-              class = "panel-collapse collapse",
-              id = "code",
-              style = "width:100%;",
-
-              # copy button
-              singleton(tags$head(includeScript("https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"))),
-              tags$button(
-                class = "btn btn-default btn-xs btn-copy",
-                style = "float:left",
-                icon("copy"),
-                `data-clipboard-target`="#code"
-              ),
-              tags$script("$(document).ready(function() {new ClipboardJS('.btn-copy')});"),
-
-              # actual code
-              textOutput("code", container = tags$pre)
-            ),
-
-            div(
-              uiOutput("methods_table")
-            )
-          )
-        )
+    sidebarLayout(
+      column(
+        4,
+        uiOutput("questions_panel"),
+        style = "overflow-y:scroll; max-height:100vh;"
       ),
+      column(
+        8,
 
+        # code collapsible
+        tags$div(
+          class = "panel-collapse collapse",
+          id = "code",
+          style = "width:100%;",
 
-      div(
-        id = "tab-info",
-        class = "tab-pane",
-        "Dynguidelines allows you to select the most optimal trajectory inference (TI) methods given a particular dataset and user provided information."
+          # copy button
+          singleton(tags$head(includeScript("https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"))),
+          tags$button(
+            class = "btn btn-default btn-s btn-copy",
+            style = "float:left",
+            icon("copy"),
+            `data-clipboard-target`="#code"
+          ),
+          tags$script("$(document).ready(function() {new ClipboardJS('.btn-copy')});"),
+
+          # actual code
+          textOutput("code", container = tags$pre)
+        ),
+
+        div(
+          uiOutput("methods_table")
+        )
       )
     )
   )
@@ -359,6 +328,7 @@ get_questions_ui <- function(question_categories, answers) {
               title = question$title,
               question$label,
               `data-toggle` = "tooltip",
+              `data-trigger` = "hover click",
               `data-placement` = "right"
             )
         }

@@ -120,11 +120,27 @@ running_time_modifier <- function(data, answer = NULL) {
   data
 }
 
+memory_modifier <- function(data, answer = NULL) {
+  data
+}
+
 
 prior_information_modifier <- function(data, answer = NULL) {
   unavailable_priors <- dynwrap::priors %>% filter(!prior_id %in% answer) %>% pull(prior_id)
   data$methods <- data$methods[data$methods[, unavailable_priors] %>% apply(1, function(x) all(x != "required", na.rm = T)), ]
 
+  data
+}
+
+
+method_selection_modifier <- function(data, answer = NULL) {
+  data
+}
+
+
+top_model_coverage_modifier <- function(data, answer = NULL) {
+  data$methods <- data$methods %>%
+    mutate(selected = row_number() < 5)
   data
 }
 
