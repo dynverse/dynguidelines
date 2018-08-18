@@ -48,7 +48,7 @@ shiny_ui <- function() {
                 "submit",
                 label = span(
                   icon("chevron-circle-right", class = "arrow4"),
-                  " Use in dyno ",
+                  " Close & use ",
                   icon("chevron-circle-right", class = "arrow4")
                 ),
                 style = "color: white;font-weight: bold;"
@@ -87,7 +87,7 @@ shiny_ui <- function() {
           # copy button
           singleton(tags$head(includeScript("https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"))),
           tags$button(
-            class = "btn btn-default btn-xs btn-copy",
+            class = "btn btn-default btn-s btn-copy",
             style = "float:left",
             icon("copy"),
             `data-clipboard-target`="#code"
@@ -328,6 +328,7 @@ get_questions_ui <- function(question_categories, answers) {
               title = question$title,
               question$label,
               `data-toggle` = "tooltip",
+              `data-trigger` = "hover click",
               `data-placement` = "right"
             )
         }

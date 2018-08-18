@@ -11,7 +11,8 @@ all_simplified_trajectory_types <- trajectory_types %>% filter(!directed) %>% pu
 # metrics, TODO: import from dyneval
 metrics <- tibble(
   id = c("correlation", "edge_flip", "featureimp_cor", "F1_branches"),
-  name = c("Ordering", "Topology", "Important features/genes", "Clustering quality")
+  name = c("Ordering", "Topology", "Important features/genes", "Clustering quality"),
+  description = c("How well the cells were ordered", "How well the overall topology of the trajectory is recovered", "Whether the correct genes/features are retrieved from the trajectory", "Whether the cells are correctly clustered in branches and milestones")
 )
 
 #' @include modifiers.R
@@ -233,7 +234,15 @@ questions <- list(
     modifier = metric_importance_modifier,
     type = "balancing_sliders",
     label = "How important are the following aspects of the trajectory?",
-    title = "We assessed ...........",
+    title = tags$p(
+      tags$em("This question is currently not yet implemented"),
+      tags$br(),
+      "Within dynbenchmark, we assessed the performance of a TI method by comparing the similarity of its model to a given gold standard. There are several metrics to quantify this similarity, and this question allows to give certain metrics more weights than others: ",
+      tags$ul(
+        style = "text-align:left;",
+        map2(metrics$name, metrics$description, function(name, description) {tags$li(tags$strong(name), ": ", description)})
+      )
+    ),
     activeIf = "true",
     category = "metric_importance",
     labels = metrics$name,
@@ -250,7 +259,7 @@ questions <- list(
     type = "radiobuttons",
     choices = c("Yes" = TRUE, "No" = FALSE),
     label = "Do you use dynmethods to run the methods?",
-    title = "Dynmethods is an R package which contains wraps TI methods into a common interface. While we highly recommend the use of this package, as it eases interpretation, some users may prefer to work in other programming languages.",
+    title = "Dynmethods is an R package which contains wrappers TI methods into a common interface. While we highly recommend the use of this package, as it eases interpretation, some users may prefer to work in other programming languages.",
     activeIf = "true",
     category = "availability",
     default = TRUE
