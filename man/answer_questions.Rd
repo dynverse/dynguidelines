@@ -8,10 +8,10 @@ answer_questions(dataset = NULL, multiple_disconnected = NULL,
   expect_topology = NULL, expected_topology = NULL,
   expect_cycles = NULL, expect_complex_tree = NULL,
   prior_information = NULL, n_cells = 1000, n_features = 1000,
-  running_time = 5, memory = 4, method_selection = "probability",
-  top_model_coverage = 80, n_methods = 4, metric_importance = c(0.25,
-  0.25, 0.25, 0.25), dynmethods = TRUE,
-  docker = dynwrap::test_docker_installation(),
+  running_time = 5, memory = 4,
+  method_selection = "dynamic_n_methods", dynamic_n_methods = 80,
+  fixed_n_methods = 4, metric_importance = c(0.25, 0.25, 0.25, 0.25),
+  dynmethods = TRUE, docker = dynwrap::test_docker_installation(),
   programming_interface = TRUE, languages = c("python", "C++", "R"),
   user_friendliness = 60)
 }
@@ -38,11 +38,11 @@ answer_questions(dataset = NULL, multiple_disconnected = NULL,
 
 \item{memory}{Maximal estimated memory usage (GB) Defaults to 4}
 
-\item{method_selection}{How to select the number of methods Defaults to probability}
+\item{method_selection}{How to select the number of methods Defaults to dynamic_n_methods}
 
-\item{top_model_coverage}{Minimal probability of selecting the top model for the task Defaults to 80}
+\item{dynamic_n_methods}{Minimal probability of selecting the top model for the task Defaults to 80}
 
-\item{n_methods}{Number of methods Defaults to 4}
+\item{fixed_n_methods}{Number of methods Defaults to 4}
 
 \item{metric_importance}{How important are the following aspects of the trajectory? Defaults to c(0.25, 0.25, 0.25, 0.25)}
 
