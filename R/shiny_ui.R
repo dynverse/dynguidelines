@@ -2,8 +2,12 @@
 #'
 #' @export
 shiny_ui <- function() {
+  # add path of images
+  addResourcePath("img", system.file("img/", package = "dynguidelines"))
+
   ## build the page ----------------------------
   fluidPage(
+    title = "Dynguidelines - part of dynverse",
     shinyjs::useShinyjs(),
     tags$head(includeScript("https://www.googletagmanager.com/gtag/js?id=UA-578149-3")),
     tags$head(includeScript(system.file("js/google-analytics.js", package = "dynguidelines"))),
@@ -12,8 +16,6 @@ shiny_ui <- function() {
     tags$head(includeScript("https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js")),
 
     tags$head(includeCSS(system.file("css/style.css", package = "dynguidelines"))),
-
-    title = "Selecting the most optimal TI methods - dynguidelines",
 
     # navbar
     tags$nav(
