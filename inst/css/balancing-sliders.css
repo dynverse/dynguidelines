@@ -1,0 +1,7 @@
+button.lock {
+  opacity: 0.5;
+}
+
+button.lock.locked {
+  opacity: 1;
+}

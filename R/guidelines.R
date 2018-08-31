@@ -1,91 +1,39 @@
-#' @rdname guidelines
-answers_task <- function(task = NULL, answers = list()) {
-  new_answers <- list()
-
-  # dataset size
-  if(dynwrap::is_wrapper_with_expression(task)) {
-    n_cells <- nrow(task$expression)
-    n_features <- nrow(task$expression)
-
-    new_answers$n_cells <- case_when(
-      n_cells < 100 ~"< 100",
-      n_cells < 1000 ~ "< 1000",
-      n_cells < 10000 ~ "< 10000",
-      TRUE ~ "10000+"
-    )
-    new_answers$n_features <- case_when(
-      n_features < 100 ~"< 100",
-      n_features < 1000 ~ "< 1000",
-      n_features < 10000 ~ "< 10000",
-      TRUE ~ "10000+"
-    )
-  }
-
-  # topology
-  if(dynwrap::is_wrapper_with_trajectory(task)) {
-    trajectory_type <- dynwrap::classify_milestone_network(task$milestone_network)$network_type
-    data(trajectory_types, package = "dynwrap", envir = environment())
-    trajectory_type_simplified <- trajectory_types$simplified[first(match(trajectory_type, trajectory_types$id))]
-
-    new_answers <- c(new_answers, list(
-      multiple_disconnected = "No",
-      expect_topology = "Yes",
-      expected_topology = trajectory_type_simplified
-    ))
-  }
-
-  # prior information
-  if("prior_information" %in% names(task) || dynwrap::is_wrapper_with_prior_information(task)) {
-    data(priors, envir = environment(), package = "dynguidelines")
-
-    new_answers$prior_information <- priors %>% filter(prior_task_id %in% names(task$prior_information)) %>% pull(prior_id)
-  }
-
-  # add computed attribute to answers
-  new_answers <- map(new_answers, function(.) {attr(., "computed") <- TRUE;.})
-
-  # update with old answers, overwriting the new ones
-  purrr::list_modify(new_answers, !!!answers)
-}
-
-#' Select the top methods, optionally based on a given task
-#' @param task The task, optional
-#' @param answers Optional, pre-provided answers to the different questions
+#' Select the top methods, optionally based on a given dataset
+#' @param dataset The dataset, optional
+#' @param answers Optional, pre-provided answers to the different questions. See [answer_questions()]
+#'
+#' @return Returns a dynguidelines::guidelines object, containing
+#'   - `methods`: Ordered tibble containing information about the selected methods
+#'   - `method_columns`: Information about what columns in methods are given and whether the were used for filtering or ordering
+#'   - `answers`: An answers object, can be further modified.
+#'   - `methods_selected`: Identifiers for all selected methods
 #'
 #' @export
 guidelines <- function(
-  task = NULL,
-  answers = list()
+  dataset = NULL,
+  answers = answer_questions(dataset = dataset)
 ) {
-  # get answers from task
-  if (!is.null(task)) {
-    answers <- answers_task(task, answers)
-  }
-
-  # default for n_methods
-  if (is.null(answers$n_methods)) {answers$n_methods <- 4}
-
-  # load methods and questions
-  data(methods, questions, envir = environment(), package = "dynguidelines")
-
   # build data with default order and columns
-  data("renderers", envir = environment(), package = "dynguidelines")
   method_columns <- renderers %>%
     filter(!is.na(default)) %>%
     select(column_id) %>%
     mutate(filter = FALSE, order = ifelse(column_id == "overall_benchmark", TRUE, FALSE))
 
-  # now modify the methods based on the answers
+  # default ordering
   data <- lst(methods, method_columns, answers)
   data$methods <- data$methods %>% arrange(-overall_benchmark)
   data$methods$selected <- FALSE
 
+  # get the answers in a list
+  question_answers <- answers %>% select(question_id, answer) %>% deframe()
+
+  # call the modifiers if the question is active
   for (question in questions) {
-    # only modify if question is checkbox (and can therefore be NULL) or if answers is not NULL
-    if(question$type == "checkbox" || !is.null(answers[[question$question_id]])) {
+    # only modify if question is checkbox/picker (and therefore NULL can be a valid answer) or if answers is not NULL
+    if(question$type %in% c("checkbox", "picker") || !is.null(question_answers[[question$question_id]])) {
       # only modify if question is active
-      if(question$active_if(answers)) {
-        data <- question$modifier(data, answers[[question$question_id]])
+      if(question$active_if(question_answers)) {
+        data <- question$modifier(data, question_answers[[question$question_id]])
       }
     }
   }
@@ -102,9 +50,9 @@ guidelines <- function(
 #' @param guidelines The object to check
 #' @export
 is_guidelines <- function(guidelines) {
-  if("dynguidelines::guidelines" %in% class(x)) {
+  if("dynguidelines::guidelines" %in% class(guidelines)) {
     TRUE
-  } else if (all(c("methods", "answers") %in% names(x))) {
+  } else if (all(c("methods", "answers") %in% names(guidelines))) {
     TRUE
   } else {
     FALSE

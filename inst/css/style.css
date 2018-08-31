@@ -1,3 +1,29 @@
+/*** Title bar ***/
+
+/* title */
+.navbar img {
+  max-height: 70px;
+}
+
+.navbar-header {
+  margin-right: 20px !important;
+}
+
+
+
+/* navbar elements */
+.navbar-nav>li>a {
+  padding-bottom: 25px;
+  padding-top: 25px;
+}
+
+
+
+
+
+
+
+/*** collapse panels ***/
 .panel-collapse > div {
   padding:10px 15px;
   width:100%;
@@ -20,12 +46,12 @@ div.computed {
   max-width: 100%;
 }
 
-
+/* Header of panels */
 div.panel-heading {
   cursor: pointer;
 }
 
-
+/* Category completion */
 .completed-category div.panel-heading {
   background-color: #d0e0b6;
 }
@@ -56,13 +82,27 @@ div.panel-heading {
   content: "computed";
 }
 
+/** Modifications to components **/
+
+/* Hiding ugly minor tick marks */
+.irs-grid-pol.small {
+    height: 0 !important;
+}
+
+/* Hide mispositioned spinners: the spinners are incorrectly displayed in the rstudio viewer and are thus hidden here */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 
 /***** Methods table ******/
 tr.selected {
-  background-color: #e6f5ff;
+  background-color: #e7dbf8;
 }
 .table-striped>tbody>tr.selected:nth-of-type(odd) {
-  background-color: #dbf2ff;
+  background-color: #f4eefb;
 }
 
 /* Score */
@@ -81,6 +121,49 @@ td > img.trajectory_type.inactive {
 }
 
 
+/***** Tooltips ******/
+
 .tooltippable {
   text-decoration: dotted underline;
+}
+
+.tooltip-inner {
+  background-color: #EEE;
+  border: 1px solid black;
+  color: black;
+  max-width: 400px;
+  font-size: 14px;
+}
+
+.tooltip-inner img{
+  max-width: 380px;
+}
+
+
+/* Footer */
+.footer {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footer img {
+  max-height: 75px;
+}
+
+
+
+/*** Arrow animation ***/
+
+.arrow4 {
+  animation: slide4 4s linear infinite;
+}
+
+@keyframes slide4 {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
