@@ -77,14 +77,22 @@ get_answers_code <- function(answers = answer_questions()) {
     })
 
   if (length(params) == 0) {
-    "dynguidelines::answer_questions()"
+    code <- "answers <- dynguidelines::answer_questions()"
   } else {
-    glue::glue(
-      "dynguidelines::answer_questions(",
+    code <- glue::glue(
+      "answers <- dynguidelines::answer_questions(",
       glue::glue_collapse(paste0("  ", params), ", \n"),
       ")",
       .sep = "\n",
       .trim = FALSE
     )
   }
+
+  code <- paste(
+    code,
+    "guidelines <- dynguidelines::guidelines(answers = answers)",
+    sep = "\n"
+  )
+
+  code
 }
