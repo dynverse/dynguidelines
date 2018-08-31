@@ -17,8 +17,8 @@ test_that("answer_questions_docs", {
 
 test_that("get_answers_code", {
   answers <- answer_questions()
-  testthat::expect_true(get_answers_code(answers) == "dynguidelines::answer_questions()")
+  testthat::expect_true(startsWith(get_answers_code(answers), "answers <- dynguidelines::answer_questions()"))
 
   answers <- answer_questions(multiple_disconnected = TRUE)
-  testthat::expect_false(get_answers_code(answers) == "dynguidelines::answer_questions()")
+  testthat::expect_false(get_answers_code(answers) == "answers <- dynguidelines::answer_questions()")
 })
