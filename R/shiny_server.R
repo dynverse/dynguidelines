@@ -10,9 +10,6 @@ shiny_server <- function(
   server <- function(input, output, session, answers = answer_questions()) {
     questions <- get_questions()
 
-    # add path of images
-    addResourcePath("img", system.file("img/", package = "dynguidelines"))
-
     # make sure questions and answers match
     testthat::expect_setequal(names(questions), answers$question_id)
 

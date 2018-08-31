@@ -148,6 +148,7 @@ questions <- list(
     modifier = n_cells_modifier,
     type = "numeric",
     label = "Number of cells",
+    title = "Number of cells in the dataset. Will be estimated if a dataset is given.",
     activeIf = "true",
     category = "dataset",
     default = 1000,
@@ -164,6 +165,7 @@ questions <- list(
     modifier = n_features_modifier,
     type = "numeric",
     label = "Number of features (genes)",
+    title = "Number of features in the dataset. Will be estimated if a dataset is given.",
     activeIf = "true",
     category = "dataset",
     default = 1000,
@@ -184,7 +186,8 @@ questions <- list(
     default = 5,
     category = "scalability",
     activeIf = "true",
-    label = "Maximal estimated running time (minutes)"
+    label = "Maximal estimated running time (minutes)",
+    title = "All methods with a higher estimated running time will be filtered."
   ),
   list(
     question_id = "memory",
@@ -201,32 +204,32 @@ questions <- list(
     question_id = "method_selection",
     modifier = method_selection_modifier,
     type = "radiobuttons",
-    choices = c("Probability of selecting the top method" = "probability", "# methods" = "n_methods"),
+    choices = c("Dynmaic" = "dynamic_n_methods", "Fixed" = "fixed_n_methods"),
     label = "How to select the number of methods",
-    default = "probability",
+    default = "dynamic_n_methods",
     activeIf = "true",
     category = "method_selection"
   ),
   list(
-    question_id = "top_model_coverage",
-    modifier = top_model_coverage_modifier,
+    question_id = "dynamic_n_methods",
+    modifier = dynamic_n_methods_modifier,
     type = "slider",
     min = 1,
     max = 100,
     default = 80,
     label = "Minimal probability of selecting the top model for the task",
-    activeIf = "input.method_selection  == 'probability'",
+    activeIf = "input.method_selection  == 'dynamic_n_methods'",
     category = "method_selection"
   ),
   list(
-    question_id = "n_methods",
-    modifier = n_methods_modifier,
+    question_id = "fixed_n_methods",
+    modifier = fixed_n_methods_modifier,
     type = "slider",
     min = 1,
     max = 10,
     default = 4,
     label = "Number of methods",
-    activeIf = "input.method_selection  == 'n_methods'",
+    activeIf = "input.method_selection  == 'fixed_n_methods'",
     category = "method_selection"
   ),
   list(

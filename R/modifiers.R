@@ -138,14 +138,14 @@ method_selection_modifier <- function(data, answer = NULL) {
 }
 
 
-top_model_coverage_modifier <- function(data, answer = NULL) {
+dynamic_n_methods_modifier <- function(data, answer = NULL) {
   data$methods <- data$methods %>%
     mutate(selected = row_number() < 5)
   data
 }
 
 
-n_methods_modifier <- function(data, answer = NULL) {
+fixed_n_methods_modifier <- function(data, answer = NULL) {
   data$methods <- data$methods %>%
     mutate(selected = row_number() < answer+1)
   data

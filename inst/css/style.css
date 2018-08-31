@@ -89,6 +89,13 @@ div.panel-heading {
     height: 0 !important;
 }
 
+/* Hide mispositioned spinners: the spinners are incorrectly displayed in the rstudio viewer and are thus hidden here */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 
 /***** Methods table ******/
 tr.selected {
