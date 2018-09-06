@@ -21,7 +21,7 @@ guidelines <- function(
     mutate(filter = FALSE, order = ifelse(column_id == "overall_benchmark", TRUE, FALSE))
 
   # construct data object
-  data <- lst(methods_aggr %>% mutate(selected = FALSE), method_columns, answers)
+  data <- lst(methods_aggr = methods_aggr %>% mutate(selected = FALSE), method_columns, answers)
 
   # process default
   data <- default_modifier(data)

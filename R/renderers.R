@@ -2,10 +2,6 @@ scale_01 <- function(y, lower = min(y, na.rm = TRUE), upper = max(y, na.rm = TRU
   (y - lower) / (upper - lower)
 }
 
-format_100 <- function(y) {
-  round(y * 100)
-}
-
 get_score_renderer <- function(palette = viridis::magma) {
   function(x) {
     if (any(is.na(x))) {
@@ -84,37 +80,6 @@ get_scaling_renderer <- function(formatter, palette = viridis::cividis, min, max
 
     pmap(list(y$formatted, style = y$style, class = "score"), span)
   }
-}
-
-format_time <- function(x) {
-  map_chr(x, function(x) {
-    if (is.na(x)) {
-      NA
-    } else if(x < 60) {
-      paste0(round(x), "s")
-    } else if (x < (60*60)) {
-      paste0(round(x/60), "m")
-    } else {
-      paste0(round(x/60/60), "h")
-    }
-  })
-}
-
-format_memory <- function(x) {
-  map_chr(x, function(x) {
-    if (is.na(x)) {
-      NA
-    } else if (x < 10^3) {
-      paste0(round(x), "kB")
-    } else if (x < 10^6) {
-      paste0(round(x/10^3), "MB")
-    } else if (x < 10^9) {
-      paste0(round(x/10^6), "GB")
-    } else {
-      warning("More than a terrabyte of memory seems a bit overkill...")
-      paste0(round(x/10^9), "TB")
-    }
-  })
 }
 
 data(trajectory_types, package = "dynwrap", envir = environment())

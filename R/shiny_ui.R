@@ -269,10 +269,11 @@ input_functions <- list(
   },
   textslider = function(q) {
     shinyWidgets::sliderTextInput(
-      q$question_id,
-      q$label,
-      q$choices,
-      q[["default"]]
+      inputId = q$question_id,
+      label = q$label,
+      choices = q$choices,
+      selected = q[["default"]],
+      grid = TRUE
     )
   },
   balancing_sliders = function(q) {

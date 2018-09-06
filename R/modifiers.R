@@ -109,8 +109,8 @@ user_friendliness_modifier <- function(data, answers) {
 }
 
 time_modifier <- function(data, answers) {
-  time <- suppressWarnings(as.numeric(answers$time))
-  if (!is.na(time)) {
+  time_cutoff <- process_time(answers$time)
+  if (!is.na(time_cutoff)) {
     # calculate the time
     data$methods_aggr <- data$methods_aggr %>%
       mutate(
@@ -127,16 +127,21 @@ time_modifier <- function(data, answers) {
         time_prediction_mean = map_dbl(time_prediction, "mean"),
         time_prediction_sd = map_dbl(time_prediction, "sd")
       )
+
+    # filter on time
+    data$methods_aggr <- data$methods_aggr %>%
+      filter(is.na(time_prediction_mean) | time_prediction_mean <= time_cutoff)
+
+    # add to method columns
     data$method_columns <- data$method_columns %>%
       add_row(column_id = "time_prediction_mean", filter = TRUE, order = FALSE)
   }
-
   data
 }
 
 memory_modifier <- function(data, answers) {
-  memory <- suppressWarnings(as.numeric(answers$memory))
-  if (!is.na(memory)) {
+  memory_cutoff <- process_memory(answers$memory)
+  if (!is.na(memory_cutoff)) {
     # calculate the memory
     data$methods_aggr <- data$methods_aggr %>%
       mutate(
@@ -153,6 +158,12 @@ memory_modifier <- function(data, answers) {
         memory_prediction_mean = map_dbl(memory_prediction, "mean"),
         memory_prediction_sd = map_dbl(memory_prediction, "sd")
       )
+
+    # filter on memory
+    data$methods_aggr <- data$methods_aggr %>%
+      filter(is.na(memory_prediction_mean) | memory_prediction_mean <= memory_cutoff)
+
+    # add to method columns
     data$method_columns <- data$method_columns %>%
       add_row(column_id = "memory_prediction_mean", filter = TRUE, order = FALSE)
   }

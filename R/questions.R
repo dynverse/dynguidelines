@@ -17,6 +17,7 @@ metrics <- tibble(
 
 #' @include modifiers.R
 #' @include labels.R
+#' @include formatters.R
 questions <- list(
   list(
     question_id = "multiple_disconnected",
@@ -176,25 +177,24 @@ questions <- list(
   list(
     question_id = "time",
     modifier = time_modifier,
-    type = "slider",
-    min = 1,
-    max = 240,
-    default = 5,
+    type = "textslider",
+    choices = c(format_time(c(seq(10, 60, 5), seq(5, 60, 5)*60, seq(1, 48, 4) * 60 * 60)), "∞"),
+    default = "10m",
     category = "scalability",
     activeIf = "true",
-    label = span(fontawesome::fa("clock"), "Maximal estimated running time (minutes)"),
+    label = "Maximal estimated running time (minutes)",
     title = "All methods with a higher estimated running time will be filtered."
   ),
   list(
     question_id = "memory",
     modifier = memory_modifier,
-    type = "slider",
-    min = 1,
-    max = 128,
-    default = 4,
+    type = "textslider",
+    choices = c(format_memory(c(seq(10^5, 10^6, 10^5), seq(10^6, 10^7, 10^6), seq(10^7, 10^8, 10^7))), "∞"),
+    default = "2GB",
+    category = "scalability",
     category = "scalability",
     activeIf = "true",
-    label = span(fontawesome::fa("memory"), "Maximal estimated memory usage (GB)")
+    label = "Maximal estimated memory usage (GB)"
   ),
   list(
     question_id = "method_selection",

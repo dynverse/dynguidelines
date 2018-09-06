@@ -50,6 +50,7 @@ Remotes:
 URL: https://github.com/dynverse/dynguidelines
 BugReports: https://github.com/dynverse/dynguidelines/issues
 Collate: 
+    'formatters.R'
     'labels.R'
     'modifiers.R'
     'questions.R'
