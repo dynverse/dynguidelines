@@ -64,7 +64,7 @@ $.extend(balancingSliders, {
 
         // special case where a slider goes out of possible bounds (eg. everything is locked)
         // this is also triggered when there are no other available sliders
-        // this will reset the value of the changed slider
+        // this will reset the value of the changed slider back to its original position
         if ((fixedSum > 1 && changeableSum === 0) || (changeableInputs.length === 0)) {
           changedInput.attr("data-dependent", "true");
           changeableInputs.attr("data-dependent", "false");
@@ -74,13 +74,15 @@ $.extend(balancingSliders, {
 
           changedInput.data("ionRangeSlider").update({"from": changedVal + (1-fixedSum)});
 
-        // special case where all otherVals are 0, but the fixedVal is lower than 1
+        // special case where all otherVals are 0, but the fixedVal has just become lower than 1
         // in that case, the otherVals should become (1-changeVal)/nOthers
         } else if (fixedSum < 1 && changeableSum === 0) {
           changeableInputs.each(function() {
             var changeableVal = (1 - fixedSum) / changeableVals.length;
             $(this).data("ionRangeSlider").update({"from":changeableVal});
           });
+
+        // regular case
         } else {
           changeableInputs.each(function() {
             var changeableVal = $(this).val() * scale;
