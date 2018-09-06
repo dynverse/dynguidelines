@@ -91,11 +91,11 @@ renderers <- tribble(
   "maximal_trajectory_type", render_detects_trajectory_type, "Topology", "The most complex topology this method can predict", NA, NA,
   "benchmark_overall", get_score_renderer(), "Benchmark score", "Overall score in the benchmark", "width:130px;", 98,
   "qc_user_friendly", get_score_renderer(viridis::viridis), "User friendliness", "User friendliness score", "width:130px;", NA,
-  "doi", render_article, fontawesome::fa("paper-plane"), "Paper/study describing the method", NA, 99,
-  "code_url", render_code, fontawesome::fa("code"), "Code of method", NA, 100,
+  "doi", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99,
+  "code_url", render_code, icon("code"), "Code of method", NA, 100,
   "platforms", render_identity, "Languages", "Languages", NA, NA,
-  "time_prediction_mean", get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7), fontawesome::fa("clock"), "Estimated running time", NA, NA,
-  "memory_prediction_mean", get_scaling_renderer(format_memory, min = 1, max = 10^12), fontawesome::fa("memory"), "Estimated maximal memory usage", NA, NA
+  "time_prediction_mean", get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7), "Time", "Estimated running time", NA, NA,
+  "memory_prediction_mean", get_scaling_renderer(format_memory, min = 1, max = 10^12), "Memory", "Estimated maximal memory usage", NA, NA
 ) %>% bind_rows(
   tibble(
     trajectory_type = trajectory_types$id,
