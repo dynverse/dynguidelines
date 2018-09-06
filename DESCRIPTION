@@ -44,7 +44,8 @@ Imports:
   viridis
 Suggests:
   testthat,
-  shinytest
+  shinytest,
+  VGAM
 Remotes:
   dynverse/dynwrap,
   dynverse/dynutils,
