@@ -1,4 +1,9 @@
 scale_01 <- function(y, lower = min(y, na.rm = TRUE), upper = max(y, na.rm = TRUE)) {
+
+  if (lower == upper) {
+    lower <- upper - 0.1
+  }
+
   (y - lower) / (upper - lower)
 }
 
