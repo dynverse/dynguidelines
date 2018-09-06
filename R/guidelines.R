@@ -32,7 +32,7 @@ guidelines <- function(
     if(question$type %in% c("checkbox", "picker") || !is.null(question_answers[[question$question_id]])) {
       # only modify if question is active
       if(question$active_if(question_answers)) {
-        data <- invoke(question$modifier, data = data, intersect(names(formals(question$modifier)), names(question_answers)))
+        data <- invoke(question$modifier, data = data, question_answers[intersect(names(formals(question$modifier)), names(question_answers))])
       }
     }
   }

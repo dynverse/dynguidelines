@@ -1,5 +1,6 @@
 multiple_disconnected_modifier <- function(data, multiple_disconnected = NULL) {
   data$methods_aggr <- data$methods_aggr %>% arrange(-benchmark_overall)
+
   if(isTRUE(multiple_disconnected)) {
     data$methods_aggr <- data$methods_aggr %>% filter(detects_disconnected_graph)
     data$method_columns <- data$method_columns %>%
@@ -41,11 +42,11 @@ expected_topology_modifier <- function(data, expected_topology = NULL) {
 
 expect_cycles_modifier <- function(data, expect_cycles = NULL) {
   if(isTRUE(expect_cycles)) {
-    data$methods_aggr <- data$methods_aggr %>% filter(graph & cycle)
+    data$methods_aggr <- data$methods_aggr %>% filter(detects_graph & detects_cycle)
     data$method_columns <- data$method_columns %>%
       bind_rows(
         tibble(
-          column_id = c("graph", "cycle"),
+          column_id = c("detects_graph", "detects_cycle"),
           filter = TRUE,
           order = FALSE
         )
@@ -108,10 +109,10 @@ running_time_modifier <- function(data, running_time = NULL, n_cells = NULL, n_f
     # calculate the time
 
     # filter the time cutoff
-    data$methods_aggr <- data$methods_aggr %>%
-      filter((time_method/60) <= running_time)
-    data$method_columns <- data$method_columns %>%
-      add_row(column_id = "time_method", filter = TRUE, order = FALSE)
+    # data$methods_aggr <- data$methods_aggr %>%
+    #   filter((time_method/60) <= running_time)
+    # data$method_columns <- data$method_columns %>%
+    #   add_row(column_id = "time_method", filter = TRUE, order = FALSE)
   }
 
   data

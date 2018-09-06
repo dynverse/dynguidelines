@@ -9,7 +9,7 @@ format_100 <- function(x) {
 get_score_renderer <- function(palette = viridis::magma) {
   function(x) {
     if (any(is.na(x))) {
-      warning("Some NA values in score renderer! ", x)
+      # warning("Some NA values in score renderer! ", x)
     }
 
     y <- tibble(
@@ -44,7 +44,7 @@ get_trajectory_type_renderer <- function(trajectory_type) {
         } else {
           class <- "trajectory_type inactive"
         }
-        img(src = str_glue("img/trajectory_types/{trajectory_type}.png"), class = class)
+        img(src = str_glue("img/trajectory_types/{gsub('detects_', '', trajectory_type)}.png"), class = class)
       }
     )
   }

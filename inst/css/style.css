@@ -112,14 +112,6 @@ td > span.score {
   padding-left: 4px;
 }
 
-td > img.trajectory_type {
-  width:40px;
-}
-
-td > img.trajectory_type.inactive {
-  opacity:0.1;
-}
-
 
 /***** Tooltips ******/
 
@@ -166,4 +158,15 @@ td > img.trajectory_type.inactive {
   100% {
     transform: rotate(360deg);
   }
+}
+
+
+
+/* Trajectory types */
+img.trajectory_type {
+  width:40px;
+}
+
+img.trajectory_type.inactive {
+  opacity:0.1;
 }

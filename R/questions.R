@@ -62,7 +62,7 @@ questions <- list(
     choiceValues = all_trajectory_types,
     choiceNames = map(all_trajectory_types, function(trajectory_type) {
       span(
-        img(src = str_glue("img/trajectory_types/{trajectory_type}.svg"), class = "trajectory_type"),
+        img(src = str_glue("img/trajectory_types/{trajectory_type}.png"), class = "trajectory_type"),
         label_capitalise(trajectory_type)
       )
     }),
