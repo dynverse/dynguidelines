@@ -133,7 +133,7 @@ get_guidelines_methods_table <- function(guidelines) {
 
     # add renderers
     method_columns <- method_columns %>%
-      left_join(renderers, c("column_id" = "column_id")) %>%
+      left_join(get_renderers(), c("column_id" = "column_id")) %>%
       mutate(renderer = map(renderer, ~ifelse(is.null(.), function(x) {x}, .)))
 
     # add labels

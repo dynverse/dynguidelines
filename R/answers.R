@@ -1,10 +1,11 @@
 ## Answer questions
 # get default answers based on questions
 get_defaults <- function(question_ids = names(get_questions())) {
-  map(question_ids, get_default) %>% set_names(question_ids)
+  questions <- get_questions()[question_ids]
+  map(questions, "default") %>% set_names(names(questions))
 }
 
-get_default <- function(question_id) {
+get_default <- function(question_id, questions = get_questions()) {
   default <- questions[[question_id]][["default"]]
 
   default
@@ -12,6 +13,7 @@ get_default <- function(question_id) {
 
 # function which generates the documentation for the answers function based on all the questions
 answer_questions_docs <- function() {
+  questions <- get_questions()
   parameters <- paste0(
     "@param ",
     names(questions),
@@ -58,7 +60,7 @@ answer_questions <- function(dataset = NULL, ...) {
     )
   )
 }
-formals(answer_questions) <- c(list(dataset = NULL), get_defaults(names(questions)))
+formals(answer_questions) <- c(list(dataset = NULL), get_defaults(names(get_questions())))
 
 
 

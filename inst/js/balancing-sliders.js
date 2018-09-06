@@ -1,5 +1,5 @@
+// Listener functions for the lock buttons
 var lockListener = function(e) {
-  console.log("hi")
   $(this).toggleClass("locked")
 
   var id = $(this).attr("id");
