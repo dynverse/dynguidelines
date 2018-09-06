@@ -80,7 +80,7 @@ data(trajectory_types, package = "dynwrap", envir = environment())
 
 renderers <- tribble(
   ~column_id, ~renderer, ~label, ~title, ~style, ~default,
-  "selected", render_selected, icon("check-circle"), "Selected methods for TI", NA, NA,
+  "selected", render_selected, icon("check-circle"), "Selected methods for TI", NA, -100,
   "name", render_identity, "Method", "Name of the method", "max-width:99%", -99,
   "maximal_trajectory_type", render_detects_trajectory_type, "Topology", "The most complex topology this method can predict", NA, NA,
   "benchmark_overall", get_score_renderer(), "Benchmark score", "Overall score in the benchmark", "width:130px;", 98,

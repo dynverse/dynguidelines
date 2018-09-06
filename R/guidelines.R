@@ -20,8 +20,11 @@ guidelines <- function(
     select(column_id) %>%
     mutate(filter = FALSE, order = ifelse(column_id == "overall_benchmark", TRUE, FALSE))
 
-  # default ordering
+  # construct data object
   data <- lst(methods_aggr, method_columns, answers)
+
+  # process default
+  data <- default_modifier(data)
 
   # get the answers in a list
   question_answers <- answers %>% select(question_id, answer) %>% deframe()
@@ -36,6 +39,9 @@ guidelines <- function(
       }
     }
   }
+
+  # create the methods
+  data$methods <- data$methods_aggr[match(data$methods_selected, data$methods_aggr$method_id), data$method_columns$column_id]
 
   data <- add_class(data, "dynguidelines::guidelines")
   data

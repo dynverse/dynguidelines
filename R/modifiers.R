@@ -1,6 +1,11 @@
-multiple_disconnected_modifier <- function(data, multiple_disconnected = NULL) {
+default_modifier <- function(data) {
   data$methods_aggr <- data$methods_aggr %>% arrange(-benchmark_overall)
+  data
+}
 
+
+
+multiple_disconnected_modifier <- function(data, multiple_disconnected = NULL) {
   if(isTRUE(multiple_disconnected)) {
     data$methods_aggr <- data$methods_aggr %>% filter(detects_disconnected_graph)
     data$method_columns <- data$method_columns %>%
@@ -142,6 +147,10 @@ method_selection_modifier <- function(data, method_selection = NULL) {
 dynamic_n_methods_modifier <- function(data, dynamic_n_methods = NULL) {
   data$methods_aggr <- data$methods_aggr %>%
     mutate(selected = row_number() < 5)
+  data$method_columns <- data$method_columns %>%
+    add_row(column_id = "selected", filter = FALSE, order = FALSE)
+  data$methods_selected <- data$methods_aggr %>% filter(selected) %>% pull(method_id)
+
   data
 }
 
@@ -149,6 +158,10 @@ dynamic_n_methods_modifier <- function(data, dynamic_n_methods = NULL) {
 fixed_n_methods_modifier <- function(data, fixed_n_methods = NULL) {
   data$methods_aggr <- data$methods_aggr %>%
     mutate(selected = row_number() < fixed_n_methods+1)
+  data$method_columns <- data$method_columns %>%
+    add_row(column_id = "selected", filter = FALSE, order = FALSE)
+  data$methods_selected <- data$methods_aggr %>% filter(selected) %>% pull(method_id)
+
   data
 }
 
