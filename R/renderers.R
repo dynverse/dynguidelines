@@ -87,45 +87,45 @@ get_scaling_renderer <- function(formatter, palette = viridis::cividis, min, max
   }
 }
 
-data(trajectory_types, package = "dynwrap", envir = environment())
-
-renderers <- tribble(
-  ~column_id, ~renderer, ~label, ~title, ~style, ~default,
-  "selected", render_selected, icon("check-circle"), "Selected methods for TI", NA, -100,
-  "name", render_identity, "Method", "Name of the method", "max-width:99%", -99,
-  "maximal_trajectory_type", render_detects_trajectory_type, "Topology", "The most complex topology this method can predict", NA, NA,
-  "benchmark_overall", get_score_renderer(), "Benchmark score", "Overall score in the benchmark", "width:130px;", 98,
-  "qc_user_friendly", get_score_renderer(viridis::viridis), "User friendliness", "User friendliness score", "width:130px;", NA,
-  "doi", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99,
-  "code_url", render_code, icon("code"), "Code of method", NA, 100,
-  "platforms", render_identity, "Languages", "Languages", NA, NA,
-  "time_prediction_mean", get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7), "Time", "Estimated running time", NA, NA,
-  "memory_prediction_mean", get_scaling_renderer(format_memory, min = 1, max = 10^12), "Memory", "Estimated maximal memory usage", NA, NA
-) %>% bind_rows(
-  tibble(
-    trajectory_type = trajectory_types$id,
-    column_id = paste0("detects_", trajectory_type),
-    renderer = map(column_id, get_trajectory_type_renderer),
-    label = map(column_id, ~""),
-    title = as.character(str_glue("Whether this method can predict a {trajectory_type} topology")),
-    style = NA
-  ) %>%
-    mutate(default = row_number() - 60)
-) %>% bind_rows(
-  tibble(
-    trajectory_type = trajectory_types$id,
-    column_id = paste0("benchmark_", trajectory_type),
-    renderer = map(column_id, ~get_score_renderer()),
-    label = as.list(str_glue("{label_capitalise(trajectory_type)} score")),
-    title = as.character(str_glue("Score on datasets containing a {trajectory_type} topology")),
-    style = "width:130px;",
-    default = NA
-  )
-)
-
 #' Get all renderers
 #'
 #' @export
 get_renderers <- function() {
+  data(trajectory_types, package = "dynwrap", envir = environment())
+
+  renderers <- tribble(
+    ~column_id, ~renderer, ~label, ~title, ~style, ~default,
+    "selected", render_selected, icon("check-circle"), "Selected methods for TI", NA, -100,
+    "name", render_identity, "Method", "Name of the method", "max-width:99%", -99,
+    "maximal_trajectory_type", render_detects_trajectory_type, "Topology", "The most complex topology this method can predict", NA, NA,
+    "benchmark_overall", get_score_renderer(), "Benchmark score", "Overall score in the benchmark", "width:130px;", 98,
+    "qc_user_friendly", get_score_renderer(viridis::viridis), "User friendliness", "User friendliness score", "width:130px;", NA,
+    "doi", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99,
+    "code_url", render_code, icon("code"), "Code of method", NA, 100,
+    "platforms", render_identity, "Languages", "Languages", NA, NA,
+    "time_prediction_mean", get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7), "Time", "Estimated running time", NA, NA,
+    "memory_prediction_mean", get_scaling_renderer(format_memory, min = 1, max = 10^12), "Memory", "Estimated maximal memory usage", NA, NA
+  ) %>% bind_rows(
+    tibble(
+      trajectory_type = trajectory_types$id,
+      column_id = paste0("detects_", trajectory_type),
+      renderer = map(column_id, get_trajectory_type_renderer),
+      label = map(column_id, ~""),
+      title = as.character(str_glue("Whether this method can predict a {trajectory_type} topology")),
+      style = NA
+    ) %>%
+      mutate(default = row_number() - 60)
+  ) %>% bind_rows(
+    tibble(
+      trajectory_type = trajectory_types$id,
+      column_id = paste0("benchmark_", trajectory_type),
+      renderer = map(column_id, ~get_score_renderer()),
+      label = as.list(str_glue("{label_capitalise(trajectory_type)} score")),
+      title = as.character(str_glue("Score on datasets containing a {trajectory_type} topology")),
+      style = "width:130px;",
+      default = NA
+    )
+  )
+
   renderers
 }
