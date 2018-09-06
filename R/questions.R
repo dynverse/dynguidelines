@@ -200,7 +200,7 @@ questions <- list(
     question_id = "method_selection",
     modifier = method_selection_modifier,
     type = "radiobuttons",
-    choices = c("Dynmaic" = "dynamic_n_methods", "Fixed" = "fixed_n_methods"),
+    choices = c("Dynamic" = "dynamic_n_methods", "Fixed" = "fixed_n_methods"),
     label = "How to select the number of methods",
     default = "dynamic_n_methods",
     activeIf = "true",
