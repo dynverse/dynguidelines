@@ -122,25 +122,6 @@ questions <- list(
     default = NULL
   ),
   list(
-    question_id = "prior_information",
-    modifier = prior_information_modifier,
-    type = "picker",
-    choices = set_names(priors$prior_id, priors$name),
-    multiple = TRUE,
-    label = "Are you able to provide the following prior information?",
-    title = "Some methods require some prior information, such as the start cells, to help with the construction of the trajectory. Although this can help the method with finding the right trajectory, prior information can also bias the trajectory towards what is already known. <br> Prior information should therefore be given with great care.",
-    activeIf = "true",
-    category = "prior_information",
-    default = c(),
-    default_dataset = function(dataset, default) {
-      if("prior_information" %in% names(dataset) || dynwrap::is_wrapper_with_prior_information(dataset)) {
-        priors %>% filter(prior_id %in% names(dataset$prior_information)) %>% pull(prior_id)
-      } else {
-        default
-      }
-    }
-  ),
-  list(
     question_id = "n_cells",
     modifier = n_cells_modifier,
     type = "numeric",
@@ -195,6 +176,25 @@ questions <- list(
     category = "scalability",
     activeIf = "true",
     label = "Maximal estimated memory usage (GB)"
+  ),
+  list(
+    question_id = "prior_information",
+    modifier = prior_information_modifier,
+    type = "picker",
+    choices = set_names(priors$prior_id, priors$name),
+    multiple = TRUE,
+    label = "Are you able to provide the following prior information?",
+    title = "Some methods require some prior information, such as the start cells, to help with the construction of the trajectory. Although this can help the method with finding the right trajectory, prior information can also bias the trajectory towards what is already known. <br> Prior information should therefore be given with great care.",
+    activeIf = "true",
+    category = "prior_information",
+    default = c(),
+    default_dataset = function(dataset, default) {
+      if("prior_information" %in% names(dataset) || dynwrap::is_wrapper_with_prior_information(dataset)) {
+        priors %>% filter(prior_id %in% names(dataset$prior_information)) %>% pull(prior_id)
+      } else {
+        default
+      }
+    }
   ),
   list(
     question_id = "method_selection",
