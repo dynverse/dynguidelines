@@ -93,23 +93,21 @@ renderers <- tribble(
   "time_method", render_time, icon("time", lib = "glyphicon"), "Estimated running time", NA, NA
 ) %>% bind_rows(
   tibble(
-    column_id = trajectory_types$id,
-    undirected = !trajectory_types$directed,
-    simplified = trajectory_types$simplified,
+    trajectory_type = trajectory_types$id,
+    column_id = paste0("detects_", trajectory_type),
     renderer = map(column_id, get_trajectory_type_renderer),
     label = map(column_id, ~""),
-    title = as.character(str_glue("Whether this method can predict a {label_split(simplified)} topology")),
+    title = as.character(str_glue("Whether this method can predict a {trajectory_type} topology")),
     style = NA
   ) %>%
-    mutate(default = ifelse(undirected, row_number() - 60, NA))
+    mutate(default = row_number() - 60)
 ) %>% bind_rows(
   tibble(
-    trajtype = trajectory_types$id,
-    simplified = trajectory_types$simplified,
-    column_id = paste0("trajtype_", trajtype),
+    trajectory_type = trajectory_types$id,
+    column_id = paste0("benchmark_", trajectory_type),
     renderer = map(column_id, ~get_score_renderer()),
-    label = as.list(str_glue("{label_capitalise(trajtype)} score")),
-    title = as.character(str_glue("Score on datasets containing a {label_split(simplified)} topology")),
+    label = as.list(str_glue("{label_capitalise(trajectory_type)} score")),
+    title = as.character(str_glue("Score on datasets containing a {trajectory_type} topology")),
     style = "width:130px;",
     default = NA
   )

@@ -5,7 +5,8 @@
 #' @return Returns a dynguidelines::guidelines object, containing
 #'   - `methods`: Ordered tibble containing information about the selected methods
 #'   - `method_columns`: Information about what columns in methods are given and whether the were used for filtering or ordering
-#'   - `answers`: An answers object, can be further modified.
+#'   - `methods_aggr`: Full information on the methods
+#'   - `answers`: An answers object, can be further modified and given again to this function
 #'   - `methods_selected`: Identifiers for all selected methods
 #'
 #' @export
@@ -20,9 +21,7 @@ guidelines <- function(
     mutate(filter = FALSE, order = ifelse(column_id == "overall_benchmark", TRUE, FALSE))
 
   # default ordering
-  data <- lst(methods, method_columns, answers)
-  data$methods <- data$methods %>% arrange(-overall_benchmark)
-  data$methods$selected <- FALSE
+  data <- lst(methods_aggr, method_columns, answers)
 
   # get the answers in a list
   question_answers <- answers %>% select(question_id, answer) %>% deframe()
@@ -33,13 +32,10 @@ guidelines <- function(
     if(question$type %in% c("checkbox", "picker") || !is.null(question_answers[[question$question_id]])) {
       # only modify if question is active
       if(question$active_if(question_answers)) {
-        data <- question$modifier(data, question_answers[[question$question_id]])
+        data <- invoke(question$modifier, data = data, intersect(names(formals(question$modifier)), names(question_answers)))
       }
     }
   }
-
-  # select methods
-  data$methods_selected <- data$methods %>% filter(selected) %>% pull(method_id)
 
   data <- add_class(data, "dynguidelines::guidelines")
   data
