@@ -6,6 +6,7 @@ test_that("guidelines", {
   expect_true("dynguidelines::guidelines" %in% attr(guidelines, "class"))
   expect_true(is_guidelines(guidelines))
   expect_is(guidelines$methods_selected, "character")
+  expect_is(guidelines$methods_aggr, "tbl")
   expect_is(guidelines$methods, "tbl")
   expect_is(guidelines$answers, "tbl")
   expect_is(guidelines$method_columns, "tbl")
