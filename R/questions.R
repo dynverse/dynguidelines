@@ -1,7 +1,7 @@
 priors <- dynwrap::priors
 
 # possible programming languages
-all_programming_languages <-c("python", "Matlab", "C++", "R")
+all_programming_languages <- c("python", "R", "C++")
 all_free_programming_languages <- intersect(all_programming_languages, c("python", "R", "C++"))
 
 # possible trajectory types
@@ -76,10 +76,7 @@ questions <- list(
     default = NULL,
     default_dataset = function(dataset, default) {
       if(dynwrap::is_wrapper_with_trajectory(dataset)) {
-        trajectory_type <- dynwrap::classify_milestone_network(dataset$milestone_network)$network_type
-        data(trajectory_types, package = "dynwrap", envir = environment())
-        trajectory_type_simplified <- trajectory_types$simplified[first(match(trajectory_type, trajectory_types$id))]
-        trajectory_type_simplified
+        dynwrap::classify_milestone_network(dataset$milestone_network)$network_type
       } else {
         default
       }

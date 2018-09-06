@@ -12,6 +12,3 @@
 #'
 #' @name dynguidelines
 NULL
-
-#' The methods and their performance as generated from `dynalysis`
-"methods"

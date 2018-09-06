@@ -1,4 +1,4 @@
-scale_01 <- function(x, lower = min(x), upper = max(x)) {
+scale_01 <- function(x, lower = min(x, na.rm = TRUE), upper = max(x, na.rm = TRUE)) {
   (x - lower) / (upper - lower)
 }
 
@@ -10,18 +10,16 @@ get_score_renderer <- function(palette = viridis::magma) {
   function(x) {
     if (any(is.na(x))) {
       warning("Some NA values in score renderer! ", x)
-      x[is.na(x)] <- 0.00000000000001
-      # browser()
     }
 
     y <- tibble(
       x = x,
-      normalised = scale_01(x, lower = 0),
-      rounded = format_100(x),
-      formatted = rounded,
+      normalised = ifelse(is.na(x), 0, scale_01(x, lower = 0)),
+      rounded = format_100(normalised),
+      formatted = ifelse(is.na(x), "NA", rounded),
       width = paste0(rounded, "px"),
-      background = palette(255)[ceiling(normalised*255)] %>% html_color(),
-      color = ifelse(scale_01(normalised, lower = 0) > 0.5, "black", "white"),
+      background = ifelse(is.na(x), "none", palette(255)[ceiling(normalised*254)+1] %>% html_color()),
+      color = case_when(scale_01(normalised, lower = 0) > 0.5 ~ "black", is.na(x) ~ "grey", TRUE ~ "white"),
       style = pmap(list(`background-color` = background, color = color, display = "block", width = width), htmltools::css)
     )
 
@@ -29,10 +27,10 @@ get_score_renderer <- function(palette = viridis::magma) {
   }
 }
 
-render_maximal_trajectory_type <- function(x) {
+render_detects_trajectory_type <- function(x) {
   map(
     x,
-    ~img(src = str_glue("img/trajectory_types/{.}.svg"), class = "trajectory_type")
+    ~img(src = str_glue("img/trajectory_types/{.}.png"), class = "trajectory_type")
   )
 }
 
@@ -46,7 +44,7 @@ get_trajectory_type_renderer <- function(trajectory_type) {
         } else {
           class <- "trajectory_type inactive"
         }
-        img(src = str_glue("img/trajectory_types/{trajectory_type}.svg"), class = class)
+        img(src = str_glue("img/trajectory_types/{trajectory_type}.png"), class = class)
       }
     )
   }
@@ -82,13 +80,13 @@ data(trajectory_types, package = "dynwrap", envir = environment())
 
 renderers <- tribble(
   ~column_id, ~renderer, ~label, ~title, ~style, ~default,
-  "selected", render_selected, icon("check-circle"), "Selected methods for TI", NA, -100,
-  "method_name", render_identity, "Method", "Name of the method", "max-width:99%", -99,
-  "maximal_trajectory_type", render_maximal_trajectory_type, "Topology", "The most complex topology this method can predict", NA, NA,
-  "overall_benchmark", get_score_renderer(), "Overall score", "Overall score in the benchmark", "width:130px;", 98,
-  "user_friendly", get_score_renderer(viridis::viridis), "User friendliness", "User friendliness score", "width:130px;", NA,
-  "DOI", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99,
-  "code_location", render_code, icon("code"), "Code of method", NA, 100,
+  "selected", render_selected, icon("check-circle"), "Selected methods for TI", NA, NA,
+  "name", render_identity, "Method", "Name of the method", "max-width:99%", -99,
+  "maximal_trajectory_type", render_detects_trajectory_type, "Topology", "The most complex topology this method can predict", NA, NA,
+  "benchmark_overall", get_score_renderer(), "Benchmark score", "Overall score in the benchmark", "width:130px;", 98,
+  "qc_user_friendly", get_score_renderer(viridis::viridis), "User friendliness", "User friendliness score", "width:130px;", NA,
+  "doi", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99,
+  "code_url", render_code, icon("code"), "Code of method", NA, 100,
   "platforms", render_identity, "Languages", "Languages", NA, NA,
   "time_method", render_time, icon("time", lib = "glyphicon"), "Estimated running time", NA, NA
 ) %>% bind_rows(

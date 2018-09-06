@@ -175,7 +175,7 @@ get_guidelines_methods_table <- function(guidelines) {
         function(row_i) {
           row_rendered <- extract_row_to_list(methods_rendered, row_i)
           row <- extract_row_to_list(methods, row_i)
-          if (row$selected) {
+          if ("selected" %in% names(row) && row$selected) {
             class <- "selected"
           } else {
             class <- ""

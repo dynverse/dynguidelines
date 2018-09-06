@@ -126,7 +126,7 @@ prior_information_modifier <- function(data, prior_information = NULL) {
   unavailable_priors <- dynwrap::priors %>% filter(!prior_id %in% prior_information) %>% pull(prior_id)
   data$methods_aggr <- data$methods_aggr %>%
     filter(
-      input %>% map("required") %>% map_lgl(~any(. %in% unavailable_priors))
+      input %>% map("required") %>% map_lgl(~!any(. %in% unavailable_priors))
     )
 
   data
@@ -168,6 +168,6 @@ docker_modifier <- function(data, docker) {
 
 
 metric_importance_modifier <- function(data, metric_importance) {
-  # cat(glue::collapse(answer, ", "))
+  # cat(glue::glue_collapse(answer, ", "))
   data
 }
