@@ -6,7 +6,7 @@ all_free_programming_languages <- intersect(all_programming_languages, c("python
 
 # possible trajectory types
 data(trajectory_types, package = "dynwrap", envir = environment())
-all_simplified_trajectory_types <- trajectory_types %>% filter(!directed) %>% pull(simplified) %>% unique() %>% keep(~!. == "binary_tree")
+all_trajectory_types <- trajectory_types$id
 
 # metrics, TODO: import from dyneval
 metrics <- tibble(
@@ -59,11 +59,10 @@ questions <- list(
     question_id = "expected_topology",
     modifier = expected_topology_modifier,
     type = "radiobuttons",
-    choiceValues = all_simplified_trajectory_types,
-    choiceNames = map(all_simplified_trajectory_types, function(trajectory_type) {
-      directed_trajectory_type <- trajectory_types %>% filter(simplified == trajectory_type, directed == TRUE) %>% pull(id) %>% first()
+    choiceValues = all_trajectory_types,
+    choiceNames = map(all_trajectory_types, function(trajectory_type) {
       span(
-        img(src = str_glue("img/trajectory_types/{directed_trajectory_type}.svg"), class = "trajectory_type"),
+        img(src = str_glue("img/trajectory_types/{trajectory_type}.svg"), class = "trajectory_type"),
         label_capitalise(trajectory_type)
       )
     }),
