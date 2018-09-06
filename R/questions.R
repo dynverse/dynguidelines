@@ -146,7 +146,7 @@ questions <- list(
     label = "Number of cells",
     title = "Number of cells in the dataset. Will be estimated if a dataset is given.",
     activeIf = "true",
-    category = "dataset",
+    category = "scalability",
     default = 1000,
     default_dataset = function(dataset, default) {
       if(dynwrap::is_wrapper_with_expression(dataset)) {
@@ -163,7 +163,7 @@ questions <- list(
     label = "Number of features (genes)",
     title = "Number of features in the dataset. Will be estimated if a dataset is given.",
     activeIf = "true",
-    category = "dataset",
+    category = "scalability",
     default = 1000,
     default_dataset = function(dataset, default) {
       if(dynwrap::is_wrapper_with_expression(dataset)) {
@@ -174,15 +174,15 @@ questions <- list(
     }
   ),
   list(
-    question_id = "running_time",
-    modifier = running_time_modifier,
+    question_id = "time",
+    modifier = time_modifier,
     type = "slider",
     min = 1,
     max = 240,
     default = 5,
     category = "scalability",
     activeIf = "true",
-    label = "Maximal estimated running time (minutes)",
+    label = span(fontawesome::fa("clock"), "Maximal estimated running time (minutes)"),
     title = "All methods with a higher estimated running time will be filtered."
   ),
   list(
@@ -194,7 +194,7 @@ questions <- list(
     default = 4,
     category = "scalability",
     activeIf = "true",
-    label = "Maximal estimated memory usage (GB)"
+    label = span(fontawesome::fa("memory"), "Maximal estimated memory usage (GB)")
   ),
   list(
     question_id = "method_selection",

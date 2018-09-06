@@ -1,9 +1,9 @@
-scale_01 <- function(x, lower = min(x, na.rm = TRUE), upper = max(x, na.rm = TRUE)) {
-  (x - lower) / (upper - lower)
+scale_01 <- function(y, lower = min(y, na.rm = TRUE), upper = max(y, na.rm = TRUE)) {
+  (y - lower) / (upper - lower)
 }
 
-format_100 <- function(x) {
-  round(x * 100)
+format_100 <- function(y) {
+  round(y * 100)
 }
 
 get_score_renderer <- function(palette = viridis::magma) {
@@ -64,14 +64,55 @@ render_code <- function(x) {
   map(x, ~if(!is.na(.)) {tags$a(href = ., icon("code"))} else {""})
 }
 
-render_time <- function(x) {
+
+
+get_scaling_renderer <- function(formatter, palette = viridis::cividis, min, max) {
+  function(x) {
+    x[x < min] <- min
+    x[x > max] <- max
+
+    y <- tibble(
+      x = x,
+      formatted = formatter(x),
+      normalised = ifelse(is.na(x), 0, scale_01(log(x))),
+      rounded = format_100(normalised),
+      width = paste0(rounded, "px"),
+      background = ifelse(is.na(x), "none", palette(255, direction = -1)[ceiling(normalised*254)+1] %>% html_color()),
+      color = case_when(scale_01(normalised, lower = 0) > 0.5 ~ "white", is.na(x) ~ "grey", TRUE ~ "black"),
+      style = pmap(list(`background-color` = background, color = color, display = "block", width = width), htmltools::css)
+    )
+
+    pmap(list(y$formatted, style = y$style, class = "score"), span)
+  }
+}
+
+format_time <- function(x) {
   map_chr(x, function(x) {
-    if(x < 60) {
+    if (is.na(x)) {
+      NA
+    } else if(x < 60) {
       paste0(round(x), "s")
     } else if (x < (60*60)) {
       paste0(round(x/60), "m")
     } else {
       paste0(round(x/60/60), "h")
+    }
+  })
+}
+
+format_memory <- function(x) {
+  map_chr(x, function(x) {
+    if (is.na(x)) {
+      NA
+    } else if (x < 10^3) {
+      paste0(round(x), "kB")
+    } else if (x < 10^6) {
+      paste0(round(x/10^3), "MB")
+    } else if (x < 10^9) {
+      paste0(round(x/10^6), "GB")
+    } else {
+      warning("More than a terrabyte of memory seems a bit overkill...")
+      paste0(round(x/10^9), "TB")
     }
   })
 }
@@ -85,10 +126,11 @@ renderers <- tribble(
   "maximal_trajectory_type", render_detects_trajectory_type, "Topology", "The most complex topology this method can predict", NA, NA,
   "benchmark_overall", get_score_renderer(), "Benchmark score", "Overall score in the benchmark", "width:130px;", 98,
   "qc_user_friendly", get_score_renderer(viridis::viridis), "User friendliness", "User friendliness score", "width:130px;", NA,
-  "doi", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99,
-  "code_url", render_code, icon("code"), "Code of method", NA, 100,
+  "doi", render_article, fontawesome::fa("paper-plane"), "Paper/study describing the method", NA, 99,
+  "code_url", render_code, fontawesome::fa("code"), "Code of method", NA, 100,
   "platforms", render_identity, "Languages", "Languages", NA, NA,
-  "time_method", render_time, icon("time", lib = "glyphicon"), "Estimated running time", NA, NA
+  "time_prediction_mean", get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7), fontawesome::fa("clock"), "Estimated running time", NA, NA,
+  "memory_prediction_mean", get_scaling_renderer(format_memory, min = 1, max = 10^12), fontawesome::fa("memory"), "Estimated maximal memory usage", NA, NA
 ) %>% bind_rows(
   tibble(
     trajectory_type = trajectory_types$id,
