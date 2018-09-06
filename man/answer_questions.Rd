@@ -12,7 +12,7 @@ answer_questions(dataset = NULL, multiple_disconnected = NULL,
   method_selection = "dynamic_n_methods", dynamic_n_methods = 80,
   fixed_n_methods = 4, metric_importance = c(0.25, 0.25, 0.25, 0.25),
   dynmethods = TRUE, docker = dynwrap::test_docker_installation(),
-  programming_interface = TRUE, languages = c("python", "C++", "R"),
+  programming_interface = TRUE, languages = c("python", "R", "C++"),
   user_friendliness = 60)
 }
 \arguments{
@@ -52,7 +52,7 @@ answer_questions(dataset = NULL, multiple_disconnected = NULL,
 
 \item{programming_interface}{Can you work in a programming interface? Defaults to TRUE}
 
-\item{languages}{Which languages can you work with? Defaults to c("python", "C++", "R")}
+\item{languages}{Which languages can you work with? Defaults to c("python", "R", "C++")}
 
 \item{user_friendliness}{Minimal user friendliness score Defaults to 60}
 }
