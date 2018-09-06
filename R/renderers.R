@@ -1,15 +1,16 @@
-scale_01 <- function(x, lower = min(x, na.rm = TRUE), upper = max(x, na.rm = TRUE)) {
-  (x - lower) / (upper - lower)
-}
+scale_01 <- function(y, lower = min(y, na.rm = TRUE), upper = max(y, na.rm = TRUE)) {
 
-format_100 <- function(x) {
-  round(x * 100)
+  if (lower == upper) {
+    lower <- upper - 0.1
+  }
+
+  (y - lower) / (upper - lower)
 }
 
 get_score_renderer <- function(palette = viridis::magma) {
   function(x) {
     if (any(is.na(x))) {
-      warning("Some NA values in score renderer! ", x)
+      # warning("Some NA values in score renderer! ", x)
     }
 
     y <- tibble(
@@ -44,7 +45,7 @@ get_trajectory_type_renderer <- function(trajectory_type) {
         } else {
           class <- "trajectory_type inactive"
         }
-        img(src = str_glue("img/trajectory_types/{trajectory_type}.png"), class = class)
+        img(src = str_glue("img/trajectory_types/{gsub('detects_', '', trajectory_type)}.png"), class = class)
       }
     )
   }
@@ -64,23 +65,33 @@ render_code <- function(x) {
   map(x, ~if(!is.na(.)) {tags$a(href = ., icon("code"))} else {""})
 }
 
-render_time <- function(x) {
-  map_chr(x, function(x) {
-    if(x < 60) {
-      paste0(round(x), "s")
-    } else if (x < (60*60)) {
-      paste0(round(x/60), "m")
-    } else {
-      paste0(round(x/60/60), "h")
-    }
-  })
+
+
+get_scaling_renderer <- function(formatter, palette = viridis::cividis, min, max) {
+  function(x) {
+    x[x < min] <- min
+    x[x > max] <- max
+
+    y <- tibble(
+      x = x,
+      formatted = formatter(x),
+      normalised = ifelse(is.na(x), 0, scale_01(log(x))),
+      rounded = format_100(normalised),
+      width = paste0(rounded, "px"),
+      background = ifelse(is.na(x), "none", palette(255, direction = -1)[ceiling(normalised*254)+1] %>% html_color()),
+      color = case_when(scale_01(normalised, lower = 0) > 0.5 ~ "white", is.na(x) ~ "grey", TRUE ~ "black"),
+      style = pmap(list(`background-color` = background, color = color, display = "block", width = width), htmltools::css)
+    )
+
+    pmap(list(y$formatted, style = y$style, class = "score"), span)
+  }
 }
 
 data(trajectory_types, package = "dynwrap", envir = environment())
 
 renderers <- tribble(
   ~column_id, ~renderer, ~label, ~title, ~style, ~default,
-  "selected", render_selected, icon("check-circle"), "Selected methods for TI", NA, NA,
+  "selected", render_selected, icon("check-circle"), "Selected methods for TI", NA, -100,
   "name", render_identity, "Method", "Name of the method", "max-width:99%", -99,
   "maximal_trajectory_type", render_detects_trajectory_type, "Topology", "The most complex topology this method can predict", NA, NA,
   "benchmark_overall", get_score_renderer(), "Benchmark score", "Overall score in the benchmark", "width:130px;", 98,
@@ -88,7 +99,8 @@ renderers <- tribble(
   "doi", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99,
   "code_url", render_code, icon("code"), "Code of method", NA, 100,
   "platforms", render_identity, "Languages", "Languages", NA, NA,
-  "time_method", render_time, icon("time", lib = "glyphicon"), "Estimated running time", NA, NA
+  "time_prediction_mean", get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7), "Time", "Estimated running time", NA, NA,
+  "memory_prediction_mean", get_scaling_renderer(format_memory, min = 1, max = 10^12), "Memory", "Estimated maximal memory usage", NA, NA
 ) %>% bind_rows(
   tibble(
     trajectory_type = trajectory_types$id,

@@ -20,7 +20,8 @@ guidelines_shiny(dataset = NULL, answers = answer_questions(dataset =
 Returns a dynguidelines::guidelines object, containing
   - `methods`: Ordered tibble containing information about the selected methods
   - `method_columns`: Information about what columns in methods are given and whether the were used for filtering or ordering
-  - `answers`: An answers object, can be further modified.
+  - `methods_aggr`: Full information on the methods
+  - `answers`: An answers object, can be further modified and given again to this function
   - `methods_selected`: Identifiers for all selected methods
 }
 \description{

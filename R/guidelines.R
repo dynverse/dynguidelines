@@ -20,8 +20,11 @@ guidelines <- function(
     select(column_id) %>%
     mutate(filter = FALSE, order = ifelse(column_id == "overall_benchmark", TRUE, FALSE))
 
-  # default ordering
-  data <- lst(methods_aggr, method_columns, answers)
+  # construct data object
+  data <- lst(methods_aggr = methods_aggr %>% mutate(selected = FALSE), method_columns, answers)
+
+  # process default
+  data <- default_modifier(data)
 
   # get the answers in a list
   question_answers <- answers %>% select(question_id, answer) %>% deframe()
@@ -32,10 +35,19 @@ guidelines <- function(
     if(question$type %in% c("checkbox", "picker") || !is.null(question_answers[[question$question_id]])) {
       # only modify if question is active
       if(question$active_if(question_answers)) {
-        data <- invoke(question$modifier, data = data, intersect(names(formals(question$modifier)), names(question_answers)))
+        data <- question$modifier(data, question_answers)
       }
     }
   }
+
+  # filter method_columns based on last
+  data$method_columns <- data$method_columns %>%
+    group_by(column_id) %>%
+    slice(n()) %>%
+    ungroup()
+
+  # create the methods
+  data$methods <- data$methods_aggr[match(data$methods_selected, data$methods_aggr$method_id), data$method_columns$column_id]
 
   data <- add_class(data, "dynguidelines::guidelines")
   data

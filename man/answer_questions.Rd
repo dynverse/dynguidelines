@@ -6,13 +6,13 @@
 \usage{
 answer_questions(dataset = NULL, multiple_disconnected = NULL,
   expect_topology = NULL, expected_topology = NULL,
-  expect_cycles = NULL, expect_complex_tree = NULL,
-  prior_information = NULL, n_cells = 1000, n_features = 1000,
-  running_time = 5, memory = 4,
-  method_selection = "dynamic_n_methods", dynamic_n_methods = 80,
-  fixed_n_methods = 4, metric_importance = c(0.25, 0.25, 0.25, 0.25),
-  dynmethods = TRUE, docker = dynwrap::test_docker_installation(),
-  programming_interface = TRUE, languages = c("python", "C++", "R"),
+  expect_cycles = NULL, expect_complex_tree = NULL, n_cells = 1000,
+  n_features = 1000, time = "10m", memory = "2GB",
+  prior_information = NULL, method_selection = "dynamic_n_methods",
+  dynamic_n_methods = 80, fixed_n_methods = 4,
+  metric_importance = c(0.25, 0.25, 0.25, 0.25), dynmethods = TRUE,
+  docker = dynwrap::test_docker_installation(),
+  programming_interface = TRUE, languages = c("python", "R", "C++"),
   user_friendliness = 60)
 }
 \arguments{
@@ -28,15 +28,15 @@ answer_questions(dataset = NULL, multiple_disconnected = NULL,
 
 \item{expect_complex_tree}{Do you expect a complex tree in the data? Defaults to NULL}
 
-\item{prior_information}{Are you able to provide the following prior information? Defaults to NULL}
-
 \item{n_cells}{Number of cells Defaults to 1000}
 
 \item{n_features}{Number of features (genes) Defaults to 1000}
 
-\item{running_time}{Maximal estimated running time (minutes) Defaults to 5}
+\item{time}{Maximal estimated running time (minutes) Defaults to 10m}
 
-\item{memory}{Maximal estimated memory usage (GB) Defaults to 4}
+\item{memory}{Maximal estimated memory usage (GB) Defaults to 2GB}
+
+\item{prior_information}{Are you able to provide the following prior information? Defaults to NULL}
 
 \item{method_selection}{How to select the number of methods Defaults to dynamic_n_methods}
 
@@ -52,7 +52,7 @@ answer_questions(dataset = NULL, multiple_disconnected = NULL,
 
 \item{programming_interface}{Can you work in a programming interface? Defaults to TRUE}
 
-\item{languages}{Which languages can you work with? Defaults to c("python", "C++", "R")}
+\item{languages}{Which languages can you work with? Defaults to c("python", "R", "C++")}
 
 \item{user_friendliness}{Minimal user friendliness score Defaults to 60}
 }

@@ -17,6 +17,7 @@ metrics <- tibble(
 
 #' @include modifiers.R
 #' @include labels.R
+#' @include formatters.R
 questions <- list(
   list(
     question_id = "multiple_disconnected",
@@ -62,7 +63,7 @@ questions <- list(
     choiceValues = all_trajectory_types,
     choiceNames = map(all_trajectory_types, function(trajectory_type) {
       span(
-        img(src = str_glue("img/trajectory_types/{trajectory_type}.svg"), class = "trajectory_type"),
+        img(src = str_glue("img/trajectory_types/{trajectory_type}.png"), class = "trajectory_type"),
         label_capitalise(trajectory_type)
       )
     }),
@@ -121,6 +122,62 @@ questions <- list(
     default = NULL
   ),
   list(
+    question_id = "n_cells",
+    modifier = n_cells_modifier,
+    type = "numeric",
+    label = "Number of cells",
+    title = "Number of cells in the dataset. Will be estimated if a dataset is given.",
+    activeIf = "true",
+    category = "scalability",
+    default = 1000,
+    default_dataset = function(dataset, default) {
+      if(dynwrap::is_wrapper_with_expression(dataset)) {
+        nrow(dataset$expression)
+      } else {
+        default
+      }
+    }
+  ),
+  list(
+    question_id = "n_features",
+    modifier = n_features_modifier,
+    type = "numeric",
+    label = "Number of features (genes)",
+    title = "Number of features in the dataset. Will be estimated if a dataset is given.",
+    activeIf = "true",
+    category = "scalability",
+    default = 1000,
+    default_dataset = function(dataset, default) {
+      if(dynwrap::is_wrapper_with_expression(dataset)) {
+        ncol(dataset$expression)
+      } else {
+        default
+      }
+    }
+  ),
+  list(
+    question_id = "time",
+    modifier = time_modifier,
+    type = "textslider",
+    choices = c(format_time(c(seq(10, 60, 5), seq(5, 60, 5)*60, seq(4, 24, 4) * 60 * 60, seq(2, 4) * 60 * 60 * 24)), "\U221E"),
+    default = "10m",
+    category = "scalability",
+    activeIf = "true",
+    label = "Maximal estimated running time (minutes)",
+    title = "All methods with a higher estimated running time will be filtered."
+  ),
+  list(
+    question_id = "memory",
+    modifier = memory_modifier,
+    type = "textslider",
+    choices = c(format_memory(c(seq(10^5, 10^6, 10^5), seq(10^6, 10^7, 10^6), seq(10^7, 10^8, 10^7))), "\U221E"),
+    default = "2GB",
+    category = "scalability",
+    category = "scalability",
+    activeIf = "true",
+    label = "Maximal estimated memory usage (GB)"
+  ),
+  list(
     question_id = "prior_information",
     modifier = prior_information_modifier,
     type = "picker",
@@ -140,67 +197,10 @@ questions <- list(
     }
   ),
   list(
-    question_id = "n_cells",
-    modifier = n_cells_modifier,
-    type = "numeric",
-    label = "Number of cells",
-    title = "Number of cells in the dataset. Will be estimated if a dataset is given.",
-    activeIf = "true",
-    category = "dataset",
-    default = 1000,
-    default_dataset = function(dataset, default) {
-      if(dynwrap::is_wrapper_with_expression(dataset)) {
-        nrow(dataset$expression)
-      } else {
-        default
-      }
-    }
-  ),
-  list(
-    question_id = "n_features",
-    modifier = n_features_modifier,
-    type = "numeric",
-    label = "Number of features (genes)",
-    title = "Number of features in the dataset. Will be estimated if a dataset is given.",
-    activeIf = "true",
-    category = "dataset",
-    default = 1000,
-    default_dataset = function(dataset, default) {
-      if(dynwrap::is_wrapper_with_expression(dataset)) {
-        ncol(dataset$expression)
-      } else {
-        default
-      }
-    }
-  ),
-  list(
-    question_id = "running_time",
-    modifier = running_time_modifier,
-    type = "slider",
-    min = 1,
-    max = 240,
-    default = 5,
-    category = "scalability",
-    activeIf = "true",
-    label = "Maximal estimated running time (minutes)",
-    title = "All methods with a higher estimated running time will be filtered."
-  ),
-  list(
-    question_id = "memory",
-    modifier = memory_modifier,
-    type = "slider",
-    min = 1,
-    max = 128,
-    default = 4,
-    category = "scalability",
-    activeIf = "true",
-    label = "Maximal estimated memory usage (GB)"
-  ),
-  list(
     question_id = "method_selection",
     modifier = method_selection_modifier,
     type = "radiobuttons",
-    choices = c("Dynmaic" = "dynamic_n_methods", "Fixed" = "fixed_n_methods"),
+    choices = c("Dynamic" = "dynamic_n_methods", "Fixed" = "fixed_n_methods"),
     label = "How to select the number of methods",
     default = "dynamic_n_methods",
     activeIf = "true",

@@ -122,7 +122,7 @@ add_icons <- function(label, conditions, icons) {
 }
 
 get_guidelines_methods_table <- function(guidelines) {
-  if(nrow(guidelines$methods) == 0) {
+  if(nrow(guidelines$methods_aggr) == 0) {
     span(class = "text-danger", "No methods fullfilling selection")
   } else {
     # remove duplicate columns
@@ -148,7 +148,7 @@ get_guidelines_methods_table <- function(guidelines) {
       arrange(order)
 
     # extract correct columns from guidelines
-    methods <- guidelines$methods %>% select(!!method_columns$column_id)
+    methods <- guidelines$methods_aggr %>% select(!!method_columns$column_id)
 
     # render columns
     methods_rendered <- methods %>%
@@ -269,10 +269,11 @@ input_functions <- list(
   },
   textslider = function(q) {
     shinyWidgets::sliderTextInput(
-      q$question_id,
-      q$label,
-      q$choices,
-      q[["default"]]
+      inputId = q$question_id,
+      label = q$label,
+      choices = q$choices,
+      selected = q[["default"]],
+      grid = TRUE
     )
   },
   balancing_sliders = function(q) {
