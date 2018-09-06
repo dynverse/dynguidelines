@@ -11,8 +11,10 @@ format_time <- function(x) {
       paste0(round(x), "s")
     } else if (x < (60*60)) {
       paste0(round(x/60), "m")
-    } else {
+    } else if (x < (60*60*24)) {
       paste0(round(x/60/60), "h")
+    } else {
+      paste0(round(x/60/60/24), "d")
     }
   })
 }
@@ -20,16 +22,18 @@ process_time <- function(x) {
   map_dbl(x, function(x) {
     if (is.na(x)) {
       NA
-    } else if (x == "∞") {
+    } else if (x == "\U221E") {
       Inf
     } else {
-      number <- as.numeric(gsub("([0-9]*)[a-z]", "\\1", x))
+      number <- as.numeric(gsub("([0-9]*)[smhd]", "\\1", x))
       if (endsWith(x, "s")) {
         number
       } else if (endsWith(x, "m")) {
         number * 60
       } else if (endsWith(x, "h")) {
         number * 60 * 60
+      } else if (endsWith(x, "d")) {
+        number * 60 * 60 * 24
       } else {
         stop("Invalid time: ", x)
       }
@@ -57,7 +61,7 @@ process_memory <- function(x) {
   map_dbl(x, function(x) {
     if (is.na(x)) {
       NA
-    } else if (x == "∞") {
+    } else if (x == "\U221E") {
       Inf
     } else {
       number <- as.numeric(gsub("([0-9]*)[kMGT]B", "\\1", x))
