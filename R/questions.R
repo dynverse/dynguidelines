@@ -106,7 +106,7 @@ get_questions <- function() {
       question_id = "expect_cycles",
       modifier = expect_cycles_modifier,
       type = "radiobuttons",
-      choices = c("It's possible" = TRUE, "No" = FALSE),
+      choices = c("Yes" = TRUE, "It's possible" = TRUE, "No" = FALSE),
       activeIf = "
       input.multiple_disconnected == 'FALSE' &&
       input.expect_topology == 'FALSE'
@@ -145,7 +145,7 @@ get_questions <- function() {
       modifier = n_cells_modifier,
       type = "numeric",
       label = "Number of cells",
-      title = "Number of cells in the dataset. Will be estimated if a dataset is given.",
+      title = "Number of cells in the dataset. Will be extracted from the dataset if provided.",
       activeIf = "true",
       category = "scalability",
       default = 1000,
@@ -162,7 +162,7 @@ get_questions <- function() {
       modifier = n_features_modifier,
       type = "numeric",
       label = "Number of features (genes)",
-      title = "Number of features in the dataset. Will be estimated if a dataset is given.",
+      title = "Number of features in the dataset. Will be extracted from the dataset if provided.",
       activeIf = "true",
       category = "scalability",
       default = 1000,
@@ -179,11 +179,11 @@ get_questions <- function() {
       modifier = time_modifier,
       type = "textslider",
       choices = c(format_time(c(seq(10, 60, 5), seq(5, 60, 5)*60, seq(4, 24, 4) * 60 * 60, seq(2, 4) * 60 * 60 * 24)), "\U221E"),
-      default = "10m",
+      default = "1h",
       category = "scalability",
       activeIf = "true",
-      label = "Time limit (minutes)",
-      title = "All methods with a higher estimated running time will be filtered."
+      label = "Time limit",
+      title = span("Limits the maximal time a method is allowed to run. The running times is estimated based on dataset size and the ", tags$a("scalability assessment of dynbenchmark", href = "https://github.com/dynverse/dynbenchmark_results/tree/master/05-scaling"), ".")
     ),
     list(
       question_id = "memory",
@@ -194,7 +194,8 @@ get_questions <- function() {
       category = "scalability",
       category = "scalability",
       activeIf = "true",
-      label = "Memory limit (GB)"
+      label = "Memory limit",
+      title = span("Limits the maximal memory a method is allowed to use. The memory usage is estimated based on dataset size and the ", tags$a("scalability assessment of dynbenchmark", href = "https://github.com/dynverse/dynbenchmark_results/tree/master/05-scaling"), ".")
     ),
     list(
       question_id = "prior_information",
