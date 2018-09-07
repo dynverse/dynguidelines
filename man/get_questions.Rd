@@ -2,16 +2,10 @@
 % Please edit documentation in R/questions.R
 \name{get_questions}
 \alias{get_questions}
-\alias{get_question}
-\title{Load in the questions}
+\title{Get the the questions, their modifiers and properties}
 \usage{
 get_questions()
-
-get_question(question_id)
-}
-\arguments{
-\item{question_id}{The id of the questions}
 }
 \description{
-Load in the questions
+Get the the questions, their modifiers and properties
 }

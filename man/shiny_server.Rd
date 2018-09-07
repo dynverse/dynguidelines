@@ -7,7 +7,7 @@
 shiny_server(answers = answer_questions())
 }
 \arguments{
-\item{answers}{Previous answers other than default, see the [answer_questions()] function}
+\item{answers}{Previous answers other than default, see the \code{\link[=answer_questions]{answer_questions()}} function}
 }
 \description{
 The shiny server

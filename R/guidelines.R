@@ -15,7 +15,7 @@ guidelines <- function(
   answers = answer_questions(dataset = dataset)
 ) {
   # build data with default order and columns
-  method_columns <- renderers %>%
+  method_columns <- get_renderers() %>%
     filter(!is.na(default)) %>%
     select(column_id) %>%
     mutate(filter = FALSE, order = ifelse(column_id == "overall_benchmark", TRUE, FALSE))
@@ -30,7 +30,7 @@ guidelines <- function(
   question_answers <- answers %>% select(question_id, answer) %>% deframe()
 
   # call the modifiers if the question is active
-  for (question in questions) {
+  for (question in get_questions()) {
     # only modify if question is checkbox/picker (and therefore NULL can be a valid answer) or if answers is not NULL
     if(question$type %in% c("checkbox", "picker") || !is.null(question_answers[[question$question_id]])) {
       # only modify if question is active

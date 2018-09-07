@@ -7,7 +7,7 @@ shiny_ui <- function() {
 
   ## build the page ----------------------------
   fluidPage(
-    title = "Dynguidelines - part of dynverse",
+    title = "Selecting the most optimal TI method - dynguidelines",
     shinyjs::useShinyjs(),
     tags$head(includeScript("https://www.googletagmanager.com/gtag/js?id=UA-578149-3")),
     tags$head(includeScript(system.file("js/google-analytics.js", package = "dynguidelines"))),
@@ -16,6 +16,8 @@ shiny_ui <- function() {
     tags$head(includeScript("https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js")),
 
     tags$head(includeCSS(system.file("css/style.css", package = "dynguidelines"))),
+
+    tags$head(tags$link(rel = "icon", type = "image/png", href = "img/favicon_16.png")),
 
     # navbar
     tags$nav(
@@ -34,6 +36,28 @@ shiny_ui <- function() {
           class = "navbar-collapse collapse",
           tags$ul(
             class = "nav navbar-nav navbar-right",
+
+            # benchmarking study
+            tags$li(
+              tags$a(
+                "Benchmark study ",
+                icon("paper-plane"),
+                href = "https://doi.org/10.1101/276907",
+                target = "blank"
+              )
+            ),
+
+            # github repo
+            tags$li(
+              tags$a(
+                "Github repository ",
+                icon("github"),
+                href = "https://github.com/dynverse/dynguidelines",
+                target = "blank"
+              )
+            ),
+
+            # code toggle
             tags$li(
               style = "background-color:#cab1ef",
               tags$a(
@@ -44,6 +68,8 @@ shiny_ui <- function() {
                 `data-toggle` = "collapse"
               )
             ),
+
+            # submit button
             tags$li(
               style = "background-color:#9362e0",
               actionLink(
@@ -60,6 +86,7 @@ shiny_ui <- function() {
               a(
                 style = "display: inline;",
                 href = "https://github.com/dynverse/dynverse",
+                target = "blank",
                 "Part of",
                 img(
                   src = "img/logo_dynverse.png"
@@ -133,7 +160,7 @@ get_guidelines_methods_table <- function(guidelines) {
 
     # add renderers
     method_columns <- method_columns %>%
-      left_join(renderers, c("column_id" = "column_id")) %>%
+      left_join(get_renderers(), c("column_id" = "column_id")) %>%
       mutate(renderer = map(renderer, ~ifelse(is.null(.), function(x) {x}, .)))
 
     # add labels
