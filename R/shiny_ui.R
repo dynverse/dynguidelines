@@ -36,6 +36,28 @@ shiny_ui <- function() {
           class = "navbar-collapse collapse",
           tags$ul(
             class = "nav navbar-nav navbar-right",
+
+            # benchmarking study
+            tags$li(
+              tags$a(
+                "Benchmark study ",
+                icon("paper-plane"),
+                href = "https://doi.org/10.1101/276907",
+                target = "blank"
+              )
+            ),
+
+            # github repo
+            tags$li(
+              tags$a(
+                "Github repository ",
+                icon("github"),
+                href = "https://github.com/dynverse/dynguidelines",
+                target = "blank"
+              )
+            ),
+
+            # code toggle
             tags$li(
               style = "background-color:#cab1ef",
               tags$a(
@@ -46,6 +68,8 @@ shiny_ui <- function() {
                 `data-toggle` = "collapse"
               )
             ),
+
+            # submit button
             tags$li(
               style = "background-color:#9362e0",
               actionLink(
