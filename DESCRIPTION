@@ -40,11 +40,11 @@ Imports:
   knitr,
   glue,
   stringr,
-  viridis
+  viridis,
+  VGAM
 Suggests:
   testthat,
-  shinytest,
-  VGAM
+  shinytest
 Remotes:
   dynverse/dynwrap,
   dynverse/dynutils
