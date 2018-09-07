@@ -9,20 +9,38 @@ guidelines(dataset = NULL, answers = answer_questions(dataset =
   dataset))
 
 guidelines_shiny(dataset = NULL, answers = answer_questions(dataset =
-  dataset))
+  dataset), port = NULL, launch.browser = TRUE, host = NULL, ...)
 }
 \arguments{
 \item{dataset}{The dataset, optional}
 
-\item{answers}{Optional, pre-provided answers to the different questions. See [answer_questions()]}
+\item{answers}{Optional, pre-provided answers to the different questions. See \code{\link[=answer_questions]{answer_questions()}}}
+
+\item{port}{The TCP port that the application should listen on. If the
+\code{port} is not specified, and the \code{shiny.port} option is set (with
+\code{options(shiny.port = XX)}), then that port will be used. Otherwise,
+use a random port.}
+
+\item{launch.browser}{If true, the system's default web browser will be
+launched automatically after the app is started. Defaults to true in
+interactive sessions only. This value of this parameter can also be a
+function to call with the application's URL.}
+
+\item{host}{The IPv4 address that the application should listen on. Defaults
+to the \code{shiny.host} option, if set, or \code{"127.0.0.1"} if not. See
+Details.}
+
+\item{...}{Other parameters given to \code{\link[shiny:runApp]{shiny::runApp()}}}
 }
 \value{
 Returns a dynguidelines::guidelines object, containing
-  - `methods`: Ordered tibble containing information about the selected methods
-  - `method_columns`: Information about what columns in methods are given and whether the were used for filtering or ordering
-  - `methods_aggr`: Full information on the methods
-  - `answers`: An answers object, can be further modified and given again to this function
-  - `methods_selected`: Identifiers for all selected methods
+\itemize{
+\item \code{methods}: Ordered tibble containing information about the selected methods
+\item \code{method_columns}: Information about what columns in methods are given and whether the were used for filtering or ordering
+\item \code{methods_aggr}: Full information on the methods
+\item \code{answers}: An answers object, can be further modified and given again to this function
+\item \code{methods_selected}: Identifiers for all selected methods
+}
 }
 \description{
 Select the top methods, optionally based on a given dataset

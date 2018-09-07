@@ -32,9 +32,9 @@ answer_questions(dataset = NULL, multiple_disconnected = NULL,
 
 \item{n_features}{Number of features (genes) Defaults to 1000}
 
-\item{time}{Maximal estimated running time (minutes) Defaults to 10m}
+\item{time}{Time limit (minutes) Defaults to 10m}
 
-\item{memory}{Maximal estimated memory usage (GB) Defaults to 2GB}
+\item{memory}{Memory limit (GB) Defaults to 2GB}
 
 \item{prior_information}{Are you able to provide the following prior information? Defaults to NULL}
 
