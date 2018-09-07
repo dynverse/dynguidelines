@@ -17,6 +17,8 @@ shiny_ui <- function() {
 
     tags$head(includeCSS(system.file("css/style.css", package = "dynguidelines"))),
 
+    tags$head(tags$link(rel = "icon", type = "image/png", href = "img/favicon_16.png")),
+
     # navbar
     tags$nav(
       class = "navbar navbar-default",
