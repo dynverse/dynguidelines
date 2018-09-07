@@ -65,3 +65,4 @@ Collate:
     'renderers.R'
     'shiny_server.R'
     'shiny_ui.R'
+Roxygen: list(markdown = TRUE)
