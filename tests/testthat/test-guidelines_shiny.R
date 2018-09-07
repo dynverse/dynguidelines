@@ -17,6 +17,13 @@ test_that("A methods table is returned", {
   app$setInputs(expect_complex_tree = "FALSE")
   app$setInputs(expect_complex_tree = "TRUE")
 
+  app$setInputs(time = "\U221E")
+  app$setInputs(memory = "\U221E")
+  app$setInputs(n_cells = "1")
+  app$setInputs(n_features = "1")
+  app$setInputs(n_cells = "10000000")
+  app$setInputs(n_features = "10000000")
+
   app$setInputs(dynmethods = "TRUE")
   app$setInputs(dynmethods = "FALSE")
   app$setInputs(programming_interface = "TRUE")
@@ -24,8 +31,6 @@ test_that("A methods table is returned", {
   app$setInputs(languages = c())
   app$setInputs(programming_interface = "FALSE")
 
-  app$setInputs(method_selection = "dynamic_n_methods")
-  app$setInputs(method_selection = "fixed_n_methods")
   # get text_out
   output <- app$getValue(name = "methods_table")
   # test
