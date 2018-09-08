@@ -60,24 +60,27 @@ shiny_server <- function(
     # toggleClass(id = NULL, class = NULL, condition = NULL, selector = NULL)
 
     ## on exit, return guidelines
-    return_guidelines <- function() {
-      isolate({
-        return_value <- guidelines(dataset = NULL, answers = reactive_answers())
-        stopApp(return_value)
-      })
-    }
-
-    # activate this function when pressing the submit button
-    observe({
-      if(input$submit > 0) {
-        return_guidelines()
+    if (interactive()) {
+      return_guidelines <- function() {
+        isolate({
+          return_value <- guidelines(dataset = NULL, answers = reactive_answers())
+          stopApp(return_value)
+        })
       }
-    })
 
-    # or when exiting through rstudio exit buttong
-    session$onSessionEnded(return_guidelines)
+      # activate this function when pressing the submit button
+      observe({
+        if(input$submit > 0) {
+          return_guidelines()
+        }
+      })
+
+      # or when exiting through rstudio exit buttong
+      session$onSessionEnded(return_guidelines)
+    }
   }
 
+  # set default answers argument to given answers
   formals(server)$answers <- answers
 
   server
