@@ -1,3 +1,6 @@
+## Go to correct folder
+cd inst/deploy
+
 ## Build the container
 docker build -t dynverse/dynguidelines_server .
 
