@@ -9,11 +9,11 @@ shiny_ui <- function() {
   fluidPage(
     title = "Selecting the most optimal TI method - dynguidelines",
     shinyjs::useShinyjs(),
-    tags$head(includeScript("https://www.googletagmanager.com/gtag/js?id=UA-578149-3")),
-    tags$head(includeScript(system.file("js/google-analytics.js", package = "dynguidelines"))),
+    tags$head(tags$script(src = "https://www.googletagmanager.com/gtag/js?id=UA-578149-3")),
     tags$head(includeScript(system.file("js/tooltips.js", package = "dynguidelines"))),
+    tags$head(includeScript(system.file("js/google-analytics.js", package = "dynguidelines"))),
 
-    tags$head(includeScript("https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js")),
+    tags$head(tags$script(src = "https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js")),
 
     tags$head(includeCSS(system.file("css/style.css", package = "dynguidelines"))),
 
@@ -21,7 +21,7 @@ shiny_ui <- function() {
 
     # navbar
     tags$nav(
-      class = "navbar navbar-default",
+      class = "navbar navbar-default navbar-fixed-top",
       div(
         class = "container-fluid",
         div(
@@ -98,37 +98,42 @@ shiny_ui <- function() {
       )
     ),
 
-    sidebarLayout(
-      column(
-        4,
-        uiOutput("questions_panel"),
-        style = "overflow-y:scroll; max-height:100vh;"
-      ),
-      column(
-        8,
-
-        # code collapsible
-        tags$div(
-          class = "panel-collapse collapse",
-          id = "code",
-          style = "width:100%;",
-
-          # copy button
-          singleton(tags$head(includeScript("https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"))),
-          tags$button(
-            class = "btn btn-default btn-s btn-copy",
-            style = "float:left",
-            icon("copy"),
-            `data-clipboard-target`="#code"
-          ),
-          tags$script("$(document).ready(function() {new ClipboardJS('.btn-copy')});"),
-
-          # actual code
-          textOutput("code", container = tags$pre)
+    div(
+      class = "container",
+      style = "position:relative; width:100%; top:80px; padding-left: 0px; padding-right: 0px;",
+      sidebarLayout(
+        column(
+          4,
+          div(
+            style = "overflow-y:scroll; float:none; position:fixed; bottom:0px; top:80px; width:inherit; padding-right: 10px;",
+            uiOutput("questions_panel")
+          )
         ),
+        column(
+          8,
+          style = "padding-left:30px",
+          # code collapsible
+          tags$div(
+            class = "panel-collapse collapse",
+            id = "code",
 
-        div(
-          uiOutput("methods_table")
+            # copy button
+            singleton(tags$head(tags$script(src = "https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"))),
+            tags$button(
+              class = "btn btn-default btn-s btn-copy",
+              style = "float:left",
+              icon("copy"),
+              `data-clipboard-target`="#code"
+            ),
+            tags$script("$(document).ready(function() {new ClipboardJS('.btn-copy')});"),
+
+            # actual code
+            textOutput("code", container = tags$pre)
+          ),
+
+          div(
+            uiOutput("methods_table")
+          )
         )
       )
     )

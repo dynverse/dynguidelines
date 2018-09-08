@@ -111,7 +111,7 @@ get_renderers <- function() {
       column_id = paste0("detects_", trajectory_type),
       renderer = map(column_id, get_trajectory_type_renderer),
       label = map(column_id, ~""),
-      title = as.character(str_glue("Whether this method can predict a {trajectory_type} topology")),
+      title = as.character(str_glue("Whether this method can predict a {label_split(trajectory_type)} topology")),
       style = NA
     ) %>%
       mutate(default = row_number() - 60)
@@ -121,7 +121,7 @@ get_renderers <- function() {
       column_id = paste0("benchmark_", trajectory_type),
       renderer = map(column_id, ~get_score_renderer()),
       label = as.list(str_glue("{label_capitalise(trajectory_type)} score")),
-      title = as.character(str_glue("Score on datasets containing a {trajectory_type} topology")),
+      title = as.character(str_glue("Score on datasets containing a {label_split(trajectory_type)} topology")),
       style = "width:130px;",
       default = NA
     )
