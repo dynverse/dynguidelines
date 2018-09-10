@@ -101,18 +101,18 @@ shiny_ui <- function() {
     div(
       class = "container",
       style = "position:relative; width:100%; top:80px; padding-left: 0px; padding-right: 0px;",
-      sidebarLayout(
-        column(
-          4,
+      div(
+        div(
+          style = "width:30%",
           div(
             style = "overflow-y:scroll; float:none; position:fixed; bottom:0px; top:80px; width:inherit; padding-right: 10px;",
             uiOutput("questions_panel")
           )
         ),
-        column(
-          8,
-          style = "padding-left:30px",
-          # code collapsible
+        div(
+          style = "width:70%;float:right;padding-left:20px;",
+
+          # code collapisble
           tags$div(
             class = "panel-collapse collapse",
             id = "code",
@@ -131,6 +131,7 @@ shiny_ui <- function() {
             textOutput("code", container = tags$pre)
           ),
 
+          # method table
           div(
             uiOutput("methods_table")
           )
