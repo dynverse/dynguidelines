@@ -4,7 +4,7 @@ default_modifier <- function(data, answers) {
   benchmark_overall <- methods_aggr %>%
     select(method_id, benchmark) %>%
     filter(!map_lgl(benchmark, is.null)) %>%
-    unnest(benchmark) %>%
+    tidyr::unnest(benchmark) %>%
     calculate_benchmark_score(answers = answers)
   data$methods_aggr$benchmark_overall <- benchmark_overall[data$methods_aggr$method_id]
 
@@ -47,7 +47,7 @@ expected_topology_modifier <- function(data, answers) {
   trajectory_type_score <- methods_aggr %>%
     select(method_id, benchmark) %>%
     filter(!map_lgl(benchmark, is.null)) %>%
-    unnest(benchmark) %>%
+    tidyr::unnest(benchmark) %>%
     filter(dataset_trajectory_type == answers$expected_topology) %>%
     calculate_benchmark_score(answers = answers)
   data$methods_aggr[score_column] <- trajectory_type_score[data$methods_aggr$method_id]
