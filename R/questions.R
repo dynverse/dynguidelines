@@ -1,3 +1,7 @@
+benchmark_metrics <- dyneval::metrics %>%
+  filter(metric_id %in% c("correlation", "him", "F1_branches", "featureimp_wcor"))
+benchmark_metrics$description <- "todo"
+
 # convert javascript active if question
 generate_r_active_if <- function(question) {
   activeIf <- question$activeIf
@@ -31,10 +35,6 @@ get_questions <- function() {
   all_trajectory_types <- trajectory_types$id
 
   # benchmark metrics
-  benchmark_metrics <- dyneval::metrics %>%
-    filter(metric_id %in% c("correlation", "him", "F1_branches", "featureimp_wcor"))
-  benchmark_metrics$description <- "todo"
-
   questions <- list(
     list(
       question_id = "multiple_disconnected",
