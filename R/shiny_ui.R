@@ -99,13 +99,12 @@ shiny_ui <- function() {
     ),
 
     div(
-      class = "container",
-      style = "position:relative; width:100%; top:80px; padding-left: 0px; padding-right: 0px;",
+      style = "position:relative; width:100%; top:80px;",
       div(
         div(
           style = "width:30%",
           div(
-            style = "overflow-y:scroll; float:none; position:fixed; bottom:0px; top:80px; width:inherit; padding-right: 10px;",
+            style = "overflow-y:scroll; position:fixed; bottom:0px; top:80px; width:inherit; padding-right: 10px;",
             uiOutput("questions_panel")
           )
         ),
