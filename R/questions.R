@@ -30,12 +30,8 @@ get_questions <- function() {
   data(trajectory_types, package = "dynwrap", envir = environment())
   all_trajectory_types <- trajectory_types$id
 
-  # metrics, TODO: import from dyneval
-  metrics <- tibble(
-    id = c("correlation", "edge_flip", "featureimp_cor", "F1_branches"),
-    name = c("Ordering", "Topology", "Important features/genes", "Clustering quality"),
-    description = c("How well the cells were ordered", "How well the overall topology of the trajectory is recovered", "Whether the correct genes/features are retrieved from the trajectory", "Whether the cells are correctly clustered in branches and milestones")
-  )
+  # benchmark metrics -> see sysdata, imported from dynbenchmark
+  benchmark_metrics$description <- "todo"
 
   questions <- list(
     list(
@@ -259,14 +255,14 @@ get_questions <- function() {
         "Within dynbenchmark, we assessed the performance of a TI method by comparing the similarity of its model to a given gold standard. There are several metrics to quantify this similarity, and this question allows to give certain metrics more weights than others: ",
         tags$ul(
           style = "text-align:left;",
-          map2(metrics$name, metrics$description, function(name, description) {tags$li(tags$strong(name), ": ", description)})
+          map2(benchmark_metrics$category, benchmark_metrics$description, function(name, description) {tags$li(tags$strong(name), ": ", description)})
         )
       ),
       activeIf = "true",
-      category = "metric_importance",
-      labels = metrics$name,
-      ids = metrics$id,
-      default = rep(1/nrow(metrics), nrow(metrics)),
+      category = "benchmarking_metrics",
+      labels = glue::glue("{label_split(benchmark_metrics$category)}: {benchmark_metrics$html}"),
+      ids = benchmark_metrics$metric_id,
+      default = rep(1/nrow(benchmark_metrics), nrow(benchmark_metrics)),
       min = 0,
       max = 1,
       step = 0.01,
@@ -292,7 +288,7 @@ get_questions <- function() {
       title = "Docker makes it easy to run each TI method without dependency issues, apart from the installation of docker itself.",
       activeIf = "input.dynmethods == 'TRUE'",
       category = "availability",
-      default =  quote(dynwrap::test_docker_installation())
+      default =  function() if(interactive()) {dynwrap::test_docker_installation()} else {TRUE}
     ),
     list(
       question_id = "programming_interface",
