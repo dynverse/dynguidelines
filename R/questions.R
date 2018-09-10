@@ -262,12 +262,19 @@ get_questions <- function() {
       category = "benchmarking_metrics",
       labels = glue::glue("{label_split(benchmark_metrics$category)}: {benchmark_metrics$html}"),
       ids = benchmark_metrics$metric_id,
-      default = rep(1/nrow(benchmark_metrics), nrow(benchmark_metrics)),
+      default = rep(1/nrow(benchmark_metrics), nrow(benchmark_metrics)) %>% set_names(benchmark_metrics$metric_id) %>% as.list(),
       min = 0,
       max = 1,
       step = 0.01,
       sum = 1
     ),
+
+    # list(
+    #   activeIf = "true",
+    #   category = "benchmarking_datasets",
+    #   labels =
+    # ),
+
     list(
       question_id = "dynmethods",
       modifier = dynmethods_modifier,

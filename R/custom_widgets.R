@@ -51,7 +51,7 @@ balancingSliders <- function(
       style = paste0("width: 100%;"),
       `data-sum` = 1,
       tags$button(id = id, class = "lock btn btn-xs", icon("lock")),
-      tags$label(label),
+      tags$label(shiny::HTML(label)),
       do.call(tags$input, sliderProps)
     )
   })

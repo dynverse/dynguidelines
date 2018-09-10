@@ -1,8 +1,17 @@
 default_modifier <- function(data, answers) {
   data$methods_aggr <- data$methods_aggr %>% arrange(-benchmark_overall)
+
+  benchmark_overall <- methods_aggr %>%
+    select(method_id, benchmark) %>%
+    filter(!map_lgl(benchmark, is.null)) %>%
+    unnest(benchmark) %>%
+    calculate_benchmark_score(answers = answers)
+  data$methods_aggr$benchmark_overall <- benchmark_overall[data$methods_aggr$method_id]
+
+  data$methods_aggr <- data$methods_aggr %>% arrange(-benchmark_overall)
+
   data
 }
-
 
 
 multiple_disconnected_modifier <- function(data, answers) {
@@ -34,6 +43,14 @@ expect_topology_modifier <- function(data, answers) {
 expected_topology_modifier <- function(data, answers) {
   trajectory_type_column <- paste0("detects_", answers$expected_topology)
   score_column <- paste0("benchmark_", answers$expected_topology)
+
+  trajectory_type_score <- methods_aggr %>%
+    select(method_id, benchmark) %>%
+    filter(!map_lgl(benchmark, is.null)) %>%
+    unnest(benchmark) %>%
+    filter(dataset_trajectory_type == answers$expected_topology) %>%
+    calculate_benchmark_score(answers = answers)
+  data$methods_aggr[score_column] <- trajectory_type_score[data$methods_aggr$method_id]
 
   data$methods_aggr <- data$methods_aggr[data$methods_aggr[[trajectory_type_column]], ] %>% arrange(-.[[score_column]])
   data$method_columns <- data$method_columns %>%
@@ -226,6 +243,19 @@ docker_modifier <- function(data, answers) {
 
 
 metric_importance_modifier <- function(data, answers) {
-  # cat(glue::glue_collapse(answer, ", "))
   data
+}
+
+
+
+
+
+calculate_benchmark_score <- function(benchmark, answers) {
+  benchmark %>%
+    group_by(method_id, dataset_trajectory_type) %>%
+    summarise_if(is.numeric, mean) %>%
+    summarise_if(is.numeric, mean) %>%
+    mutate(score = dyneval::calculate_geometric_mean(.[, benchmark_metrics$metric_id], weights = unlist(answers$metric_importance[benchmark_metrics$metric_id]))) %>%
+    select(method_id, score) %>%
+    deframe()
 }
