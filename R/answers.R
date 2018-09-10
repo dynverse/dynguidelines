@@ -2,7 +2,7 @@
 # get default answers based on questions
 get_defaults <- function(question_ids = names(get_questions())) {
   questions <- get_questions()[question_ids]
-  map(questions, "default") %>% set_names(names(questions))
+  map(questions, ~if(is.function(.$default)) {.$default()} else {.$default}) %>% set_names(names(questions))
 }
 
 get_default <- function(question_id, questions = get_questions()) {
