@@ -30,7 +30,9 @@ get_questions <- function() {
   data(trajectory_types, package = "dynwrap", envir = environment())
   all_trajectory_types <- trajectory_types$id
 
-  # benchmark metrics -> see sysdata, imported from dynbenchmark
+  # benchmark metrics
+  benchmark_metrics <- dyneval::metrics %>%
+    filter(metric_id %in% c("correlation", "him", "F1_branches", "featureimp_wcor"))
   benchmark_metrics$description <- "todo"
 
   questions <- list(
