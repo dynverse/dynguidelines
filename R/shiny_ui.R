@@ -77,9 +77,9 @@ shiny_ui <- function() {
       style = "position:relative; width:100%; top:80px;",
       div(
         div(
-          style = "width:30%;background-color:white;",
+          style = "width:30%",
           div(
-            style = "overflow-y:scroll; position:fixed; bottom:0px; top:80px; width:inherit; padding-right: 10px;",
+            style = "overflow-y:scroll; position:fixed; bottom:0px; top:80px; width:inherit; padding-right: 10px;background-color:white;z-index:1;",
             uiOutput("questions_panel")
           )
         ),
@@ -134,7 +134,6 @@ shiny_ui <- function() {
             tags$div(
               # presets
               tags$div(
-                tags$label("Presets "),
                 uiOutput("column_presets")
               ),
 
@@ -470,6 +469,8 @@ get_questions_ui <- function(question_categories, answers) {
 
 get_columns_presets_ui <- function(column_presets, session, show_columns) {
   tags$div(
+    class = "btn-group",
+    tags$label("Presets: ", style = "float:left;"),
     map(column_presets, function(column_preset) {
       # observe button event, and change the show columns accordingly
       button_id <- paste0("column_preset_", column_preset$id)
