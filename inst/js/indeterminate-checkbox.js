@@ -5,9 +5,9 @@ function setIndeterminateCheckboxValue(input, value) {
   if (value == "indeterminate") {
     input.prop("indeterminate", true);
     input.prop("readOnly", true);
-    input.prop('checked',false);
+    input.prop('checked',true);
   } else if (value == "true") {
-    input.prop('readOnly',true);
+    input.prop('readOnly',false);
     input.prop('indeterminate',false);
     input.prop('checked',true);
   } else {
@@ -35,16 +35,20 @@ $.extend(indeterminateCheckbox, {
         return "false";
       }
     } else {
-      input.data("initial")
+      return input.data("initial");
     }
-
-
   },
-  setValue: function(el, value) { var input = $(el).find("input"); setIndeterminateCheckboxValue(input, value) },
+  setValue: function(el, value) {
+    var input = $(el).find("input");
+    console.log(value)
+    setIndeterminateCheckboxValue(input, value);
+  },
   subscribe: function(el, callback) {
     var input = $(el).find("input");
-    input.on("click", function(e) {
+    input.on("change", function(e) {
       var input = $(this);
+
+      console.log("checked: ", input.prop("checked"));
       if (input.prop("readOnly")) {
         input.prop("checked", false)
         input.prop("readOnly", false)
@@ -68,7 +72,18 @@ $.extend(indeterminateCheckbox, {
       policy: "throttle",
       delay: 1000
     };
+  },
+  receiveMessage: function(el, data) {
+    console.log("HI")
+
+    var input = $(el).find("input");
+
+    if (data.hasOwnProperty("value")) {
+      setIndeterminateCheckboxValue(input, data["value"])
+    }
+
+    input.trigger('change');
   }
 });
 
-Shiny.inputBindings.register(indeterminateCheckbox);
+Shiny.inputBindings.register(indeterminateCheckbox, 'shiny.indeterminateCheckbox');

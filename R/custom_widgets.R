@@ -82,7 +82,7 @@ indeterminateCheckbox <- function(
   tags$span(
     singleton(tags$head(includeScript(system.file("js/indeterminate-checkbox.js", package = "dynguidelines")))),
     singleton(tags$head(includeCSS(system.file("css/indeterminate-checkbox.css", package = "dynguidelines")))),
-    class = "checkbox indeterminate-checkbox",
+    class = "indeterminate-checkbox",
     id = inputId,
     tags$label(
       tags$input(
@@ -93,4 +93,9 @@ indeterminateCheckbox <- function(
       label
     )
   )
+}
+
+updateIndeterminateCheckboxInput <- function(session, inputId, value) {
+  message <- list(value=value)
+  session$sendInputMessage(inputId, message)
 }

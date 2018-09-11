@@ -77,7 +77,7 @@ shiny_ui <- function() {
       style = "position:relative; width:100%; top:80px;",
       div(
         div(
-          style = "width:30%",
+          style = "width:30%;background-color:white;",
           div(
             style = "overflow-y:scroll; position:fixed; bottom:0px; top:80px; width:inherit; padding-right: 10px;",
             uiOutput("questions_panel")
@@ -179,7 +179,9 @@ add_icons <- function(label, conditions, icons) {
 #' get_guidelines_methods_table(guidelines(), list(selected = "false"))
 
 
-get_guidelines_methods_table <- function(guidelines, show_columns = list()) {
+get_guidelines_methods_table <- function(guidelines, show_columns = character()) {
+  testthat::expect_true(length(names(show_columns)) == length(show_columns))
+
   if(nrow(guidelines$methods_aggr) == 0) {
     span(class = "text-danger", "No methods fullfilling selection")
   } else {
@@ -189,19 +191,18 @@ get_guidelines_methods_table <- function(guidelines, show_columns = list()) {
       slice(n()) %>%
       ungroup()
 
-    print(show_columns[["column_selected"]])
-
     # add or remove columns based on `show_columns`
+    if (is.null(show_columns)) {show_columns <- character()}
     names(show_columns) <- gsub("^column_(.*)", "\\1", names(show_columns))
-
-    # print(show_columns[method_columns$column_id])
-    # print(show_columns[method_columns$column_id] %>% map_lgl(~is.null(.) || . == "indeterminate" || . == "true" || isTRUE(.)))
-
     method_columns <- method_columns %>%
-      filter(show_columns[method_columns$column_id] %>% map_lgl(~is.null(.) || . == "indeterminate" || . == "true" || isTRUE(.))) %>%
+      filter(
+        isTRUE(show_columns[method_columns$column_id]) |
+        show_columns[method_columns$column_id] %in% c("true", "indeterminate") |
+        is.na(show_columns[method_columns$column_id])
+      ) %>%
       bind_rows(
         tibble(
-          column_id = names(show_columns %>% keep(~. == "true" || isTRUE(.))) %>% as.character() %>% setdiff(method_columns$column_id)
+          column_id = names(show_columns[show_columns == "true" | isTRUE(show_columns)]) %>% as.character() %>% setdiff(method_columns$column_id)
         )
       )
 
@@ -454,28 +455,18 @@ get_questions_ui <- function(question_categories, answers) {
 
 
 
-get_columns_ui <- function(renderers = get_renderers()) {
+get_columns_ui <- function() {
   tags$div(
-    class = "btn-group",
     # presets
     tags$div(
       tags$label("Presets "),
-      tags$button(class = "btn", "Intelligent"),
-      tags$button(class = "btn", "Benchmark"),
-      tags$button(class = "btn", "Quality control"),
-      tags$button(class = "btn", "Method characteristics")
+      uiOutput("column_presets")
     ),
 
     # individual checks
     tags$div(
       class = "indeterminate-checkbox-group",
-      map2(renderers$column_id, renderers$label, function(column_id, label) {
-        indeterminateCheckbox(
-          paste0("column_", column_id) ,
-          label,
-          "indeterminate"
-        )
-      })
+      uiOutput("column_show_hide")
     )
   )
 }
