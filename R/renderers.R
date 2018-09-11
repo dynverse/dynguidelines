@@ -19,9 +19,10 @@ get_score_renderer <- function(palette = viridis::magma) {
       rounded = format_100(normalised),
       formatted = ifelse(is.na(x), "NA", rounded),
       width = paste0(rounded, "px"),
-      background = ifelse(is.na(x), "none", palette(255)[ceiling(normalised*254)+1] %>% html_color()),
+      `background-color` = ifelse(is.na(x), "none", palette(255)[ceiling(normalised*254)+1] %>% html_color()),
       color = case_when(scale_01(normalised, lower = 0) > 0.5 ~ "black", is.na(x) ~ "grey", TRUE ~ "white"),
-      style = pmap(list(`background-color` = background, color = color, display = "block", width = width), htmltools::css)
+      `text-shadow` = case_when(color == "white" ~ "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black", TRUE ~ "none"),
+      style = pmap(lst(`background-color`, color, display = "block", width, `text-shadow`), htmltools::css)
     )
 
     pmap(list(y$formatted, style = y$style, class = "score"), span)
