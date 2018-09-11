@@ -15,19 +15,17 @@ get_default <- function(question_id, questions = get_questions()) {
 answer_questions_docs <- function() {
   questions <- get_questions()
   parameters <- paste0(
-    "@param ",
-    names(questions),
-    " ",
-    map(questions, "label"),
-    " Defaults to ",
-    get_defaults(names(questions)) %>% as.character()
+    "@param ... Answers to questions: \n",
+    glue::glue(
+      " - {names(questions)}: {map_chr(questions, 'label')}, defaults to {get_defaults(names(questions)) %>% as.character()}: "
+    ) %>% glue::glue_collapse("\n")
   )
+
   parameters
 }
 
 #' Provide answers to various questions
 #'
-#' @usage answer_questions(dataset = NULL, ...)
 #' @include questions.R
 #' @param dataset The dataset from which the answers will be computed
 #' @eval answer_questions_docs()
@@ -35,11 +33,10 @@ answer_questions_docs <- function() {
 #' @export
 answer_questions <- function(dataset = NULL, ...) {
   # get either the defaults or the arguments given by the user
-  answers <- as.list(environment())
-  answers <- answers[names(answers) != "dataset"]
-
-  # get the question ids that were given by the user
-  given_question_ids <- names(match.call())
+  given_answers <- list(...)
+  default_answers <- get_defaults()
+  default_answers <- default_answers[setdiff(names(default_answers), names(given_answers))]
+  answers <- c(given_answers, default_answers)
 
   # get computed answers from dataset
   computed_question_ids <- character()
@@ -56,15 +53,12 @@ answer_questions <- function(dataset = NULL, ...) {
     question_id = names(answers),
     answer = answers,
     source = case_when(
-      question_id %in% given_question_ids ~ "adapted",
+      question_id %in% names(given_answers) ~ "adapted",
       question_id %in% computed_question_ids ~ "computed",
       TRUE ~ "default"
     )
   )
 }
-formals(answer_questions) <- c(list(dataset = NULL), get_defaults(names(get_questions())))
-
-
 
 #' Produces the code necessary to reproduce a particular set of guidelines
 #'
