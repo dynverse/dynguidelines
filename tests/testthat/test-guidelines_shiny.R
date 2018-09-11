@@ -5,6 +5,7 @@ context("Test Shiny app")
 
 # open Shiny app and PhantomJS
 app <- ShinyDriver$new(system.file("deploy", package = "dynguidelines"))
+Sys.sleep(5)
 
 test_that("A methods table is returned", {
   app$setInputs(multiple_disconnected = "TRUE")
