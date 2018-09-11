@@ -41,6 +41,7 @@ Imports:
   knitr,
   glue,
   stringr,
+  tidyr,
   viridis,
   VGAM
 Suggests:
