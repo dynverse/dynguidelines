@@ -94,16 +94,16 @@ get_renderers <- function() {
   data(trajectory_types, package = "dynwrap", envir = environment())
 
   renderers <- tribble(
-    ~column_id, ~category, ~renderer, ~label, ~title, ~style, ~default,
-    "selected", "basic", render_selected, icon("check-circle"), "Selected methods for TI", NA, -100,
-    "name", "basic", render_identity, "Method", "Name of the method", "max-width:99%", -99,
-    "most_complex_trajectory_type", "method", render_detects_trajectory_type, "Topology", "The most complex topology this method can predict", NA, -98,
-    "benchmark_overall", "benchmark", get_score_renderer(), "Benchmark score", "Overall score in the benchmark", "width:130px;", 98,
-    "doi", "method", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99,
-    "code_url", "method", render_code, icon("code"), "Code of method", NA, 100,
-    "platform", "method", render_identity, "Language", "Language", NA, NA,
-    "time_prediction_mean", "scaling", get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7), "Time", "Estimated running time", NA, NA,
-    "memory_prediction_mean", "scaling", get_scaling_renderer(format_memory, min = 1, max = 10^12), "Memory", "Estimated maximal memory usage", NA, NA
+    ~column_id, ~category, ~renderer, ~label, ~title, ~style, ~default, ~name,
+    "selected", "basic", render_selected, icon("check-circle"), "Selected methods for TI", NA, -100, NA,
+    "name", "basic", render_identity, "Method", "Name of the method", "max-width:99%", -99, NA,
+    "most_complex_trajectory_type", "method", render_detects_trajectory_type, "Topology", "The most complex topology this method can predict", NA, -98, NA,
+    "benchmark_overall", "benchmark", get_score_renderer(), "Benchmark score", "Overall score in the benchmark", "width:130px;", 98, NA,
+    "doi", "method", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99, "paper",
+    "code_url", "method", render_code, icon("code"), "Code of method", NA, 100, "code",
+    "platform", "method", render_identity, "Language", "Language", NA, NA, NA,
+    "time_prediction_mean", "scaling", get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7), "Time", "Estimated running time", NA, NA, NA,
+    "memory_prediction_mean", "scaling", get_scaling_renderer(format_memory, min = 1, max = 10^12), "Memory", "Estimated maximal memory usage", NA, NA, NA
   ) %>% bind_rows(
     tibble(
       trajectory_type = trajectory_types$id,
@@ -111,6 +111,7 @@ get_renderers <- function() {
       category = "method",
       renderer = map(column_id, get_trajectory_type_renderer),
       label = map(column_id, ~""),
+      name = paste0("Detects ", trajectory_type),
       title = as.character(str_glue("Whether this method can predict a {label_split(trajectory_type)} topology")),
       style = NA,
       default = NA
@@ -122,19 +123,21 @@ get_renderers <- function() {
       category = "benchmark",
       renderer = map(column_id, ~get_score_renderer()),
       label = as.list(str_glue("{label_capitalise(trajectory_type)} score")),
+      name = NA,
       title = as.character(str_glue("Score on datasets containing a {label_split(trajectory_type)} topology")),
       style = "width:130px;",
       default = NA
-    ) %>% bind_rows(
-      tibble(
-        column_id = methods_aggr %>% select(starts_with("qc_")) %>% select_if(is.numeric) %>% colnames(),
-        category = "qc",
-        renderer = map(column_id, ~get_score_renderer(viridis::viridis)),
-        label = as.list(label_capitalise(column_id)),
-        title = as.character(label),
-        style = "width:130px;",
-        default = NA
-      )
+    )
+  ) %>% bind_rows(
+    tibble(
+      column_id = methods_aggr %>% select(starts_with("qc_")) %>% select_if(is.numeric) %>% colnames(),
+      category = "qc",
+      renderer = map(column_id, ~get_score_renderer(viridis::viridis)),
+      label = as.list(label_capitalise(column_id)),
+      name = NA,
+      title = as.character(label),
+      style = "width:130px;",
+      default = NA
     )
   )
 

@@ -47,7 +47,7 @@ shiny_ui <- function() {
               )
             ),
 
-            # benchmarking study
+            # benchmarking repo
             tags$li(
               tags$a(
                 "Benchmark repository ",
@@ -513,7 +513,11 @@ get_columns_show_hide_ui <- function(renderers) {
         tags$li(
           class = "list-group-item",
           tags$em(label_capitalise(category)),
-          map2(renderers$column_id, renderers$label, function(column_id, label) {
+          pmap(renderers, function(column_id, label, name, ...) {
+            # use label by default, unless name is not na
+            if (!is.na(name)) {
+              label <- name
+            }
             indeterminateCheckbox(
               paste0("column_", column_id),
               label,
