@@ -121,6 +121,17 @@ shiny_ui <- function() {
               `data-toggle` = "collapse"
             ),
 
+            # columns toggle
+            tags$a(
+              class = "btn btn-default",
+              style = "",
+              "Options ",
+              icon("gear"),
+              href = "#toggle-options",
+              `data-target` = "#options",
+              `data-toggle` = "collapse"
+            ),
+
             # submit button
             actionLink(
               class = "btn",
