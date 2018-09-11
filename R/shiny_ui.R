@@ -57,31 +57,6 @@ shiny_ui <- function() {
               )
             ),
 
-            # code toggle
-            tags$li(
-              style = "background-color:#cab1ef",
-              tags$a(
-                "Show code ",
-                icon("code"),
-                href = "#toggle-code",
-                `data-target` = "#code",
-                `data-toggle` = "collapse"
-              )
-            ),
-
-            # submit button
-            tags$li(
-              style = "background-color:#9362e0",
-              actionLink(
-                "submit",
-                label = span(
-                  icon("chevron-circle-right", class = "arrow4"),
-                  " Close & use ",
-                  icon("chevron-circle-right", class = "arrow4")
-                ),
-                style = "color: white;font-weight: bold;"
-              )
-            ),
             tags$li(
               a(
                 style = "display: inline;",
@@ -111,7 +86,55 @@ shiny_ui <- function() {
         div(
           style = "width:70%;float:right;padding-left:20px;",
 
-          # code collapisble
+          # top buttons
+          div(
+            class = "btn-group btn-group-justified",
+            # code toggle
+            tags$a(
+              class = "btn btn-default",
+              style = "",
+              "Show code ",
+              icon("code"),
+              href = "#toggle-code",
+              `data-target` = "#code",
+              `data-toggle` = "collapse"
+            ),
+
+            # columns toggle
+            tags$a(
+              class = "btn btn-default",
+              style = "",
+              "Show/hide columns ",
+              icon("columns"),
+              href = "#toggle-columns",
+              `data-target` = "#columns",
+              `data-toggle` = "collapse"
+            ),
+
+            # submit button
+            actionLink(
+              class = "btn",
+              "submit",
+              label = span(
+                icon("chevron-circle-right", class = "arrow4"),
+                " Close & use ",
+                icon("chevron-circle-right", class = "arrow4")
+              ),
+              style = "color: white;font-weight: bold; background-color:#9362e0"
+            )
+          ),
+
+
+
+          # columns collapsible
+          tags$div(
+            class = "panel-collapse collapse in",
+            id = "columns",
+
+            get_columns_ui()
+          ),
+
+          # code collapible
           tags$div(
             class = "panel-collapse collapse",
             id = "code",
@@ -153,7 +176,10 @@ add_icons <- function(label, conditions, icons) {
   })
 }
 
-get_guidelines_methods_table <- function(guidelines) {
+#' get_guidelines_methods_table(guidelines(), list(selected = "false"))
+
+
+get_guidelines_methods_table <- function(guidelines, show_columns = list()) {
   if(nrow(guidelines$methods_aggr) == 0) {
     span(class = "text-danger", "No methods fullfilling selection")
   } else {
@@ -162,6 +188,22 @@ get_guidelines_methods_table <- function(guidelines) {
       group_by(column_id) %>%
       slice(n()) %>%
       ungroup()
+
+    print(show_columns[["column_selected"]])
+
+    # add or remove columns based on `show_columns`
+    names(show_columns) <- gsub("^column_(.*)", "\\1", names(show_columns))
+
+    # print(show_columns[method_columns$column_id])
+    # print(show_columns[method_columns$column_id] %>% map_lgl(~is.null(.) || . == "indeterminate" || . == "true" || isTRUE(.)))
+
+    method_columns <- method_columns %>%
+      filter(show_columns[method_columns$column_id] %>% map_lgl(~is.null(.) || . == "indeterminate" || . == "true" || isTRUE(.))) %>%
+      bind_rows(
+        tibble(
+          column_id = names(show_columns %>% keep(~. == "true" || isTRUE(.))) %>% as.character() %>% setdiff(method_columns$column_id)
+        )
+      )
 
     # add renderers
     method_columns <- method_columns %>%
@@ -406,4 +448,34 @@ get_questions_ui <- function(question_categories, answers) {
 
     category_panel
   })
+}
+
+
+
+
+
+get_columns_ui <- function(renderers = get_renderers()) {
+  tags$div(
+    class = "btn-group",
+    # presets
+    tags$div(
+      tags$label("Presets "),
+      tags$button(class = "btn", "Intelligent"),
+      tags$button(class = "btn", "Benchmark"),
+      tags$button(class = "btn", "Quality control"),
+      tags$button(class = "btn", "Method characteristics")
+    ),
+
+    # individual checks
+    tags$div(
+      class = "indeterminate-checkbox-group",
+      map2(renderers$column_id, renderers$label, function(column_id, label) {
+        indeterminateCheckbox(
+          paste0("column_", column_id) ,
+          label,
+          "indeterminate"
+        )
+      })
+    )
+  )
 }

@@ -47,12 +47,16 @@ shiny_server <- function(
     })
     current_guidelines <- reactive(guidelines(dataset = NULL, answers = reactive_answers()))
 
+    ## create active columns reactivity
+    show_column_ids <- paste0("column_", get_renderers()$column_id)
+    show_columns <- reactive(map(show_column_ids, ~input[[.]]) %>% set_names(show_column_ids))
+
     ## create the UI
     # questions
     output$questions_panel <- renderUI(get_questions_ui(question_categories, reactive_answers()))
 
     # methods table
-    output$methods_table <- renderUI(get_guidelines_methods_table(current_guidelines()))
+    output$methods_table <- renderUI(get_guidelines_methods_table(current_guidelines(), show_columns()))
 
     # code
     output$code <- renderText(get_answers_code(answers = reactive_answers()))
@@ -88,6 +92,7 @@ shiny_server <- function(
 
 
 # Function which converts "TRUE" -> TRUE and "FALSE" -> FALSE because shiny cannot handle such values
+# It also converts singleton characters to numbers if possible
 parse_answers <- function(x) {
   if (identical(x, "TRUE")) {
     TRUE
