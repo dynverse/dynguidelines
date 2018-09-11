@@ -197,9 +197,6 @@ add_icons <- function(label, conditions, icons) {
   })
 }
 
-#' get_guidelines_methods_table(guidelines(), list(selected = "false"))
-
-
 get_guidelines_methods_table <- function(guidelines, show_columns = character()) {
   testthat::expect_true(length(names(show_columns)) == length(show_columns))
 
@@ -246,47 +243,51 @@ get_guidelines_methods_table <- function(guidelines, show_columns = character())
     # extract correct columns from guidelines
     methods <- guidelines$methods_aggr %>% select(!!method_columns$column_id)
 
-    # render columns
-    methods_rendered <- methods %>%
-      map2(method_columns$renderer, function(col, renderer) renderer(col)) %>%
-      as_tibble()
+    if (ncol(methods) == 0) {
+      span(class = "text-danger", "No columns selected")
+    } else {
+      # render columns
+      methods_rendered <- methods %>%
+        map2(method_columns$renderer, function(col, renderer) renderer(col)) %>%
+        as_tibble()
 
-    # construct html of table
-    methods_table <- tags$table(
-      class = "table table-striped table-responsive",
-      tags$tr(
-        pmap(method_columns, function(label, title, style, ...) {
-          tags$th(
-            label,
-            `data-toggle` = "tooltip",
-            `data-placement` = "top",
-            title = title,
-            style = paste0("vertical-align:bottom;", ifelse(is.na(style), "width:20px;", style)),
-            class = "tooltippable"
-          )
-        })
-      ),
-      map(
-        seq_len(nrow(methods)),
-        function(row_i) {
-          row_rendered <- extract_row_to_list(methods_rendered, row_i)
-          row <- extract_row_to_list(methods, row_i)
-          if ("selected" %in% names(row) && row$selected) {
-            class <- "selected"
-          } else {
-            class <- ""
+      # construct html of table
+      methods_table <- tags$table(
+        class = "table table-striped table-responsive",
+        tags$tr(
+          pmap(method_columns, function(label, title, style, ...) {
+            tags$th(
+              label,
+              `data-toggle` = "tooltip",
+              `data-placement` = "top",
+              title = title,
+              style = paste0("vertical-align:bottom;", ifelse(is.na(style), "width:20px;", style)),
+              class = "tooltippable"
+            )
+          })
+        ),
+        map(
+          seq_len(nrow(methods)),
+          function(row_i) {
+            row_rendered <- extract_row_to_list(methods_rendered, row_i)
+            row <- extract_row_to_list(methods, row_i)
+            if ("selected" %in% names(row) && row$selected) {
+              class <- "selected"
+            } else {
+              class <- ""
+            }
+
+            tags$tr(
+              class = class,
+              map(row_rendered, .f = tags$td)
+            )
           }
+        ),
+        tags$script('activeTooltips()')
+      )
 
-          tags$tr(
-            class = class,
-            map(row_rendered, .f = tags$td)
-          )
-        }
-      ),
-      tags$script('activeTooltips()')
-    )
-
-    methods_table
+      methods_table
+    }
   }
 }
 
