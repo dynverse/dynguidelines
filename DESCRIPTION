@@ -62,6 +62,7 @@ Collate:
     'custom_widgets.R'
     'guidelines.R'
     'guidelines_shiny.R'
+    'module_dataset_chooser.R'
     'package.R'
     'renderers.R'
     'shiny_server.R'

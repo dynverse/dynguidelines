@@ -41,7 +41,14 @@ shiny_server <- function(
 
     ## create answer reactivity
     reactive_answers <- reactive({
-      answers$answer <- map(answers$question_id, function(question_id) {parse_answers(input[[question_id]])})
+      answers$answer <- map(answers$question_id, function(question_id) {
+        if (questions[[question_id]]$type == "module") {
+          parse_answers(callModule(questions[[question_id]]$module_server, question_id)())
+        } else {
+          parse_answers(input[[question_id]])
+        }
+      })
+
       answers$source <- map_chr(questions[answers$question_id], function(question) question$source())
       answers
     })
