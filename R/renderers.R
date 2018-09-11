@@ -13,17 +13,33 @@ get_score_renderer <- function(palette = viridis::magma) {
       # warning("Some NA values in score renderer! ", x)
     }
 
-    y <- tibble(
-      x = x,
-      normalised = ifelse(is.na(x), 0, scale_01(x, lower = 0)),
-      rounded = format_100(normalised),
-      formatted = ifelse(is.na(x), "NA", rounded),
-      width = paste0(rounded, "px"),
-      `background-color` = ifelse(is.na(x), "none", palette(255)[ceiling(normalised*254)+1] %>% html_color()),
-      color = case_when(scale_01(normalised, lower = 0) > 0.5 ~ "black", is.na(x) ~ "grey", TRUE ~ "white"),
-      `text-shadow` = case_when(color == "white" ~ "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black", TRUE ~ "none"),
-      style = pmap(lst(`background-color`, color, display = "block", width, `text-shadow`), htmltools::css)
-    )
+    style <- "bar"
+    if (style == "bar") {
+      y <- tibble(
+        x = x,
+        normalised = ifelse(is.na(x), 0, scale_01(x, lower = 0)),
+        rounded = format_100(normalised),
+        formatted = ifelse(is.na(x), "NA", rounded),
+        width = paste0(rounded, "px"),
+        `background-color` = ifelse(is.na(x), "none", palette(255)[ceiling(normalised*254)+1] %>% html_color()),
+        color = case_when(scale_01(normalised, lower = 0) > 0.5 ~ "black", is.na(x) ~ "grey", TRUE ~ "white"),
+        `text-shadow` = case_when(color == "white" ~ "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black", TRUE ~ "none"),
+        style = pmap(lst(`background-color`, color, display = "block", width, `text-shadow`), htmltools::css)
+      )
+    } else if (style == "circle") {
+      y <- tibble(
+        x = x,
+        normalised = ifelse(is.na(x), 0, scale_01(x, lower = 0)),
+        rounded = format_100(normalised),
+        formatted = ifelse(is.na(x), "NA", rounded),
+        width = paste0(rounded/3, "px"),
+        `line-height` = paste0(rounded/3, "px"),
+        `background-color` = ifelse(is.na(x), "none", palette(255)[ceiling(normalised*254)+1] %>% html_color()),
+        color = case_when(scale_01(normalised, lower = 0) > 0.5 ~ "black", is.na(x) ~ "grey", TRUE ~ "white"),
+        `text-shadow` = case_when(color == "white" ~ "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black", TRUE ~ "none"),
+        style = pmap(lst(`background-color`, color, display = "block", width, `text-shadow`, `line-height`, `border-radius` = "50%", `text-align` = "center"), htmltools::css)
+      )
+    }
 
     pmap(list(y$formatted, style = y$style, class = "score"), span)
   }
