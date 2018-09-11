@@ -32,6 +32,9 @@ test_that("A methods table is returned", {
   app$setInputs(languages = c())
   app$setInputs(programming_interface = "FALSE")
 
+  # test columns
+  app$executeScript("$('a[data-target=\"#columns\"]').trigger('click')")
+
   # get text_out
   output <- app$getValue(name = "methods_table")
   # test
