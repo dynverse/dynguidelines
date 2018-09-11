@@ -68,7 +68,7 @@ shiny_server <- function(
     # toggleClass(id = NULL, class = NULL, condition = NULL, selector = NULL)
 
     ## on exit, return guidelines
-    if (interactive()) {
+    if (interactive() || Sys.getenv("CI") == "true") {
       return_guidelines <- function() {
         isolate({
           return_value <- guidelines(dataset = NULL, answers = reactive_answers())
