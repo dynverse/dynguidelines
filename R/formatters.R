@@ -52,7 +52,7 @@ format_memory <- function(x) {
     } else if (x < 10^9) {
       paste0(round(x/10^6), "GB")
     } else {
-      warning("More than a terrabyte of memory seems a bit overkill...")
+      message("More than a terrabyte of memory seems a bit overkill...")
       paste0(round(x/10^9), "TB")
     }
   })
