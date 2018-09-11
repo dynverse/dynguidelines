@@ -137,14 +137,38 @@ get_renderers <- function() {
     tibble(
       trajectory_type = trajectory_types$id,
       column_id = paste0("benchmark_", trajectory_type),
-      category = "benchmark",
+      category = "benchmark_trajectory_types",
       renderer = map(column_id, ~get_score_renderer()),
       label = as.list(str_glue("{label_capitalise(trajectory_type)} score")),
       name = NA,
       title = as.character(str_glue("Score on datasets containing a {label_split(trajectory_type)} topology")),
       style = "width:130px;",
       default = NA
-    )
+    ) %>% select(-trajectory_type)
+  ) %>% bind_rows(
+    tibble(
+      metric_id = benchmark_metrics$metric_id,
+      column_id = paste0("benchmark_", metric_id),
+      category = "benchmark_metrics",
+      renderer = map(column_id, ~get_score_renderer()),
+      label = map(benchmark_metrics$html, HTML),
+      name = NA,
+      title = benchmark_metrics$html,
+      style = "width:130px;",
+      default = NA
+    ) %>% select(-metric_id)
+  ) %>% bind_rows(
+    tibble(
+      dataset_source = unique(benchmark_datasets_info$source),
+      column_id = paste0("benchmark_", dataset_source),
+      category = "benchmark_dataset_sources",
+      renderer = map(column_id, ~get_score_renderer()),
+      label = as.list(dataset_source),
+      name = NA,
+      title = dataset_source,
+      style = "width:130px;",
+      default = NA
+    ) %>% select(-dataset_source)
   ) %>% bind_rows(
     tibble(
       column_id = methods_aggr %>% select(starts_with("qc_")) %>% select_if(is.numeric) %>% colnames(),
@@ -178,26 +202,6 @@ get_column_presets <- function() {
       }
     ),
     list(
-      id = "method",
-      label = "Method characteristics",
-      activate = activate_column_preset_category("method")
-    ),
-    list(
-      id = "benchmark",
-      label = "Benchmark",
-      activate = activate_column_preset_category("benchmark")
-    ),
-    list(
-      id = "scaling",
-      label = "Scaling",
-      activate = activate_column_preset_category("scaling")
-    ),
-    list(
-      id = "qc",
-      label = "Quality control",
-      activate = activate_column_preset_category("qc")
-    ),
-    list(
       id = "everything",
       label = "Everything",
       activate = function(show_columns) {
@@ -205,7 +209,15 @@ get_column_presets <- function() {
         show_columns
       }
     )
-  )
+  ) %>%
+    c(map(unique(get_renderers()$category), function(category) {
+      list(
+        id = category,
+        label = label_capitalise(category),
+        activate = activate_column_preset_category(category)
+      )
+    })
+    )
 }
 
 
