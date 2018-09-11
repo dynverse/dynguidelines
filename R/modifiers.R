@@ -256,7 +256,7 @@ metric_importance_modifier <- function(data, answers) {
 
 calculate_benchmark_score <- function(benchmark, answers) {
   benchmark %>%
-    filter(dataset_id %in% answers$datasets) %>%
+    filter(!dataset_id %in% answers$excluded_datasets) %>%
     group_by(method_id, dataset_trajectory_type) %>%
     summarise_if(is.numeric, mean) %>%
     summarise_if(is.numeric, mean) %>%
