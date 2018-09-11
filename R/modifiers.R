@@ -89,14 +89,7 @@ expect_complex_tree_modifier <- function(data, answers) {
   data
 }
 
-
-
 dynmethods_modifier <- function(data, answers) {
-  if (!isTRUE(answers$dynmethods)) {
-    data$method_columns <- data$method_columns %>%
-      add_row(column_id = "qc_user_friendly", filter = TRUE, order = FALSE)
-  }
-
   data
 }
 
@@ -121,9 +114,20 @@ languages_modifier <- function(data, answers) {
 
 user_friendliness_modifier <- function(data, answers) {
   data$methods_aggr <- data$methods_aggr %>% filter(qc_user_friendly >= as.numeric(answers$user_friendliness)/100)
+  data$method_columns <- data$method_columns %>%
+    add_row(column_id = "qc_user_friendly", filter = TRUE, order = FALSE)
 
   data
 }
+
+developer_friendliness_modifier <- function(data, answers) {
+  data$methods_aggr <- data$methods_aggr %>% filter(qc_developer_friendly >= as.numeric(answers$developer_friendliness)/100)
+  data$method_columns <- data$method_columns %>%
+    add_row(column_id = "qc_developer_friendly", filter = TRUE, order = FALSE)
+
+  data
+}
+
 
 time_modifier <- function(data, answers) {
   time_cutoff <- process_time(answers$time)

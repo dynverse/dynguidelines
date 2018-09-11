@@ -279,13 +279,23 @@ get_questions <- function() {
     # ),
 
     list(
+      question_id = "user",
+      modifier = function(data, answers) {data},
+      type = "radiobuttons",
+      choices = c("User" = "user", "Developer" = "developer"),
+      label = "Are you an end-user or a method developer?",
+      activeIf = "true",
+      category = "availability",
+      default = "user"
+    ),
+    list(
       question_id = "dynmethods",
       modifier = dynmethods_modifier,
       type = "radiobuttons",
       choices = c("Yes" = TRUE, "No" = FALSE),
       label = "Do you use dynmethods to run the methods?",
       title = "Dynmethods is an R package which contains wrappers TI methods into a common interface. While we highly recommend the use of this package, as it eases interpretation, some users may prefer to work in other programming languages.",
-      activeIf = "true",
+      activeIf = "input.user == 'user'",
       category = "availability",
       default = TRUE
     ),
@@ -296,7 +306,7 @@ get_questions <- function() {
       choices = c("Yes" = TRUE, "No" = FALSE),
       label = "Is docker installed?",
       title = "Docker makes it easy to run each TI method without dependency issues, apart from the installation of docker itself.",
-      activeIf = "input.dynmethods == 'TRUE'",
+      activeIf = "input.user == 'user' && input.dynmethods == 'TRUE'",
       category = "availability",
       default =  function() if(interactive()) {dynwrap::test_docker_installation()} else {TRUE}
     ),
@@ -306,7 +316,7 @@ get_questions <- function() {
       type = "radiobuttons",
       choices = c("Yes" = TRUE, "No" = FALSE),
       label = "Can you work in a programming interface?",
-      activeIf = "input.dynmethods == 'FALSE'",
+      activeIf = "input.user == 'user' && input.dynmethods == 'FALSE'",
       category = "availability",
       default = TRUE
     ),
@@ -318,7 +328,7 @@ get_questions <- function() {
       special_choices = list(c("All", all_programming_languages), c("Any free",  all_free_programming_languages), c("Clear", "[]")),
       default = all_free_programming_languages,
       label = "Which languages can you work with?",
-      activeIf = "input.dynmethods == 'FALSE' && input.programming_interface == 'TRUE'",
+      activeIf = "input.user == 'user' && input.dynmethods == 'FALSE' && input.programming_interface == 'TRUE'",
       category = "availability",
       default = all_free_programming_languages
     ),
@@ -330,21 +340,21 @@ get_questions <- function() {
       max = 100,
       step = 10,
       default = 60,
-      slider_label = "
-    function(x) {
-    if(x < 50) {
-    return 'Poor'
-    } else if (x < 70) {
-    return 'Fair'
-    } else if (x < 90) {
-    return 'Decent'
-    } else {
-    return 'Excellent'
-    }
-    }
-    ",
       label = "Minimal user friendliness score",
-      activeIf = "input.dynmethods == 'FALSE'",
+      activeIf = "input.user == 'user' && input.dynmethods == 'FALSE'",
+      category = "availability"
+    )
+    ,
+    list(
+      question_id = "developer_friendliness",
+      modifier = developer_friendliness_modifier,
+      type = "slider",
+      min = 0,
+      max = 100,
+      step = 10,
+      default = 60,
+      label = "Minimal developer friendliness score",
+      activeIf = "input.user == 'developer'",
       category = "availability"
     )
   ) %>% {set_names(., map(., "question_id"))}
