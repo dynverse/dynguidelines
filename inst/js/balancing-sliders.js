@@ -20,8 +20,9 @@ $.extend(balancingSliders, {
   getValue: function(el) {
     var inputs = $(el).find(".js-range-slider");
     var vals = inputs.map(function() {return Number($(this).val())}).get();
+    var ids = inputs.map(function() {return $(this).attr("id")}).get();
 
-    return vals;
+    return _.zipObject(ids, vals);
   },
   setValue: function(el, value) {
     $(el).text(value);

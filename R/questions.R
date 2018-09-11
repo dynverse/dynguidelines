@@ -1,3 +1,7 @@
+benchmark_metrics <- dyneval::metrics %>%
+  filter(metric_id %in% c("correlation", "him", "F1_branches", "featureimp_wcor"))
+benchmark_metrics$description <- "todo"
+
 # convert javascript active if question
 generate_r_active_if <- function(question) {
   activeIf <- question$activeIf
@@ -20,7 +24,8 @@ generate_r_active_if <- function(question) {
 #' @include formatters.R
 #' @export
 get_questions <- function() {
-  priors <- dynwrap::priors
+  priors <- dynwrap::priors %>%
+    filter(prior_id != "dataset")
 
   # possible programming languages
   all_programming_languages <- c("python", "R", "C++", "Matlab")
@@ -30,13 +35,7 @@ get_questions <- function() {
   data(trajectory_types, package = "dynwrap", envir = environment())
   all_trajectory_types <- trajectory_types$id
 
-  # metrics, TODO: import from dyneval
-  metrics <- tibble(
-    id = c("correlation", "edge_flip", "featureimp_cor", "F1_branches"),
-    name = c("Ordering", "Topology", "Important features/genes", "Clustering quality"),
-    description = c("How well the cells were ordered", "How well the overall topology of the trajectory is recovered", "Whether the correct genes/features are retrieved from the trajectory", "Whether the cells are correctly clustered in branches and milestones")
-  )
-
+  # benchmark metrics
   questions <- list(
     list(
       question_id = "multiple_disconnected",
@@ -259,18 +258,35 @@ get_questions <- function() {
         "Within dynbenchmark, we assessed the performance of a TI method by comparing the similarity of its model to a given gold standard. There are several metrics to quantify this similarity, and this question allows to give certain metrics more weights than others: ",
         tags$ul(
           style = "text-align:left;",
-          map2(metrics$name, metrics$description, function(name, description) {tags$li(tags$strong(name), ": ", description)})
+          map2(benchmark_metrics$category, benchmark_metrics$description, function(name, description) {tags$li(tags$strong(name), ": ", description)})
         )
       ),
       activeIf = "true",
-      category = "metric_importance",
-      labels = metrics$name,
-      ids = metrics$id,
-      default = rep(1/nrow(metrics), nrow(metrics)),
+      category = "benchmarking_metrics",
+      labels = glue::glue("{label_split(benchmark_metrics$category)}: {benchmark_metrics$html}"),
+      ids = benchmark_metrics$metric_id,
+      default = rep(1/nrow(benchmark_metrics), nrow(benchmark_metrics)) %>% set_names(benchmark_metrics$metric_id) %>% as.list(),
       min = 0,
       max = 1,
       step = 0.01,
       sum = 1
+    ),
+
+    # list(
+    #   activeIf = "true",
+    #   category = "benchmarking_datasets",
+    #   labels =
+    # ),
+
+    list(
+      question_id = "user",
+      modifier = function(data, answers) {data},
+      type = "radiobuttons",
+      choices = c("User" = "user", "Developer" = "developer"),
+      label = "Are you an end-user or a method developer?",
+      activeIf = "true",
+      category = "availability",
+      default = "user"
     ),
     list(
       question_id = "dynmethods",
@@ -279,7 +295,7 @@ get_questions <- function() {
       choices = c("Yes" = TRUE, "No" = FALSE),
       label = "Do you use dynmethods to run the methods?",
       title = "Dynmethods is an R package which contains wrappers TI methods into a common interface. While we highly recommend the use of this package, as it eases interpretation, some users may prefer to work in other programming languages.",
-      activeIf = "true",
+      activeIf = "input.user == 'user'",
       category = "availability",
       default = TRUE
     ),
@@ -290,9 +306,9 @@ get_questions <- function() {
       choices = c("Yes" = TRUE, "No" = FALSE),
       label = "Is docker installed?",
       title = "Docker makes it easy to run each TI method without dependency issues, apart from the installation of docker itself.",
-      activeIf = "input.dynmethods == 'TRUE'",
+      activeIf = "input.user == 'user' && input.dynmethods == 'TRUE'",
       category = "availability",
-      default =  quote(dynwrap::test_docker_installation())
+      default =  function() if(interactive()) {dynwrap::test_docker_installation()} else {TRUE}
     ),
     list(
       question_id = "programming_interface",
@@ -300,7 +316,7 @@ get_questions <- function() {
       type = "radiobuttons",
       choices = c("Yes" = TRUE, "No" = FALSE),
       label = "Can you work in a programming interface?",
-      activeIf = "input.dynmethods == 'FALSE'",
+      activeIf = "input.user == 'user' && input.dynmethods == 'FALSE'",
       category = "availability",
       default = TRUE
     ),
@@ -312,7 +328,7 @@ get_questions <- function() {
       special_choices = list(c("All", all_programming_languages), c("Any free",  all_free_programming_languages), c("Clear", "[]")),
       default = all_free_programming_languages,
       label = "Which languages can you work with?",
-      activeIf = "input.dynmethods == 'FALSE' && input.programming_interface == 'TRUE'",
+      activeIf = "input.user == 'user' && input.dynmethods == 'FALSE' && input.programming_interface == 'TRUE'",
       category = "availability",
       default = all_free_programming_languages
     ),
@@ -324,21 +340,21 @@ get_questions <- function() {
       max = 100,
       step = 10,
       default = 60,
-      slider_label = "
-    function(x) {
-    if(x < 50) {
-    return 'Poor'
-    } else if (x < 70) {
-    return 'Fair'
-    } else if (x < 90) {
-    return 'Decent'
-    } else {
-    return 'Excellent'
-    }
-    }
-    ",
       label = "Minimal user friendliness score",
-      activeIf = "input.dynmethods == 'FALSE'",
+      activeIf = "input.user == 'user' && input.dynmethods == 'FALSE'",
+      category = "availability"
+    )
+    ,
+    list(
+      question_id = "developer_friendliness",
+      modifier = developer_friendliness_modifier,
+      type = "slider",
+      min = 0,
+      max = 100,
+      step = 10,
+      default = 60,
+      label = "Minimal developer friendliness score",
+      activeIf = "input.user == 'developer'",
       category = "availability"
     )
   ) %>% {set_names(., map(., "question_id"))}

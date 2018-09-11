@@ -23,11 +23,11 @@ guidelines <- function(
   # construct data object
   data <- lst(methods_aggr = methods_aggr %>% mutate(selected = FALSE), method_columns, answers)
 
-  # process default
-  data <- default_modifier(data)
-
   # get the answers in a list
   question_answers <- answers %>% select(question_id, answer) %>% deframe()
+
+  # process default
+  data <- default_modifier(data, question_answers)
 
   # call the modifiers if the question is active
   for (question in get_questions()) {

@@ -9,11 +9,11 @@ shiny_ui <- function() {
   fluidPage(
     title = "Selecting the most optimal TI method - dynguidelines",
     shinyjs::useShinyjs(),
-    tags$head(includeScript("https://www.googletagmanager.com/gtag/js?id=UA-578149-3")),
-    tags$head(includeScript(system.file("js/google-analytics.js", package = "dynguidelines"))),
+    tags$head(tags$script(src = "https://www.googletagmanager.com/gtag/js?id=UA-578149-3")),
     tags$head(includeScript(system.file("js/tooltips.js", package = "dynguidelines"))),
+    tags$head(includeScript(system.file("js/google-analytics.js", package = "dynguidelines"))),
 
-    tags$head(includeScript("https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js")),
+    tags$head(tags$script(src = "https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js")),
 
     tags$head(includeCSS(system.file("css/style.css", package = "dynguidelines"))),
 
@@ -21,7 +21,7 @@ shiny_ui <- function() {
 
     # navbar
     tags$nav(
-      class = "navbar navbar-default",
+      class = "navbar navbar-default navbar-fixed-top",
       div(
         class = "container-fluid",
         div(
@@ -47,6 +47,16 @@ shiny_ui <- function() {
               )
             ),
 
+            # benchmarking repo
+            tags$li(
+              tags$a(
+                "Benchmark repository ",
+                icon("github"),
+                href = "https://github.com/dynverse/dynbenchmark",
+                target = "blank"
+              )
+            ),
+
             # github repo
             tags$li(
               tags$a(
@@ -57,31 +67,6 @@ shiny_ui <- function() {
               )
             ),
 
-            # code toggle
-            tags$li(
-              style = "background-color:#cab1ef",
-              tags$a(
-                "Show code ",
-                icon("code"),
-                href = "#toggle-code",
-                `data-target` = "#code",
-                `data-toggle` = "collapse"
-              )
-            ),
-
-            # submit button
-            tags$li(
-              style = "background-color:#9362e0",
-              actionLink(
-                "submit",
-                label = span(
-                  icon("chevron-circle-right", class = "arrow4"),
-                  " Close & use ",
-                  icon("chevron-circle-right", class = "arrow4")
-                ),
-                style = "color: white;font-weight: bold;"
-              )
-            ),
             tags$li(
               a(
                 style = "display: inline;",
@@ -98,37 +83,101 @@ shiny_ui <- function() {
       )
     ),
 
-    sidebarLayout(
-      column(
-        4,
-        uiOutput("questions_panel"),
-        style = "overflow-y:scroll; max-height:100vh;"
-      ),
-      column(
-        8,
-
-        # code collapsible
-        tags$div(
-          class = "panel-collapse collapse",
-          id = "code",
-          style = "width:100%;",
-
-          # copy button
-          singleton(tags$head(includeScript("https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"))),
-          tags$button(
-            class = "btn btn-default btn-s btn-copy",
-            style = "float:left",
-            icon("copy"),
-            `data-clipboard-target`="#code"
-          ),
-          tags$script("$(document).ready(function() {new ClipboardJS('.btn-copy')});"),
-
-          # actual code
-          textOutput("code", container = tags$pre)
-        ),
-
+    div(
+      style = "position:relative; width:100%; top:80px;",
+      div(
         div(
-          uiOutput("methods_table")
+          style = "width:30%",
+          div(
+            style = "overflow-y:scroll; position:fixed; bottom:0px; top:80px; width:inherit; padding-right: 10px;background-color:white;z-index:1;",
+            uiOutput("questions_panel")
+          )
+        ),
+        div(
+          style = "width:70%;float:right;padding-left:20px;",
+
+          # top buttons
+          div(
+            class = "btn-group btn-group-justified",
+            # code toggle
+            tags$a(
+              class = "btn btn-default",
+              style = "",
+              "Show code ",
+              icon("code"),
+              href = "#toggle-code",
+              `data-target` = "#code",
+              `data-toggle` = "collapse"
+            ),
+
+            # columns toggle
+            tags$a(
+              class = "btn btn-default",
+              style = "",
+              "Show/hide columns ",
+              icon("columns"),
+              href = "#toggle-columns",
+              `data-target` = "#columns",
+              `data-toggle` = "collapse"
+            ),
+
+            # submit button
+            actionLink(
+              class = "btn",
+              "submit",
+              label = span(
+                icon("chevron-circle-right", class = "arrow4"),
+                " Close & use ",
+                icon("chevron-circle-right", class = "arrow4")
+              ),
+              style = "color: white;font-weight: bold; background-color:#9362e0"
+            )
+          ),
+
+
+
+          # columns collapsible
+          tags$div(
+            class = "panel-collapse collapse",
+            id = "columns",
+
+            tags$div(
+              # presets
+              tags$div(
+                uiOutput("column_presets")
+              ),
+
+              # individual checks
+              tags$div(
+                class = "indeterminate-checkbox-group",
+                uiOutput("column_show_hide")
+              )
+            )
+          ),
+
+          # code collapible
+          tags$div(
+            class = "panel-collapse collapse",
+            id = "code",
+
+            # copy button
+            singleton(tags$head(tags$script(src = "https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"))),
+            tags$button(
+              class = "btn btn-default btn-s btn-copy",
+              style = "float:left",
+              icon("copy"),
+              `data-clipboard-target`="#code"
+            ),
+            tags$script("$(document).ready(function() {new ClipboardJS('.btn-copy')});"),
+
+            # actual code
+            textOutput("code", container = tags$pre)
+          ),
+
+          # method table
+          div(
+            uiOutput("methods_table")
+          )
         )
       )
     )
@@ -148,7 +197,9 @@ add_icons <- function(label, conditions, icons) {
   })
 }
 
-get_guidelines_methods_table <- function(guidelines) {
+get_guidelines_methods_table <- function(guidelines, show_columns = character()) {
+  testthat::expect_true(length(names(show_columns)) == length(show_columns))
+
   if(nrow(guidelines$methods_aggr) == 0) {
     span(class = "text-danger", "No methods fullfilling selection")
   } else {
@@ -157,6 +208,21 @@ get_guidelines_methods_table <- function(guidelines) {
       group_by(column_id) %>%
       slice(n()) %>%
       ungroup()
+
+    # add or remove columns based on `show_columns`
+    if (is.null(show_columns)) {show_columns <- character()}
+    names(show_columns) <- gsub("^column_(.*)", "\\1", names(show_columns))
+    method_columns <- method_columns %>%
+      filter(
+        isTRUE(show_columns[method_columns$column_id]) |
+        show_columns[method_columns$column_id] %in% c("true", "indeterminate") |
+        is.na(show_columns[method_columns$column_id])
+      ) %>%
+      bind_rows(
+        tibble(
+          column_id = names(show_columns[show_columns == "true" | isTRUE(show_columns)]) %>% as.character() %>% setdiff(method_columns$column_id)
+        )
+      )
 
     # add renderers
     method_columns <- method_columns %>%
@@ -177,47 +243,51 @@ get_guidelines_methods_table <- function(guidelines) {
     # extract correct columns from guidelines
     methods <- guidelines$methods_aggr %>% select(!!method_columns$column_id)
 
-    # render columns
-    methods_rendered <- methods %>%
-      map2(method_columns$renderer, function(col, renderer) renderer(col)) %>%
-      as_tibble()
+    if (ncol(methods) == 0) {
+      span(class = "text-danger", "No columns selected")
+    } else {
+      # render columns
+      methods_rendered <- methods %>%
+        map2(method_columns$renderer, function(col, renderer) renderer(col)) %>%
+        as_tibble()
 
-    # construct html of table
-    methods_table <- tags$table(
-      class = "table table-striped table-responsive",
-      tags$tr(
-        pmap(method_columns, function(label, title, style, ...) {
-          tags$th(
-            label,
-            `data-toggle` = "tooltip",
-            `data-placement` = "top",
-            title = title,
-            style = paste0("vertical-align:bottom;", ifelse(is.na(style), "width:20px;", style)),
-            class = "tooltippable"
-          )
-        })
-      ),
-      map(
-        seq_len(nrow(methods)),
-        function(row_i) {
-          row_rendered <- extract_row_to_list(methods_rendered, row_i)
-          row <- extract_row_to_list(methods, row_i)
-          if ("selected" %in% names(row) && row$selected) {
-            class <- "selected"
-          } else {
-            class <- ""
+      # construct html of table
+      methods_table <- tags$table(
+        class = "table table-striped table-responsive",
+        tags$tr(
+          pmap(method_columns, function(label, title, style, ...) {
+            tags$th(
+              label,
+              `data-toggle` = "tooltip",
+              `data-placement` = "top",
+              title = title,
+              style = paste0("vertical-align:bottom;", ifelse(is.na(style), "width:20px;", style)),
+              class = "tooltippable"
+            )
+          })
+        ),
+        map(
+          seq_len(nrow(methods)),
+          function(row_i) {
+            row_rendered <- extract_row_to_list(methods_rendered, row_i)
+            row <- extract_row_to_list(methods, row_i)
+            if ("selected" %in% names(row) && row$selected) {
+              class <- "selected"
+            } else {
+              class <- ""
+            }
+
+            tags$tr(
+              class = class,
+              map(row_rendered, .f = tags$td)
+            )
           }
+        ),
+        tags$script('activeTooltips()')
+      )
 
-          tags$tr(
-            class = class,
-            map(row_rendered, .f = tags$td)
-          )
-        }
-      ),
-      tags$script('activeTooltips()')
-    )
-
-    methods_table
+      methods_table
+    }
   }
 }
 
@@ -401,4 +471,60 @@ get_questions_ui <- function(question_categories, answers) {
 
     category_panel
   })
+}
+
+
+
+
+
+
+get_columns_presets_ui <- function(column_presets, session, show_columns) {
+  tags$div(
+    class = "btn-group",
+    tags$label("Presets: ", style = "float:left;"),
+    map(column_presets, function(column_preset) {
+      # observe button event, and change the show columns accordingly
+      button_id <- paste0("column_preset_", column_preset$id)
+      observeEvent(session$input[[button_id]], {
+        # change the columns checkboxes
+        new_show_columns <- column_preset$activate(show_columns())
+        changed_show_columns <- new_show_columns[new_show_columns != show_columns()]
+
+        walk2(names(changed_show_columns), changed_show_columns, function(column_id, value) {
+          updateIndeterminateCheckboxInput(session, column_id, value)
+        })
+      })
+
+      actionButton(
+        button_id,
+        label = column_preset$label
+      )
+    })
+  )
+}
+
+
+get_columns_show_hide_ui <- function(renderers) {
+  tags$ul(
+    class = "list-group",
+    style = "position:static;",
+    tidyr::nest(renderers, -category, .key = "renderers") %>%
+      pmap(function(category, renderers) {
+        tags$li(
+          class = "list-group-item",
+          tags$em(label_capitalise(category)),
+          pmap(renderers, function(column_id, label, name, ...) {
+            # use label by default, unless name is not na
+            if (!is.na(name)) {
+              label <- name
+            }
+            indeterminateCheckbox(
+              paste0("column_", column_id),
+              label,
+              "indeterminate"
+            )
+          }) %>% tags$div()
+        )
+      })
+  )
 }

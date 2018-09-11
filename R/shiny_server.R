@@ -47,12 +47,19 @@ shiny_server <- function(
     })
     current_guidelines <- reactive(guidelines(dataset = NULL, answers = reactive_answers()))
 
+    ## create show/hide columns reactivity
+    show_column_ids <- paste0("column_", get_renderers()$column_id)
+    show_columns <- reactive(map(show_column_ids, ~input[[.]]) %>% set_names(show_column_ids) %>% unlist())
+
+    output$column_presets <- renderUI(get_columns_presets_ui(column_presets = get_column_presets(), session = session, show_columns = show_columns))
+    output$column_show_hide <- renderUI(get_columns_show_hide_ui(renderers = get_renderers()))
+
     ## create the UI
     # questions
     output$questions_panel <- renderUI(get_questions_ui(question_categories, reactive_answers()))
 
     # methods table
-    output$methods_table <- renderUI(get_guidelines_methods_table(current_guidelines()))
+    output$methods_table <- renderUI(get_guidelines_methods_table(current_guidelines(), show_columns()))
 
     # code
     output$code <- renderText(get_answers_code(answers = reactive_answers()))
@@ -60,24 +67,27 @@ shiny_server <- function(
     # toggleClass(id = NULL, class = NULL, condition = NULL, selector = NULL)
 
     ## on exit, return guidelines
-    return_guidelines <- function() {
-      isolate({
-        return_value <- guidelines(dataset = NULL, answers = reactive_answers())
-        stopApp(return_value)
-      })
-    }
-
-    # activate this function when pressing the submit button
-    observe({
-      if(input$submit > 0) {
-        return_guidelines()
+    if (interactive()) {
+      return_guidelines <- function() {
+        isolate({
+          return_value <- guidelines(dataset = NULL, answers = reactive_answers())
+          stopApp(return_value)
+        })
       }
-    })
 
-    # or when exiting through rstudio exit buttong
-    session$onSessionEnded(return_guidelines)
+      # activate this function when pressing the submit button
+      observe({
+        if(input$submit > 0) {
+          return_guidelines()
+        }
+      })
+
+      # or when exiting through rstudio exit buttong
+      session$onSessionEnded(return_guidelines)
+    }
   }
 
+  # set default answers argument to given answers
   formals(server)$answers <- answers
 
   server
@@ -85,6 +95,7 @@ shiny_server <- function(
 
 
 # Function which converts "TRUE" -> TRUE and "FALSE" -> FALSE because shiny cannot handle such values
+# It also converts singleton characters to numbers if possible
 parse_answers <- function(x) {
   if (identical(x, "TRUE")) {
     TRUE

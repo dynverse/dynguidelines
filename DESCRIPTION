@@ -28,10 +28,10 @@ RoxygenNote: 6.1.0
 Depends:
   R (>= 3.3)
 Imports:
+  dyneval,
   dynwrap,
   dynutils,
   dplyr,
-  fontawesome,
   tibble,
   htmltools,
   purrr,
@@ -41,15 +41,16 @@ Imports:
   knitr,
   glue,
   stringr,
-  viridis
+  tidyr,
+  viridis,
+  VGAM
 Suggests:
   testthat,
-  shinytest,
-  VGAM
+  shinytest
 Remotes:
+  dynverse/dyneval,
   dynverse/dynwrap,
-  dynverse/dynutils,
-  rstudio/fontawesome
+  dynverse/dynutils
 URL: https://github.com/dynverse/dynguidelines
 BugReports: https://github.com/dynverse/dynguidelines/issues
 Collate: 

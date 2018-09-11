@@ -51,7 +51,7 @@ balancingSliders <- function(
       style = paste0("width: 100%;"),
       `data-sum` = 1,
       tags$button(id = id, class = "lock btn btn-xs", icon("lock")),
-      tags$label(label),
+      tags$label(shiny::HTML(label)),
       do.call(tags$input, sliderProps)
     )
   })
@@ -68,4 +68,34 @@ balancingSliders <- function(
     ),
     sliderTags
   )
+}
+
+
+
+
+indeterminateCheckbox <- function(
+  inputId,
+  label,
+  value,
+  ...
+) {
+  tags$span(
+    singleton(tags$head(includeScript(system.file("js/indeterminate-checkbox.js", package = "dynguidelines")))),
+    singleton(tags$head(includeCSS(system.file("css/indeterminate-checkbox.css", package = "dynguidelines")))),
+    class = "indeterminate-checkbox",
+    id = inputId,
+    tags$label(
+      tags$input(
+        type = "checkbox",
+        value = "",
+        `data-initial` = value
+      ),
+      label
+    )
+  )
+}
+
+updateIndeterminateCheckboxInput <- function(session, inputId, value) {
+  message <- list(value=value)
+  session$sendInputMessage(inputId, message)
 }
