@@ -69,3 +69,28 @@ balancingSliders <- function(
     sliderTags
   )
 }
+
+
+
+
+indeterminateCheckbox <- function(
+  inputId,
+  label,
+  value,
+  ...
+) {
+  tags$span(
+    singleton(tags$head(includeScript(system.file("js/indeterminate-checkbox.js", package = "dynguidelines")))),
+    singleton(tags$head(includeCSS(system.file("css/indeterminate-checkbox.css", package = "dynguidelines")))),
+    class = "checkbox indeterminate-checkbox",
+    id = inputId,
+    tags$label(
+      tags$input(
+        type = "checkbox",
+        value = "",
+        `data-initial` = value
+      ),
+      label
+    )
+  )
+}
