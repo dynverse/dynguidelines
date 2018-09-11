@@ -4,16 +4,7 @@
 \alias{answer_questions}
 \title{Provide answers to various questions}
 \usage{
-answer_questions(dataset = NULL, multiple_disconnected = NULL,
-  expect_topology = NULL, expected_topology = NULL,
-  expect_cycles = NULL, expect_complex_tree = NULL, n_cells = 1000,
-  n_features = 1000, time = "1h", memory = "2GB",
-  prior_information = NULL, method_selection = "dynamic_n_methods",
-  dynamic_n_methods = 80, fixed_n_methods = 4,
-  metric_importance = list(correlation = 0.25, him = 0.25,
-  featureimp_wcor = 0.25, F1_branches = 0.25), dynmethods = TRUE,
-  docker = TRUE, programming_interface = TRUE,
-  languages = c("python", "R", "C++"), user_friendliness = 60)
+answer_questions(dataset = NULL, ...)
 }
 \arguments{
 \item{dataset}{The dataset from which the answers will be computed}
