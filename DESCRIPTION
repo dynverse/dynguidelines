@@ -28,6 +28,7 @@ RoxygenNote: 6.1.0
 Depends:
   R (>= 3.3)
 Imports:
+  dyneval,
   dynwrap,
   dynutils,
   dplyr,
@@ -46,6 +47,7 @@ Suggests:
   testthat,
   shinytest
 Remotes:
+  dynverse/dyneval,
   dynverse/dynwrap,
   dynverse/dynutils
 URL: https://github.com/dynverse/dynguidelines
