@@ -10,10 +10,10 @@ answer_questions(dataset = NULL, multiple_disconnected = NULL,
   n_features = 1000, time = "1h", memory = "2GB",
   prior_information = NULL, method_selection = "dynamic_n_methods",
   dynamic_n_methods = 80, fixed_n_methods = 4,
-  metric_importance = c(0.25, 0.25, 0.25, 0.25), dynmethods = TRUE,
-  docker = dynwrap::test_docker_installation(),
-  programming_interface = TRUE, languages = c("python", "R", "C++"),
-  user_friendliness = 60)
+  metric_importance = list(correlation = 0.25, him = 0.25,
+  featureimp_wcor = 0.25, F1_branches = 0.25), dynmethods = TRUE,
+  docker = TRUE, programming_interface = TRUE,
+  languages = c("python", "R", "C++"), user_friendliness = 60)
 }
 \arguments{
 \item{dataset}{The dataset from which the answers will be computed}
@@ -44,11 +44,11 @@ answer_questions(dataset = NULL, multiple_disconnected = NULL,
 
 \item{fixed_n_methods}{Number of methods Defaults to 4}
 
-\item{metric_importance}{How important are the following aspects of the trajectory? Defaults to c(0.25, 0.25, 0.25, 0.25)}
+\item{metric_importance}{How important are the following aspects of the trajectory? Defaults to list(correlation = 0.25, him = 0.25, featureimp_wcor = 0.25, F1_branches = 0.25)}
 
 \item{dynmethods}{Do you use dynmethods to run the methods? Defaults to TRUE}
 
-\item{docker}{Is docker installed? Defaults to dynwrap::test_docker_installation()}
+\item{docker}{Is docker installed? Defaults to TRUE}
 
 \item{programming_interface}{Can you work in a programming interface? Defaults to TRUE}
 

@@ -2,6 +2,7 @@
 
 export(answer_questions)
 export(get_answers_code)
+export(get_column_presets)
 export(get_questions)
 export(get_renderers)
 export(guidelines)
