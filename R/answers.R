@@ -22,10 +22,12 @@ answer_questions_docs <- function() {
     " Defaults to ",
     get_defaults(names(questions)) %>% as.character()
   )
+  parameters
 }
 
 #' Provide answers to various questions
 #'
+#' @usage answer_questions(dataset = NULL, ...)
 #' @include questions.R
 #' @param dataset The dataset from which the answers will be computed
 #' @eval answer_questions_docs()

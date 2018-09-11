@@ -24,7 +24,8 @@ generate_r_active_if <- function(question) {
 #' @include formatters.R
 #' @export
 get_questions <- function() {
-  priors <- dynwrap::priors
+  priors <- dynwrap::priors %>%
+    filter(prior_id != "dataset")
 
   # possible programming languages
   all_programming_languages <- c("python", "R", "C++", "Matlab")
