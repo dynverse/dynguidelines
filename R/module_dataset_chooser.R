@@ -67,19 +67,21 @@ dataset_chooser_input <- function(id, data) {
 
 dataset_chooser <- function(input, output, session) {
   # filter datasets on every aspect
-  dataset_ids <- reactive({
-    benchmark_datasets_info %>%
+  excluded_dataset_ids <- reactive({
+    included <- benchmark_datasets_info %>%
       filter(
         source %in% input$sources,
         trajectory_type %in% input$trajectory_types,
         id %in% input$ids
       ) %>%
       pull(id)
+
+    setdiff(benchmark_datasets_info$id, included)
   })
 
   # change the number of datasets in the ui
-  output$n_datasets <- renderText(length(dataset_ids()))
+  output$n_datasets <- renderText(nrow(benchmark_datasets_info) - length(excluded_dataset_ids()))
 
-  # output the dataset ids
-  dataset_ids
+  # output the excluded dataset ids
+  excluded_dataset_ids
 }

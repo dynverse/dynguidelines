@@ -359,13 +359,14 @@ get_questions <- function() {
       category = "availability"
     ),
     list(
-      question_id = "datasets",
+      question_id = "exclude_datasets",
       modifier = function(data, answers) {data},
       type = "module",
       module_input = dataset_chooser_input,
       module_server = dataset_chooser,
       data = lst(benchmark_datasets_info),
-      default = benchmark_datasets_info$id,
+      default = character(),
+      label = "Which datasets should be excluded",
       activeIf = "true",
       category = "datasets"
     )

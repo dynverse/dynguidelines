@@ -21,7 +21,7 @@ shiny_server <- function(
       question[["default"]] <- question_answer$answer
       question$source_default <- question_answer$source
 
-      question$answer <- reactive(parse_answers(input[[question$question_id]]))
+      question$answer <- reactive(get_answer(question, input))
 
       question$source <- reactive({
         if (isTRUE(all.equal(question$answer(), question[["default"]]))) {
@@ -41,13 +41,7 @@ shiny_server <- function(
 
     ## create answer reactivity
     reactive_answers <- reactive({
-      answers$answer <- map(answers$question_id, function(question_id) {
-        if (questions[[question_id]]$type == "module") {
-          parse_answers(callModule(questions[[question_id]]$module_server, question_id)())
-        } else {
-          parse_answers(input[[question_id]])
-        }
-      })
+      answers$answer <- map(questions[answers$question_id], get_answer, input = input)
 
       answers$source <- map_chr(questions[answers$question_id], function(question) question$source())
       answers
@@ -98,6 +92,15 @@ shiny_server <- function(
   formals(server)$answers <- answers
 
   server
+}
+
+# Get the answer either directly from the input or from the module
+get_answer <- function(question, input) {
+  if (question$type == "module") {
+    parse_answers(callModule(question$module_server, question$question_id)())
+  } else {
+    parse_answers(input[[question$question_id]])
+  }
 }
 
 
