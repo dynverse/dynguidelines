@@ -47,6 +47,16 @@ shiny_ui <- function() {
               )
             ),
 
+            # benchmarking study
+            tags$li(
+              tags$a(
+                "Benchmark repository ",
+                icon("github"),
+                href = "https://github.com/dynverse/dynbenchmark",
+                target = "blank"
+              )
+            ),
+
             # github repo
             tags$li(
               tags$a(
@@ -128,7 +138,7 @@ shiny_ui <- function() {
 
           # columns collapsible
           tags$div(
-            class = "panel-collapse collapse in",
+            class = "panel-collapse collapse",
             id = "columns",
 
             tags$div(
