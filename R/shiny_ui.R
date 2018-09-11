@@ -131,7 +131,19 @@ shiny_ui <- function() {
             class = "panel-collapse collapse in",
             id = "columns",
 
-            get_columns_ui()
+            tags$div(
+              # presets
+              tags$div(
+                tags$label("Presets "),
+                uiOutput("column_presets")
+              ),
+
+              # individual checks
+              tags$div(
+                class = "indeterminate-checkbox-group",
+                uiOutput("column_show_hide")
+              )
+            )
           ),
 
           # code collapible
@@ -455,18 +467,48 @@ get_questions_ui <- function(question_categories, answers) {
 
 
 
-get_columns_ui <- function() {
-  tags$div(
-    # presets
-    tags$div(
-      tags$label("Presets "),
-      uiOutput("column_presets")
-    ),
 
-    # individual checks
-    tags$div(
-      class = "indeterminate-checkbox-group",
-      uiOutput("column_show_hide")
-    )
+get_columns_presets_ui <- function(column_presets, session, show_columns) {
+  tags$div(
+    map(column_presets, function(column_preset) {
+      # observe button event, and change the show columns accordingly
+      button_id <- paste0("column_preset_", column_preset$id)
+      observeEvent(session$input[[button_id]], {
+        # change the columns checkboxes
+        new_show_columns <- column_preset$activate(show_columns())
+        changed_show_columns <- new_show_columns[new_show_columns != show_columns()]
+
+        walk2(names(changed_show_columns), changed_show_columns, function(column_id, value) {
+          updateIndeterminateCheckboxInput(session, column_id, value)
+        })
+      })
+
+      actionButton(
+        button_id,
+        label = column_preset$label
+      )
+    })
+  )
+}
+
+
+get_columns_show_hide_ui <- function(renderers) {
+  tags$ul(
+    class = "list-group",
+    style = "position:static;",
+    tidyr::nest(renderers, -category, .key = "renderers") %>%
+      pmap(function(category, renderers) {
+        tags$li(
+          class = "list-group-item",
+          tags$em(label_capitalise(category)),
+          map2(renderers$column_id, renderers$label, function(column_id, label) {
+            indeterminateCheckbox(
+              paste0("column_", column_id),
+              label,
+              "indeterminate"
+            )
+          }) %>% tags$div()
+        )
+      })
   )
 }

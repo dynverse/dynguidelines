@@ -48,55 +48,11 @@ shiny_server <- function(
     current_guidelines <- reactive(guidelines(dataset = NULL, answers = reactive_answers()))
 
     ## create show/hide columns reactivity
-    renderers <- get_renderers()
-
-    # individual inputs
     show_column_ids <- paste0("column_", get_renderers()$column_id)
     show_columns <- reactive(map(show_column_ids, ~input[[.]]) %>% set_names(show_column_ids) %>% unlist())
 
-    output$column_show_hide <- renderUI(
-      tags$ul(
-        class = "list-group",
-        style = "position:static;",
-        tidyr::nest(renderers, -category, .key = "renderers") %>%
-          pmap(function(category, renderers) {
-            tags$li(
-              class = "list-group-item",
-              tags$em(label_capitalise(category)),
-              map2(renderers$column_id, renderers$label, function(column_id, label) {
-                indeterminateCheckbox(
-                  paste0("column_", column_id),
-                  label,
-                  "indeterminate"
-                )
-              }) %>% tags$div()
-            )
-          })
-      )
-    )
-
-    # presets
-    column_presets <- get_column_presets()
-    output$column_presets <- renderUI(
-      map(column_presets, function(column_preset) {
-        # observe button event, and change the show columns accordingly
-        button_id <- paste0("column_preset_", column_preset$id)
-        observeEvent(input[[button_id]], {
-          # change the columns checkboxes
-          new_show_columns <- column_preset$activate(show_columns())
-          changed_show_columns <- new_show_columns[new_show_columns != show_columns()]
-
-          walk2(names(changed_show_columns), changed_show_columns, function(column_id, value) {
-            updateIndeterminateCheckboxInput(session, column_id, value)
-          })
-        })
-
-        actionButton(
-          button_id,
-          label = column_preset$label
-        )
-      }) %>% tags$div()
-    )
+    output$column_presets <- renderUI(get_columns_presets_ui(column_presets = get_column_presets(), session = session, show_columns = show_columns))
+    output$column_show_hide <- renderUI(get_columns_show_hide_ui(renderers = get_renderers()))
 
     ## create the UI
     # questions
