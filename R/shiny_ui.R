@@ -394,6 +394,12 @@ input_functions <- list(
       value = q[["default"]],
       min = 0
     )
+  },
+  module = function(q) {
+    q$module_input(
+      id = q$question_id,
+      data = q$data
+    )
   }
 )
 

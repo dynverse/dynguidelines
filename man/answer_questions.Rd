@@ -25,11 +25,14 @@ answer_questions(dataset = NULL, ...)
 \item dynamic_n_methods: Minimal probability of selecting the top model for the task, defaults to 80:
 \item fixed_n_methods: Number of methods, defaults to 4:
 \item metric_importance: How important are the following aspects of the trajectory?, defaults to list(correlation = 0.25, him = 0.25, featureimp_wcor = 0.25, F1_branches = 0.25):
+\item user: Are you an end-user or a method developer?, defaults to user:
 \item dynmethods: Do you use dynmethods to run the methods?, defaults to TRUE:
 \item docker: Is docker installed?, defaults to TRUE:
 \item programming_interface: Can you work in a programming interface?, defaults to TRUE:
 \item languages: Which languages can you work with?, defaults to c("python", "R", "C++"):
 \item user_friendliness: Minimal user friendliness score, defaults to 60:
+\item developer_friendliness: Minimal developer friendliness score, defaults to 60:
+\item exclude_datasets: Which datasets should be excluded, defaults to character(0):
 }}
 }
 \description{

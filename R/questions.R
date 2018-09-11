@@ -1,3 +1,4 @@
+# metrics from dyneval
 benchmark_metrics <- dyneval::metrics %>%
   filter(metric_id %in% c("correlation", "him", "F1_branches", "featureimp_wcor"))
 benchmark_metrics$description <- "todo"
@@ -356,6 +357,18 @@ get_questions <- function() {
       label = "Minimal developer friendliness score",
       activeIf = "input.user == 'developer'",
       category = "availability"
+    ),
+    list(
+      question_id = "exclude_datasets",
+      modifier = function(data, answers) {data},
+      type = "module",
+      module_input = dataset_chooser_input,
+      module_server = dataset_chooser,
+      data = lst(benchmark_datasets_info),
+      default = character(),
+      label = "Which datasets should be excluded",
+      activeIf = "true",
+      category = "datasets"
     )
   ) %>% {set_names(., map(., "question_id"))}
 
