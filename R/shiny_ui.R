@@ -34,11 +34,11 @@ shiny_ui <- function() {
             img(src = "img/logo_horizontal.png")
           )
         ),
+
         div(
           class = "navbar-collapse collapse",
           tags$ul(
-            class = "nav navbar-nav navbar-right",
-
+            class = "nav navbar-nav navbar-left",
             # tutorial
             tags$li(
               class = "nav-highlight",
@@ -48,7 +48,10 @@ shiny_ui <- function() {
                 href = "#intro",
                 onclick="javascript:introJs().setOption('showBullets', false).setOption('scrollToElement', false).start();"
               )
-            ),
+            )
+          ),
+          tags$ul(
+            class = "nav navbar-nav navbar-right",
 
             # benchmarking study
             tags$li(
@@ -67,6 +70,14 @@ shiny_ui <- function() {
                 icon("github"),
                 href = "https://github.com/dynverse/dynbenchmark",
                 target = "blank"
+              )
+            ),
+
+            # citation
+            tags$li(
+              tags$a(
+                "Citation ",
+                icon("quote-right")
               )
             ),
 
@@ -104,7 +115,7 @@ shiny_ui <- function() {
           div(
             style = "overflow-y:scroll; position:fixed; bottom:0px; top:80px; width:inherit; padding-right: 10px;background-color:white;z-index:1;",
             uiOutput("questions_panel"),
-            `data-intro` = "The choice of methods is different for every analysis. These questions guide you through method  answering different questions pertaining to the prior knowledge on the trajectory, the size of the data and the work environment.",
+            `data-intro` = "The choice of methods is different for every analysis. These questions guide you through method selection by polling the prior information on the trajectory, the size of the data and the work environment.",
             `data-step` = 1
           )
         ),
@@ -136,7 +147,7 @@ shiny_ui <- function() {
               href = "#toggle-columns",
               `data-target` = "#columns",
               `data-toggle` = "collapse",
-              `data-intro` = "Click here to see more information on each method in the main table. It allows you to focus on particular aspects of the benchmarking, such as scalability, benchmarking metrics, and quality control.",
+              `data-intro` = "Here, you can change the columns displayed in the main table. It allows you to focus on particular aspects of the benchmarking, such as scalability, benchmarking metrics, and quality control.",
               `data-step` = 4
             ),
 
@@ -209,7 +220,7 @@ shiny_ui <- function() {
 
           # method table
           div(
-            `data-intro` = "The relevant methods will be displayed here, along with information on how they were selected.",
+            `data-intro` = "The relevant methods are displayed here, along with information on how they were ordered and selected.",
             uiOutput("methods_table")
           )
         )

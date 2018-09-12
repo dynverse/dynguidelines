@@ -16,7 +16,12 @@
 }
 
 .nav-highlight {
-  background-color: #DDD;
+  background-color:#9362e0;
+}
+
+.nav-highlight>a {
+  color: white!important;
+  font-weight: bold;
 }
 
 
@@ -181,4 +186,11 @@ img.trajectory_type {
 
 img.trajectory_type.inactive {
   opacity:0.1;
+}
+
+
+
+/*** Tutorial ***/
+.introjs-helperNumberLayer {
+  background:#9362e0;
 }
