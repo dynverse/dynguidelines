@@ -115,11 +115,13 @@ input[type=number]::-webkit-outer-spin-button {
 
 
 /***** Methods table ******/
-tr.selected {
-  background-color: #e7dbf8;
+tr.selected > td:first-of-type {
+  background-color: #9362e0;
+  color: white;
 }
-.table-striped>tbody>tr.selected:nth-of-type(odd) {
-  background-color: #f4eefb;
+
+tr.selected {
+  background-color: #f6f1fd;
 }
 
 /* Score */
@@ -193,4 +195,14 @@ img.trajectory_type.inactive {
 /*** Tutorial ***/
 .introjs-helperNumberLayer {
   background:#9362e0;
+}
+
+
+
+
+
+/*** Badges ***/
+
+.__dimensions_badge_embed__ {
+  display: inline !important;
 }

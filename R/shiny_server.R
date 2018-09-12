@@ -78,6 +78,13 @@ shiny_server <- function(
     # code
     output$code <- renderText(get_answers_code(answers = reactive_answers()))
 
+    # citations
+    observe({
+      if (input$show_citation) {
+        get_citations_modal()
+      }
+    })
+
     ## on exit, return guidelines
     if (interactive() || Sys.getenv("CI") == "true") {
       return_guidelines <- function() {

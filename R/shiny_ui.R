@@ -75,9 +75,9 @@ shiny_ui <- function() {
 
             # citation
             tags$li(
-              tags$a(
-                "Citation ",
-                icon("quote-right")
+              actionLink(
+                "show_citation",
+                tagList("Citation ", icon("quote-right"))
               )
             ),
 
@@ -298,7 +298,7 @@ get_guidelines_methods_table <- function(guidelines, show_columns = character())
 
       # construct html of table
       methods_table <- tags$table(
-        class = "table table-striped table-responsive",
+        class = "table table-responsive",
         tags$tr(
           pmap(method_columns, function(label, title, style, ...) {
             tags$th(
@@ -525,6 +525,26 @@ get_questions_ui <- function(question_categories, answers) {
 
 
 
+# adds a proxy input, which can tell others that these inputs have been loaded and that their inputs are "correct"
+add_loaded_proxy <- function(inputs, id) {
+  c(
+    inputs,
+    list(
+      tags$div(
+        style = "display:none;",
+        shiny::radioButtons(
+          "questions_loaded",
+          "whatevs",
+          "loaded",
+          "loaded",
+          width = "0%"
+        )
+      )
+    )
+  )
+}
+
+
 
 
 get_columns_presets_ui <- function(column_presets, session, show_columns) {
@@ -580,21 +600,33 @@ get_columns_show_hide_ui <- function(renderers) {
 
 
 
-# adds a proxy input, which can tell others that these inputs have been loaded and that their inputs are "correct"
-add_loaded_proxy <- function(inputs, id) {
-  c(
-    inputs,
-    list(
-      tags$div(
-        style = "display:none;",
-        shiny::radioButtons(
-          "questions_loaded",
-          "whatevs",
-          "loaded",
-          "loaded",
-          width = "0%"
-        )
-      )
-    )
-  )
+
+# get the modal to display the citations
+get_citations_modal <- function() {
+  showModal(modalDialog(
+    title = "Citations",
+
+    tags$div(
+      a(href = "https://doi.org/10.1101/276907", "doi"),
+      a(href = "https://biorxiv.org/content/early/2018/03/05/276907", "biorxiv")
+    ),
+
+    tags$script(type = "text/javascript", src = "https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"),
+    tags$span(
+      class = "altmetric-embed",
+      `data-badge-type` = "medium-donut",
+      `data-doi` = "10.1101/276907"
+    ),
+
+    tags$script(
+      type = "text/javascript",
+      src = "https://badge.dimensions.ai/badge.js"
+    ),
+    tags$span(
+      class = "__dimensions_badge_embed__",
+      `data-doi` = "10.1101/276907"
+    ),
+
+    easyClose = TRUE
+  ))
 }
