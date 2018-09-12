@@ -87,6 +87,7 @@ get_answers_code <- function(answers = answer_questions()) {
   }
 
   code <- paste(
+    "# Reproduces the guidelines as created in the shiny app",
     code,
     "guidelines <- dynguidelines::guidelines(answers = answers)",
     sep = "\n"

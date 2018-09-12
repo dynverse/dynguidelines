@@ -48,23 +48,33 @@ get_score_renderer <- function(palette = viridis::magma) {
 render_detects_trajectory_type <- function(x) {
   map(
     x,
-    ~img(src = str_glue("img/trajectory_types/{.}.png"), class = "trajectory_type")
+    function(trajectory_type) {
+      if (is.na(trajectory_type)) {
+        NA
+      } else {
+        img(src = str_glue("img/trajectory_types/{trajectory_type}.png"), class = "trajectory_type")
+      }
+    }
   )
 }
 
 get_trajectory_type_renderer <- function(trajectory_type) {
-  function(x) {
-    map(
-      x,
-      function(x) {
-        if(x) {
-          class <- "trajectory_type"
-        } else {
-          class <- "trajectory_type inactive"
+  if (is.na(trajectory_type)) {
+    function(x) {NA}
+  } else {
+    function(x) {
+      map(
+        x,
+        function(x) {
+          if(x) {
+            class <- "trajectory_type"
+          } else {
+            class <- "trajectory_type inactive"
+          }
+          img(src = str_glue("img/trajectory_types/{gsub('detects_', '', trajectory_type)}.png"), class = class)
         }
-        img(src = str_glue("img/trajectory_types/{gsub('detects_', '', trajectory_type)}.png"), class = class)
-      }
-    )
+      )
+    }
   }
 }
 
@@ -119,8 +129,8 @@ get_renderers <- function() {
     "doi", "method", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99, "paper",
     "code_url", "method", render_code, icon("code"), "Code of method", NA, 100, "code",
     "platform", "method", render_identity, "Language", "Language", NA, NA, NA,
-    "time_prediction_mean", "scaling", get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7), "Time", "Estimated running time", NA, NA, NA,
-    "memory_prediction_mean", "scaling", get_scaling_renderer(format_memory, min = 1, max = 10^12), "Memory", "Estimated maximal memory usage", NA, NA, NA
+    "time_prediction_mean", "scaling", get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7), "Estimated time", "Estimated running time", NA, NA, NA,
+    "memory_prediction_mean", "scaling", get_scaling_renderer(format_memory, min = 1, max = 10^12), "Estimated memory", "Estimated maximal memory usage", NA, NA, NA
   ) %>% bind_rows(
     tibble(
       trajectory_type = trajectory_types$id,
@@ -137,14 +147,38 @@ get_renderers <- function() {
     tibble(
       trajectory_type = trajectory_types$id,
       column_id = paste0("benchmark_", trajectory_type),
-      category = "benchmark",
+      category = "benchmark_trajectory_types",
       renderer = map(column_id, ~get_score_renderer()),
       label = as.list(str_glue("{label_capitalise(trajectory_type)} score")),
       name = NA,
       title = as.character(str_glue("Score on datasets containing a {label_split(trajectory_type)} topology")),
       style = "width:130px;",
       default = NA
-    )
+    ) %>% select(-trajectory_type)
+  ) %>% bind_rows(
+    tibble(
+      metric_id = benchmark_metrics$metric_id,
+      column_id = paste0("benchmark_", metric_id),
+      category = "benchmark_metrics",
+      renderer = map(column_id, ~get_score_renderer()),
+      label = map(benchmark_metrics$html, HTML),
+      name = NA,
+      title = benchmark_metrics$html,
+      style = "width:130px;",
+      default = NA
+    ) %>% select(-metric_id)
+  ) %>% bind_rows(
+    tibble(
+      dataset_source = unique(benchmark_datasets_info$source),
+      column_id = paste0("benchmark_", dataset_source),
+      category = "benchmark_dataset_sources",
+      renderer = map(column_id, ~get_score_renderer()),
+      label = as.list(dataset_source),
+      name = NA,
+      title = dataset_source,
+      style = "width:130px;",
+      default = NA
+    ) %>% select(-dataset_source)
   ) %>% bind_rows(
     tibble(
       column_id = methods_aggr %>% select(starts_with("qc_")) %>% select_if(is.numeric) %>% colnames(),
@@ -178,26 +212,6 @@ get_column_presets <- function() {
       }
     ),
     list(
-      id = "method",
-      label = "Method characteristics",
-      activate = activate_column_preset_category("method")
-    ),
-    list(
-      id = "benchmark",
-      label = "Benchmark",
-      activate = activate_column_preset_category("benchmark")
-    ),
-    list(
-      id = "scaling",
-      label = "Scaling",
-      activate = activate_column_preset_category("scaling")
-    ),
-    list(
-      id = "qc",
-      label = "Quality control",
-      activate = activate_column_preset_category("qc")
-    ),
-    list(
       id = "everything",
       label = "Everything",
       activate = function(show_columns) {
@@ -205,7 +219,15 @@ get_column_presets <- function() {
         show_columns
       }
     )
-  )
+  ) %>%
+    c(map(unique(get_renderers()$category), function(category) {
+      list(
+        id = category,
+        label = label_capitalise(category),
+        activate = activate_column_preset_category(category)
+      )
+    })
+    )
 }
 
 

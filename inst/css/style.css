@@ -9,8 +9,6 @@
   margin-right: 20px !important;
 }
 
-
-
 /* navbar elements */
 .navbar-nav>li>a {
   padding-bottom: 25px;
@@ -18,14 +16,13 @@
 }
 
 
-
-
-
-
-
 /*** collapse panels ***/
+.panel-heading {
+  transition: all 0.5s;
+}
+
 .panel-collapse > div {
-  padding:10px 15px;
+  padding: 10px 15px;
   width:100%;
 }
 
@@ -37,6 +34,17 @@ span.computed {
 
 div.computed {
   opacity:0.5;
+}
+
+/* heading arrow */
+
+.panel-heading i {
+  transition: all 0.5s;
+  transform: rotate(0deg);
+}
+
+.panel-heading.collapsed i {
+	transform: rotate(-90deg);
 }
 
 

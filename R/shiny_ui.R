@@ -121,6 +121,17 @@ shiny_ui <- function() {
               `data-toggle` = "collapse"
             ),
 
+            # columns toggle
+            tags$a(
+              class = "btn btn-default",
+              style = "",
+              "Options ",
+              icon("gear"),
+              href = "#toggle-options",
+              `data-target` = "#options",
+              `data-toggle` = "collapse"
+            ),
+
             # submit button
             actionLink(
               class = "btn",
@@ -414,9 +425,7 @@ get_questions_ui <- function(question_categories, answers) {
     category_header <- category_id %>% label_capitalise
 
     # check if the panel has to be opened from the start
-    show_on_start <- question_category %>%
-      map_chr("source_default") %>%
-      {!all(. %in% c("computed"))}
+    show_on_start <- map_lgl(question_category, ~ifelse(is.null(.$show_on_start), FALSE, .$show_on_start)) %>% any()
 
     # create the panel of the category
     category_panel <- collapsePanel(
@@ -426,7 +435,7 @@ get_questions_ui <- function(question_categories, answers) {
       map(question_category, function(question) {
         if(!question$type %in% names(input_functions)) {stop("Invalid question type")}
 
-        # if this question has a label and title, add the collapsible help information
+        # if this question has a label and title, add the tooltip help information
         if (!is.null(question$label) && !is.null(question$title)) {
           question$label <-
             tags$span(
@@ -449,8 +458,8 @@ get_questions_ui <- function(question_categories, answers) {
         question_panel
       })
     )
-#
-#     # observe changes in completion
+
+    # observe changes in completion
     observe({
       category_sources <- question_category %>% keep(~.$active()) %>% map_chr(~.$source())
 
@@ -476,7 +485,7 @@ get_questions_ui <- function(question_categories, answers) {
     })
 
     category_panel
-  })
+  }) %>% add_loaded_proxy()
 }
 
 
@@ -532,5 +541,26 @@ get_columns_show_hide_ui <- function(renderers) {
           }) %>% tags$div()
         )
       })
+  )
+}
+
+
+
+# adds a proxy input, which can tell others that these inputs have been loaded and that their inputs are "correct"
+add_loaded_proxy <- function(inputs, id) {
+  c(
+    inputs,
+    list(
+      tags$div(
+        style = "display:none;",
+        shiny::radioButtons(
+          "questions_loaded",
+          "whatevs",
+          "loaded",
+          "loaded",
+          width = "0%"
+        )
+      )
+    )
   )
 }
