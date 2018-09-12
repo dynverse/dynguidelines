@@ -7,6 +7,6 @@ cache:
 r_packages: covr
 after_success:
  - R -e 'covr::codecov()'
- - R CMD BATCH inst/deploy/deploy.R
+ - test $TRAVIS_BRANCH = "master" && Rscript inst/deploy/deploy.R
 before_install:
   - source <(curl -s https://raw.githubusercontent.com/dynverse/travis_scripts/master/install_phantomjs.sh)

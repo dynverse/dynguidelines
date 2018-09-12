@@ -75,7 +75,7 @@ shiny_ui <- function() {
             # benchmarking repo
             tags$li(
               tags$a(
-                "Benchmark repository ",
+                HTML("<em>dyn</em>benchmark "),
                 icon("github"),
                 href = "https://github.com/dynverse/dynbenchmark",
                 target = "blank"
@@ -85,7 +85,7 @@ shiny_ui <- function() {
             # github repo
             tags$li(
               tags$a(
-                "Github repository ",
+                HTML("<em>dyn</em>guidelines "),
                 icon("github"),
                 href = "https://github.com/dynverse/dynguidelines",
                 target = "blank"
