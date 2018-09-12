@@ -82,12 +82,12 @@ shiny_ui <- function() {
               )
             ),
 
-            # github repo
+            # dyno repo
             tags$li(
               tags$a(
-                HTML("<em>dyn</em>guidelines "),
+                HTML("<em>dyn</em>o "),
                 icon("github"),
-                href = "https://github.com/dynverse/dynguidelines",
+                href = "https://github.com/dynverse/dyno",
                 target = "blank"
               )
             ),
@@ -614,29 +614,33 @@ get_citations_modal <- function() {
     tags$div(
       style = "float:right;",
 
-      tags$head(tags$script(type = "text/javascript", src = "https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js")),
+      singleton(tags$head(tags$script(type = "text/javascript", src = "https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"))),
       tags$div(
         class = "altmetric-embed",
         `data-badge-type` = "medium-donut",
         `data-doi` = "10.1101/276907"
       ),
+      tags$script("_altmetric_embed_init();"),
 
-      tags$head(tags$script(type = "text/javascript",src = "https://badge.dimensions.ai/badge.js")),
+      singleton(tags$head(tags$script(type = "text/javascript",src = "https://badge.dimensions.ai/badge.js"))),
       tags$div(
         class = "__dimensions_badge_embed__",
         `data-doi` = "10.1101/276907"
-      )
+      ),
+      tags$script("window.__dimensions_embed.addBadges();")
     ),
 
 
 
     tags$a(
       href = "http://dx.doi.org/10.1101/276907",
-      tags$blockquote(HTML(paste0("<p>", glue::glue_collapse(sample(c("Saelens Wouter*", "Robrecht Cannoodt*")), ", "), ", Helena Todorov, and Yvan Saeys. </p><p> \U201C A Comparison of Single-Cell Trajectory Inference Methods: Towards More Accurate and Robust Tools.\U201D </p><p> BioRxiv, March 5, 2018, 276907. </p> <p> https://doi.org/10.1101/276907 </p>")))
+      tags$blockquote(HTML(paste0("<p>", glue::glue_collapse(sample(c("Saelens Wouter*", "Robrecht Cannoodt*")), ", "), ", Helena Todorov, and Yvan Saeys. </p><p> \U201C A Comparison of Single-Cell Trajectory Inference Methods: Towards More Accurate and Robust Tools.\U201D </p><p> BioRxiv, March 5, 2018, 276907. </p> <p> https://doi.org/10.1101/276907 </p>"))),
+      target = "blank"
     ),
 
     tags$div(
-      "... or give us a shout-out on twitter (", tags$a(href = "https://twitter.com/saeyslab", "@saeyslab"), "). We'd love to hear your feedback!"
+      style = "font-size: 17.5px;",
+      "... or give us a shout-out on twitter (", tags$a(href = "https://twitter.com/saeyslab", "@saeyslab", target = "blank"), "). We'd love to hear your feedback!"
     ),
 
     style = "overflow:auto;",

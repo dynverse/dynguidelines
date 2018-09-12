@@ -85,7 +85,7 @@ render_selected <- function(x) {
 render_identity <- function(x) {x}
 
 render_article <- function(x) {
-  map(x, ~if(!is.na(.)) {tags$a(href = paste0("https://doi.org/", .), icon("paper-plane"))} else {""})
+  map(x, ~if(!is.na(.)) {tags$a(href = paste0("https://doi.org/", ., target = "blank"), icon("paper-plane"))} else {""})
 }
 
 render_code <- function(x) {
@@ -94,8 +94,12 @@ render_code <- function(x) {
 
 
 
-get_scaling_renderer <- function(formatter, palette = viridis::cividis, min, max) {
+get_scaling_renderer <- function(formatter, palette = viridis::cividis, min, max, log = FALSE) {
   function(x) {
+    if (log) {
+      x <- exp(x)
+    }
+
     x[x < min] <- min
     x[x > max] <- max
 
@@ -114,6 +118,11 @@ get_scaling_renderer <- function(formatter, palette = viridis::cividis, min, max
   }
 }
 
+time_renderer <- get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7, log = FALSE)
+memory_renderer <- get_scaling_renderer(format_memory, min = 1, max = 10^12, log = FALSE)
+time_renderer_log <- get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7, log = TRUE)
+memory_renderer_log <- get_scaling_renderer(format_memory, min = 1, max = 10^12, log = TRUE)
+
 #' Get all renderers
 #'
 #' @export
@@ -129,8 +138,8 @@ get_renderers <- function() {
     "doi", "method", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99, "paper",
     "code_url", "method", render_code, icon("code"), "Code of method", NA, 100, "code",
     "platform", "method", render_identity, "Language", "Language", NA, NA, NA,
-    "time_prediction_mean", "scaling", get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7), "Estimated time", "Estimated running time", NA, NA, NA,
-    "memory_prediction_mean", "scaling", get_scaling_renderer(format_memory, min = 1, max = 10^12), "Estimated memory", "Estimated maximal memory usage", NA, NA, NA
+    "time_prediction_mean", "scaling", time_renderer, "Estimated time", "Estimated running time", NA, NA, NA,
+    "memory_prediction_mean", "scaling", memory_renderer, "Estimated memory", "Estimated maximal memory usage", NA, NA, NA
   ) %>% bind_rows(
     tibble(
       trajectory_type = trajectory_types$id,
@@ -189,6 +198,18 @@ get_renderers <- function() {
       title = as.character(label),
       style = "width:130px;",
       default = NA
+    ) %>% bind_rows(
+      tibble(
+        column_id = methods_aggr %>% select(starts_with("scaling")) %>% select_if(is.numeric) %>% colnames(),
+        scaling_type = gsub("scaling_([^_]*)_.*", "\\1", column_id),
+        category = "scaling",
+        renderer = list(mem = memory_renderer_log, time = time_renderer_log)[scaling_type],
+        label = as.list(column_id),
+        name = NA,
+        title = as.character(label),
+        style = "width:130px",
+        default = NA
+      )
     )
   )
 
