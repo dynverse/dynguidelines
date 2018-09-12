@@ -649,7 +649,7 @@ get_citations_modal <- function() {
 
     tags$a(
       href = "http://dx.doi.org/10.1101/276907",
-      tags$blockquote(HTML(paste0("<p>", glue::glue_collapse(sample(c("Saelens Wouter*", "Robrecht Cannoodt*")), ", "), ", Helena Todorov, and Yvan Saeys. </p><p> \U201C A Comparison of Single-Cell Trajectory Inference Methods: Towards More Accurate and Robust Tools.\U201D </p><p> BioRxiv, March 5, 2018, 276907. </p> <p> https://doi.org/10.1101/276907 </p>"))),
+      tags$blockquote(HTML(paste0("<p>", glue::glue_collapse(sample(c("Wouter Saelens*", "Robrecht Cannoodt*")), ", "), ", Helena Todorov, and Yvan Saeys. </p><p> \U201C A Comparison of Single-Cell Trajectory Inference Methods: Towards More Accurate and Robust Tools.\U201D </p><p> BioRxiv, March 5, 2018, 276907. </p> <p> https://doi.org/10.1101/276907 </p>"))),
       target = "blank"
     ),
 
