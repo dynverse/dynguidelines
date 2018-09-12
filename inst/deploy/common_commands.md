@@ -12,10 +12,14 @@ docker run --rm -p 8080:8080 --name shiny dynverse/dynguidelines_server
 
 ## push to google cloud
 # https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app
-docker tag dynverse/dynguidelines_server gcr.io/dynverse/dynguidelines_server
-docker push gcr.io/dynverse/dynguidelines_server:v1
-kubectl set image deployment/dynguidelines dynguidelines=gcr.io/dynverse/dynguidelines_server
+docker tag dynverse/dynguidelines_server gcr.io/dynguidelines/dynguidelines_server
+docker push -- gcr.io/dynguidelines/dynguidelines_server
+kubectl set image deployment/dynguidelines dynguidelines=gcr.io/dynguidelines/dynguidelines_server
 
 
+docker run --rm -p 8080:8080 --name shiny gcr.io/dynguidelines/dynguidelines_server
 
+
+# get ip
+kubectl get service
 
