@@ -8,12 +8,12 @@ scale_01 <- function(y, lower = min(y, na.rm = TRUE), upper = max(y, na.rm = TRU
 }
 
 get_score_renderer <- function(palette = viridis::magma) {
-  function(x) {
+  function(x, options) {
     if (any(is.na(x))) {
       # warning("Some NA values in score renderer! ", x)
     }
 
-    style <- "bar"
+    style <- ifelse(is.null(options$score_visualisation), "bar", options$score_visualisation)
     if (style == "bar") {
       y <- tibble(
         x = x,

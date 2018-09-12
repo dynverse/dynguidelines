@@ -223,6 +223,15 @@ shiny_ui <- function() {
             textOutput("code", container = tags$pre)
           ),
 
+          # options
+          tags$div(
+            class = "panel-collapse collapse",
+            id = "options",
+
+            # actual code
+            uiOutput("options")
+          ),
+
           # method table
           div(
             `data-intro` = "The relevant methods are displayed here, along with information on how they were ordered and selected.",
@@ -247,7 +256,7 @@ add_icons <- function(label, conditions, icons) {
   })
 }
 
-get_guidelines_methods_table <- function(guidelines, show_columns = character()) {
+get_guidelines_methods_table <- function(guidelines, show_columns = character(), options = list()) {
   testthat::expect_true(length(names(show_columns)) == length(show_columns))
 
   if(nrow(guidelines$methods_aggr) == 0) {
@@ -298,7 +307,13 @@ get_guidelines_methods_table <- function(guidelines, show_columns = character())
     } else {
       # render columns
       methods_rendered <- methods %>%
-        map2(method_columns$renderer, function(col, renderer) renderer(col)) %>%
+        map2(method_columns$renderer, function(col, renderer) {
+          if ("options" %in% names(formals(renderer))) {
+            renderer(col, options)
+          } else {
+            renderer(col)
+          }
+        }) %>%
         as_tibble()
 
       # construct html of table
@@ -649,4 +664,19 @@ get_citations_modal <- function() {
     size = "l",
     footer = NULL
   ))
+}
+
+
+
+
+
+get_options_ui <- function() {
+  tagList(
+     shinyWidgets::radioGroupButtons(
+       "score_visualisation",
+       "How to show the scores",
+       choices = c(Circles = "circle", Bars = "bar"),
+       selected = "bar"
+     )
+  )
 }

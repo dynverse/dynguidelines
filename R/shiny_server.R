@@ -69,7 +69,7 @@ shiny_server <- function(
     # methods table
     output$methods_table <- renderUI(
       if(!is.null(current_guidelines())) {
-        get_guidelines_methods_table(current_guidelines(), show_columns())
+        get_guidelines_methods_table(current_guidelines(), show_columns(), options = options())
       } else {
         icon("spinner", class = "fa-pulse fa-3x fa-fw")
       }
@@ -83,6 +83,14 @@ shiny_server <- function(
       if (input$show_citation) {
         get_citations_modal()
       }
+    })
+
+    # options
+    output$options <- renderUI(get_options_ui())
+    options <- reactive({
+      lst(
+        score_visualisation = input$score_visualisation
+      )
     })
 
     ## on exit, return guidelines
