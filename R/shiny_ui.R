@@ -104,7 +104,7 @@ shiny_ui <- function() {
           div(
             style = "overflow-y:scroll; position:fixed; bottom:0px; top:80px; width:inherit; padding-right: 10px;background-color:white;z-index:1;",
             uiOutput("questions_panel"),
-            `data-intro` = "Answer the questions pertaining to your dataset and work environment. The most important questions are positioned on the top and are shown default.",
+            `data-intro` = "The choice of methods is different for every analysis. These questions guide you through method  answering different questions pertaining to the prior knowledge on the trajectory, the size of the data and the work environment.",
             `data-step` = 1
           )
         ),
@@ -124,7 +124,7 @@ shiny_ui <- function() {
               `data-target` = "#code",
               `data-toggle` = "collapse",
               `data-intro` = "You can get the code necessary to reproduce the guidelines here. Copy it over to your script!",
-              `data-step` = 4
+              `data-step` = 3
             ),
 
             # columns toggle
@@ -137,7 +137,7 @@ shiny_ui <- function() {
               `data-target` = "#columns",
               `data-toggle` = "collapse",
               `data-intro` = "Click here to see more information on each method in the main table. It allows you to focus on particular aspects of the benchmarking, such as scalability, benchmarking metrics, and quality control.",
-              `data-step` = 5
+              `data-step` = 4
             ),
 
             # columns toggle
@@ -161,7 +161,7 @@ shiny_ui <- function() {
                 icon("chevron-circle-right", class = "arrow4")
               ),
               style = "color: white;font-weight: bold; background-color:#9362e0",
-              `data-step` = 3,
+              `data-step` = 5,
               `data-intro` = "When ready, click this button to return the selected set of methods in R.",
               onclick = "window.close();"
             )
