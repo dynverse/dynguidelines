@@ -425,9 +425,7 @@ get_questions_ui <- function(question_categories, answers) {
     category_header <- category_id %>% label_capitalise
 
     # check if the panel has to be opened from the start
-    show_on_start <- question_category %>%
-      map_chr("source_default") %>%
-      {!all(. %in% c("computed"))}
+    show_on_start <- map_lgl(question_category, ~ifelse(is.null(.$show_on_start), FALSE, .$show_on_start)) %>% any()
 
     # create the panel of the category
     category_panel <- collapsePanel(

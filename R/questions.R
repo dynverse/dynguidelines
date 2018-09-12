@@ -55,7 +55,8 @@ get_questions <- function() {
         } else {
           default
         }
-      }
+      },
+      show_on_start = TRUE
     ),
     list(
       question_id = "expect_topology",
@@ -155,7 +156,8 @@ get_questions <- function() {
         } else {
           default
         }
-      }
+      },
+      show_on_start = TRUE
     ),
     list(
       question_id = "n_features",
