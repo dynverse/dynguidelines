@@ -7,6 +7,6 @@ cache:
 r_packages: covr
 after_success:
  - R -e 'covr::codecov()'
- - R -e 'install.packages("rsconnect");rsconnect::deployApp("inst/deploy", forceUpdate = TRUE)'
+ - R -e 'install.packages("rsconnect");rsconnect::setAccountInfo(name="dynverse", token="88F1120902755CE3DC4BF1753546B487", secret=Sys.getenv("shinyapps_secret"));rsconnect::deployApp("inst/deploy", forceUpdate = TRUE)'
 before_install:
   - source <(curl -s https://raw.githubusercontent.com/dynverse/travis_scripts/master/install_phantomjs.sh)
