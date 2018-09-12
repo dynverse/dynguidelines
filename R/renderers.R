@@ -52,8 +52,7 @@ render_detects_trajectory_type <- function(x) {
       if (is.na(trajectory_type)) {
         NA
       } else {
-        ""
-        # img(src = str_glue("img/trajectory_types/{trajectory_type}.png"), class = "trajectory_type")
+        img(src = str_glue("img/trajectory_types/{trajectory_type}.png"), class = "trajectory_type")
       }
     }
   )
@@ -72,8 +71,7 @@ get_trajectory_type_renderer <- function(trajectory_type) {
           } else {
             class <- "trajectory_type inactive"
           }
-          ""
-          # img(src = str_glue("img/trajectory_types/{gsub('detects_', '', trajectory_type)}.png"), class = class)
+          img(src = str_glue("img/trajectory_types/{gsub('detects_', '', trajectory_type)}.png"), class = class)
         }
       )
     }
