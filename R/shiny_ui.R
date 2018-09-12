@@ -48,6 +48,15 @@ shiny_ui <- function() {
                 href = "#intro",
                 onclick="javascript:introJs().setOption('showBullets', false).setOption('scrollToElement', false).start();"
               )
+            ),
+
+            # citation
+            tags$li(
+              class = "nav-highlight",
+              actionLink(
+                "show_citation",
+                tagList("Citation ", icon("quote-right"))
+              )
             )
           ),
           tags$ul(
@@ -70,14 +79,6 @@ shiny_ui <- function() {
                 icon("github"),
                 href = "https://github.com/dynverse/dynbenchmark",
                 target = "blank"
-              )
-            ),
-
-            # citation
-            tags$li(
-              actionLink(
-                "show_citation",
-                tagList("Citation ", icon("quote-right"))
               )
             ),
 
@@ -604,12 +605,16 @@ get_columns_show_hide_ui <- function(renderers) {
 # get the modal to display the citations
 get_citations_modal <- function() {
   showModal(modalDialog(
-    title = "Citations",
-
-    tags$div(
-      a(href = "https://doi.org/10.1101/276907", "doi"),
-      a(href = "https://biorxiv.org/content/early/2018/03/05/276907", "biorxiv")
+    title = tagList("If ", HTML("<em>dyn</em>guidelines was helpful to you, please cite: ")),
+    tags$a(
+      href = "http://dx.doi.org/10.1101/276907",
+      tags$blockquote("Saelens Wouter*, Robrecht Cannoodt*, Helena Todorov, and Yvan Saeys. “A Comparison of Single-Cell Trajectory Inference Methods: Towards More Accurate and Robust Tools.” BioRxiv, March 5, 2018, 276907. https://doi.org/10.1101/276907.")
     ),
+
+    # tags$div(
+    #   a(href = "https://doi.org/10.1101/276907", "doi"),
+    #   a(href = "https://biorxiv.org/content/early/2018/03/05/276907", "biorxiv")
+    # ),
 
     tags$script(type = "text/javascript", src = "https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"),
     tags$span(

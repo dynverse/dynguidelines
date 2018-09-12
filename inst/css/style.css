@@ -17,6 +17,8 @@
 
 .nav-highlight {
   background-color:#9362e0;
+  border-left: 1px solid white;
+  border-right: 1px solid white;
 }
 
 .nav-highlight>a {
