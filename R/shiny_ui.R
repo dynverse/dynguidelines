@@ -13,7 +13,9 @@ shiny_ui <- function() {
     tags$head(includeScript(system.file("js/tooltips.js", package = "dynguidelines"))),
     tags$head(includeScript(system.file("js/google-analytics.js", package = "dynguidelines"))),
 
-    tags$head(tags$script(src = "https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js")),
+    tags$head(tags$script(src = "https://cdn.jsdelivr.net/combine/npm/lodash@4.17.10,npm/intro.js@2.9.3")),
+
+    tags$head(tags$link(rel = "stylesheet", href = "https://cdn.jsdelivr.net/npm/intro.js@2.9.3/introjs.min.css")),
 
     tags$head(includeCSS(system.file("css/style.css", package = "dynguidelines"))),
 
@@ -32,8 +34,31 @@ shiny_ui <- function() {
             img(src = "img/logo_horizontal.png")
           )
         ),
+
         div(
           class = "navbar-collapse collapse",
+          tags$ul(
+            class = "nav navbar-nav navbar-left",
+            # tutorial
+            tags$li(
+              class = "nav-highlight",
+              tags$a(
+                "Tutorial",
+                icon("question-circle"),
+                href = "#intro",
+                onclick="javascript:introJs().setOption('showBullets', false).setOption('scrollToElement', false).start();"
+              )
+            ),
+
+            # citation
+            tags$li(
+              class = "nav-highlight",
+              actionLink(
+                "show_citation",
+                tagList("Citation ", icon("quote-right"))
+              )
+            )
+          ),
           tags$ul(
             class = "nav navbar-nav navbar-right",
 
@@ -90,7 +115,9 @@ shiny_ui <- function() {
           style = "width:30%",
           div(
             style = "overflow-y:scroll; position:fixed; bottom:0px; top:80px; width:inherit; padding-right: 10px;background-color:white;z-index:1;",
-            uiOutput("questions_panel")
+            uiOutput("questions_panel"),
+            `data-intro` = "The choice of methods is different for every analysis. These questions guide you through method selection by polling the prior information on the trajectory, the size of the data and the work environment.",
+            `data-step` = 1
           )
         ),
         div(
@@ -107,7 +134,9 @@ shiny_ui <- function() {
               icon("code"),
               href = "#toggle-code",
               `data-target` = "#code",
-              `data-toggle` = "collapse"
+              `data-toggle` = "collapse",
+              `data-intro` = "You can get the code necessary to reproduce the guidelines here. Copy it over to your script!",
+              `data-step` = 3
             ),
 
             # columns toggle
@@ -118,7 +147,9 @@ shiny_ui <- function() {
               icon("columns"),
               href = "#toggle-columns",
               `data-target` = "#columns",
-              `data-toggle` = "collapse"
+              `data-toggle` = "collapse",
+              `data-intro` = "Here, you can change the columns displayed in the main table. It allows you to focus on particular aspects of the benchmarking, such as scalability, benchmarking metrics, and quality control.",
+              `data-step` = 4
             ),
 
             # columns toggle
@@ -141,7 +172,10 @@ shiny_ui <- function() {
                 " Close & use ",
                 icon("chevron-circle-right", class = "arrow4")
               ),
-              style = "color: white;font-weight: bold; background-color:#9362e0"
+              style = "color: white;font-weight: bold; background-color:#9362e0",
+              `data-step` = 5,
+              `data-intro` = "When ready, click this button to return the selected set of methods in R.",
+              onclick = "window.close();"
             )
           ),
 
@@ -153,12 +187,12 @@ shiny_ui <- function() {
             id = "columns",
 
             tags$div(
-              # presets
+              # presets buttons
               tags$div(
                 uiOutput("column_presets")
               ),
 
-              # individual checks
+              # individual checkboxes
               tags$div(
                 class = "indeterminate-checkbox-group",
                 uiOutput("column_show_hide")
@@ -187,6 +221,7 @@ shiny_ui <- function() {
 
           # method table
           div(
+            `data-intro` = "The relevant methods are displayed here, along with information on how they were ordered and selected.",
             uiOutput("methods_table")
           )
         )
@@ -264,7 +299,7 @@ get_guidelines_methods_table <- function(guidelines, show_columns = character())
 
       # construct html of table
       methods_table <- tags$table(
-        class = "table table-striped table-responsive",
+        class = "table table-responsive",
         tags$tr(
           pmap(method_columns, function(label, title, style, ...) {
             tags$th(
@@ -491,6 +526,26 @@ get_questions_ui <- function(question_categories, answers) {
 
 
 
+# adds a proxy input, which can tell others that these inputs have been loaded and that their inputs are "correct"
+add_loaded_proxy <- function(inputs, id) {
+  c(
+    inputs,
+    list(
+      tags$div(
+        style = "display:none;",
+        shiny::radioButtons(
+          "questions_loaded",
+          "whatevs",
+          "loaded",
+          "loaded",
+          width = "0%"
+        )
+      )
+    )
+  )
+}
+
+
 
 
 get_columns_presets_ui <- function(column_presets, session, show_columns) {
@@ -546,21 +601,37 @@ get_columns_show_hide_ui <- function(renderers) {
 
 
 
-# adds a proxy input, which can tell others that these inputs have been loaded and that their inputs are "correct"
-add_loaded_proxy <- function(inputs, id) {
-  c(
-    inputs,
-    list(
-      tags$div(
-        style = "display:none;",
-        shiny::radioButtons(
-          "questions_loaded",
-          "whatevs",
-          "loaded",
-          "loaded",
-          width = "0%"
-        )
-      )
-    )
-  )
+
+# get the modal to display the citations
+get_citations_modal <- function() {
+  showModal(modalDialog(
+    title = tagList("If ", HTML("<em>dyn</em>guidelines was helpful to you, please cite: ")),
+    tags$a(
+      href = "http://dx.doi.org/10.1101/276907",
+      tags$blockquote(HTML("<p>Saelens Wouter*, Robrecht Cannoodt*, Helena Todorov, and Yvan Saeys. </p><p> \U201C A Comparison of Single-Cell Trajectory Inference Methods: Towards More Accurate and Robust Tools.\U201D </p><p> BioRxiv, March 5, 2018, 276907. </p> <p> https://doi.org/10.1101/276907 </p>"))
+    ),
+
+    # tags$div(
+    #   a(href = "https://doi.org/10.1101/276907", "doi"),
+    #   a(href = "https://biorxiv.org/content/early/2018/03/05/276907", "biorxiv")
+    # ),
+
+    tags$script(type = "text/javascript", src = "https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"),
+    tags$span(
+      class = "altmetric-embed",
+      `data-badge-type` = "medium-donut",
+      `data-doi` = "10.1101/276907"
+    ),
+
+    tags$script(
+      type = "text/javascript",
+      src = "https://badge.dimensions.ai/badge.js"
+    ),
+    tags$span(
+      class = "__dimensions_badge_embed__",
+      `data-doi` = "10.1101/276907"
+    ),
+
+    easyClose = TRUE
+  ))
 }

@@ -15,6 +15,17 @@
   padding-top: 25px;
 }
 
+.nav-highlight {
+  background-color:#9362e0;
+  border-left: 1px solid white;
+  border-right: 1px solid white;
+}
+
+.nav-highlight>a {
+  color: white!important;
+  font-weight: bold;
+}
+
 
 /*** collapse panels ***/
 .panel-heading {
@@ -106,11 +117,13 @@ input[type=number]::-webkit-outer-spin-button {
 
 
 /***** Methods table ******/
-tr.selected {
-  background-color: #e7dbf8;
+tr.selected > td:first-of-type {
+  background-color: #9362e0;
+  color: white;
 }
-.table-striped>tbody>tr.selected:nth-of-type(odd) {
-  background-color: #f4eefb;
+
+tr.selected {
+  background-color: #f6f1fd;
 }
 
 /* Score */
@@ -177,4 +190,21 @@ img.trajectory_type {
 
 img.trajectory_type.inactive {
   opacity:0.1;
+}
+
+
+
+/*** Tutorial ***/
+.introjs-helperNumberLayer {
+  background:#9362e0;
+}
+
+
+
+
+
+/*** Badges ***/
+
+.__dimensions_badge_embed__ {
+  display: inline !important;
 }
