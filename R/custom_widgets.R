@@ -3,7 +3,7 @@ collapsePanel <- function(..., header = "", show_on_start = FALSE, id = "") {
   div(
     class = "panel panel-default",
     div(
-      class = "panel-heading",
+      class = paste0("panel-heading", ifelse(show_on_start, "", " collapsed")),
       `data-target` = paste0("#", collapse_id),
       `data-toggle` = "collapse",
       span(icon("caret-down"), header)

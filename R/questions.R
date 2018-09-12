@@ -370,7 +370,7 @@ get_questions <- function() {
       default = character(),
       label = "Which datasets should be excluded",
       activeIf = "true",
-      category = "datasets"
+      category = "benchmarking_datasets"
     )
   ) %>% {set_names(., map(., "question_id"))}
 
