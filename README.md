@@ -4,7 +4,8 @@
 [![codecov](https://codecov.io/gh/dynverse/dynguidelines/branch/master/graph/badge.svg)](https://codecov.io/gh/dynverse/dynguidelines)
 ![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)
 
-
-This package can select the most optimal set of trajectory inference methods, based on a set of user and dataset specific parameters. This can be done both programmatically and through a shiny app.
+This package summarises the results from the [dynbenchmark](https://www.github.com/dynverse/dynbenchmark) evaluation of trajectory inference methods. Both programmatically and through a (shiny) app, users can select the most optimal set of methods given a set of user and dataset specific parameters.
 
 See [dyno](https://www.github.com/dynverse/dyno) for more information on how to use this package to infer and interpret trajectories.
+
+![demo](man/figures/demo.gif)

@@ -141,7 +141,10 @@ time_modifier <- function(data, answers) {
             if(is.null(scaling_model_time)) {
               list(mean = NA, sd = NA)
             } else {
-              scaling_model_time(n_cells = answers$n_cells, n_features = answers$n_features)
+              scaling_model_time(
+                n_cells = ifelse(is.na(answers$n_cells), 1, answers$n_cells),
+                n_features = ifelse(is.na(answers$n_features), 1, answers$n_features)
+              )
             }
           }
         ),
@@ -172,7 +175,10 @@ memory_modifier <- function(data, answers) {
             if(is.null(scaling_model_mem)) {
               list(mean = NA, sd = NA)
             } else {
-              scaling_model_mem(n_cells = answers$n_cells, n_features = answers$n_features)
+              scaling_model_mem(
+                n_cells = ifelse(is.na(answers$n_cells), 1, answers$n_cells),
+                n_features = ifelse(is.na(answers$n_features), 1, answers$n_features)
+              )
             }
           }
         ),

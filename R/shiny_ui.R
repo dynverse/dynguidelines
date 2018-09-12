@@ -75,19 +75,19 @@ shiny_ui <- function() {
             # benchmarking repo
             tags$li(
               tags$a(
-                "Benchmark repository ",
+                HTML("<em>dyn</em>benchmark "),
                 icon("github"),
                 href = "https://github.com/dynverse/dynbenchmark",
                 target = "blank"
               )
             ),
 
-            # github repo
+            # dyno repo
             tags$li(
               tags$a(
-                "Github repository ",
+                HTML("<em>dyn</em>o "),
                 icon("github"),
-                href = "https://github.com/dynverse/dynguidelines",
+                href = "https://github.com/dynverse/dyno",
                 target = "blank"
               )
             ),
@@ -163,20 +163,24 @@ shiny_ui <- function() {
               `data-toggle` = "collapse"
             ),
 
-            # submit button
-            actionLink(
-              class = "btn",
-              "submit",
-              label = span(
-                icon("chevron-circle-right", class = "arrow4"),
-                " Close & use ",
-                icon("chevron-circle-right", class = "arrow4")
-              ),
-              style = "color: white;font-weight: bold; background-color:#9362e0",
-              `data-step` = 5,
-              `data-intro` = "When ready, click this button to return the selected set of methods in R.",
-              onclick = "window.close();"
-            )
+            if (interactive()) {
+              # submit button
+              actionLink(
+                class = "btn",
+                "submit",
+                label = span(
+                  icon("chevron-circle-right", class = "arrow4"),
+                  " Close & use ",
+                  icon("chevron-circle-right", class = "arrow4")
+                ),
+                style = "color: white;font-weight: bold; background-color:#9362e0",
+                `data-step` = 5,
+                `data-intro` = "When ready, click this button to return the selected set of methods in R.",
+                onclick = "window.close();"
+              )
+            } else {
+              ""
+            }
           ),
 
 
@@ -219,6 +223,15 @@ shiny_ui <- function() {
             textOutput("code", container = tags$pre)
           ),
 
+          # options
+          tags$div(
+            class = "panel-collapse collapse",
+            id = "options",
+
+            # actual code
+            uiOutput("options")
+          ),
+
           # method table
           div(
             `data-intro` = "The relevant methods are displayed here, along with information on how they were ordered and selected.",
@@ -243,7 +256,7 @@ add_icons <- function(label, conditions, icons) {
   })
 }
 
-get_guidelines_methods_table <- function(guidelines, show_columns = character()) {
+get_guidelines_methods_table <- function(guidelines, show_columns = character(), options = list()) {
   testthat::expect_true(length(names(show_columns)) == length(show_columns))
 
   if(nrow(guidelines$methods_aggr) == 0) {
@@ -294,7 +307,13 @@ get_guidelines_methods_table <- function(guidelines, show_columns = character())
     } else {
       # render columns
       methods_rendered <- methods %>%
-        map2(method_columns$renderer, function(col, renderer) renderer(col)) %>%
+        map2(method_columns$renderer, function(col, renderer) {
+          if ("options" %in% names(formals(renderer))) {
+            renderer(col, options)
+          } else {
+            renderer(col)
+          }
+        }) %>%
         as_tibble()
 
       # construct html of table
@@ -606,32 +625,58 @@ get_columns_show_hide_ui <- function(renderers) {
 get_citations_modal <- function() {
   showModal(modalDialog(
     title = tagList("If ", HTML("<em>dyn</em>guidelines was helpful to you, please cite: ")),
+
+    tags$div(
+      style = "float:right;",
+
+      singleton(tags$head(tags$script(type = "text/javascript", src = "https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"))),
+      tags$div(
+        class = "altmetric-embed",
+        `data-badge-type` = "medium-donut",
+        `data-doi` = "10.1101/276907"
+      ),
+      tags$script("if (typeof _altmetric_embed_init !== 'undefined') {_altmetric_embed_init()};"),
+
+      singleton(tags$head(tags$script(type = "text/javascript",src = "https://badge.dimensions.ai/badge.js"))),
+      tags$div(
+        class = "__dimensions_badge_embed__",
+        `data-doi` = "10.1101/276907"
+      ),
+      tags$script("if (typeof __dimensions_embed !== 'undefined') {__dimensions_embed.addBadges()};")
+    ),
+
+
+
     tags$a(
       href = "http://dx.doi.org/10.1101/276907",
-      tags$blockquote(HTML("<p>Saelens Wouter*, Robrecht Cannoodt*, Helena Todorov, and Yvan Saeys. </p><p> \U201C A Comparison of Single-Cell Trajectory Inference Methods: Towards More Accurate and Robust Tools.\U201D </p><p> BioRxiv, March 5, 2018, 276907. </p> <p> https://doi.org/10.1101/276907 </p>"))
+      tags$blockquote(HTML(paste0("<p>", glue::glue_collapse(sample(c("Saelens Wouter*", "Robrecht Cannoodt*")), ", "), ", Helena Todorov, and Yvan Saeys. </p><p> \U201C A Comparison of Single-Cell Trajectory Inference Methods: Towards More Accurate and Robust Tools.\U201D </p><p> BioRxiv, March 5, 2018, 276907. </p> <p> https://doi.org/10.1101/276907 </p>"))),
+      target = "blank"
     ),
 
-    # tags$div(
-    #   a(href = "https://doi.org/10.1101/276907", "doi"),
-    #   a(href = "https://biorxiv.org/content/early/2018/03/05/276907", "biorxiv")
-    # ),
-
-    tags$script(type = "text/javascript", src = "https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"),
-    tags$span(
-      class = "altmetric-embed",
-      `data-badge-type` = "medium-donut",
-      `data-doi` = "10.1101/276907"
+    tags$div(
+      style = "font-size: 17.5px;",
+      "... or give us a shout-out on twitter (", tags$a(href = "https://twitter.com/saeyslab", "@saeyslab", target = "blank"), "). We'd love to hear your feedback!"
     ),
 
-    tags$script(
-      type = "text/javascript",
-      src = "https://badge.dimensions.ai/badge.js"
-    ),
-    tags$span(
-      class = "__dimensions_badge_embed__",
-      `data-doi` = "10.1101/276907"
-    ),
+    style = "overflow:visible;",
 
-    easyClose = TRUE
+    easyClose = TRUE,
+    size = "l",
+    footer = NULL
   ))
+}
+
+
+
+
+
+get_options_ui <- function() {
+  tagList(
+     shinyWidgets::radioGroupButtons(
+       "score_visualisation",
+       "How to show the scores",
+       choices = c(Circles = "circle", Bars = "bar"),
+       selected = "bar"
+     )
+  )
 }

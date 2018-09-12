@@ -46,10 +46,6 @@ shiny_server <- function(
     output$column_presets <- renderUI(get_columns_presets_ui(column_presets = get_column_presets(), session = session, show_columns = show_columns))
     output$column_show_hide <- renderUI(get_columns_show_hide_ui(renderers = get_renderers()))
 
-    ## create the UI
-    # questions
-    output$questions_panel <- renderUI(get_questions_ui(question_categories, reactive_answers()))
-
     ## create answer reactivity
     reactive_answers <- reactive({
       answers$answer <- map(questions[answers$question_id], get_answer, input = input)
@@ -66,10 +62,14 @@ shiny_server <- function(
       }
     })
 
+    ## create the UI
+    # questions
+    output$questions_panel <- renderUI(get_questions_ui(question_categories, reactive_answers()))
+
     # methods table
     output$methods_table <- renderUI(
       if(!is.null(current_guidelines())) {
-        get_guidelines_methods_table(current_guidelines(), show_columns())
+        get_guidelines_methods_table(current_guidelines(), show_columns(), options = options())
       } else {
         icon("spinner", class = "fa-pulse fa-3x fa-fw")
       }
@@ -83,6 +83,14 @@ shiny_server <- function(
       if (input$show_citation) {
         get_citations_modal()
       }
+    })
+
+    # options
+    output$options <- renderUI(get_options_ui())
+    options <- reactive({
+      lst(
+        score_visualisation = input$score_visualisation
+      )
     })
 
     ## on exit, return guidelines
@@ -108,7 +116,7 @@ shiny_server <- function(
 
       # activate this function when pressing the submit button
       observe({
-        if(input$submit > 0) {
+        if(!is.null(input$submit) && input$submit > 0) {
           return_guidelines()
         }
       })
