@@ -163,20 +163,24 @@ shiny_ui <- function() {
               `data-toggle` = "collapse"
             ),
 
-            # submit button
-            actionLink(
-              class = "btn",
-              "submit",
-              label = span(
-                icon("chevron-circle-right", class = "arrow4"),
-                " Close & use ",
-                icon("chevron-circle-right", class = "arrow4")
-              ),
-              style = "color: white;font-weight: bold; background-color:#9362e0",
-              `data-step` = 5,
-              `data-intro` = "When ready, click this button to return the selected set of methods in R.",
-              onclick = "window.close();"
-            )
+            if (interactive()) {
+              # submit button
+              actionLink(
+                class = "btn",
+                "submit",
+                label = span(
+                  icon("chevron-circle-right", class = "arrow4"),
+                  " Close & use ",
+                  icon("chevron-circle-right", class = "arrow4")
+                ),
+                style = "color: white;font-weight: bold; background-color:#9362e0",
+                `data-step` = 5,
+                `data-intro` = "When ready, click this button to return the selected set of methods in R.",
+                onclick = "window.close();"
+              )
+            } else {
+              ""
+            }
           ),
 
 
