@@ -28,6 +28,7 @@ RoxygenNote: 6.1.0
 Depends:
   R (>= 3.3)
 Imports:
+  crayon,
   dyneval,
   dynwrap,
   dynutils,
