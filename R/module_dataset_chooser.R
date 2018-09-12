@@ -19,7 +19,8 @@ dataset_chooser_input <- function(id, data) {
   all_trajectory_types <- unique(benchmark_datasets_info$trajectory_type)
   choices <- map(all_trajectory_types, function(trajectory_type) {
     span(
-      img(src = str_glue("img/trajectory_types/{trajectory_type}.png"), class = "trajectory_type"),
+      "",
+      # img(src = str_glue("img/trajectory_types/{trajectory_type}.png"), class = "trajectory_type"),
       label_capitalise(trajectory_type)
     )
   }) %>% set_names(all_trajectory_types)
