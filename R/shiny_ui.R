@@ -643,7 +643,7 @@ get_citations_modal <- function() {
       "... or give us a shout-out on twitter (", tags$a(href = "https://twitter.com/saeyslab", "@saeyslab", target = "blank"), "). We'd love to hear your feedback!"
     ),
 
-    style = "overflow:auto;",
+    style = "overflow:visible;",
 
     easyClose = TRUE,
     size = "l",
