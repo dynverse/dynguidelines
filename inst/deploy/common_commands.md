@@ -2,19 +2,19 @@
 cd inst/deploy
 
 ## Build the container
-docker build -t dynverse/dynguidelines_server .
+docker build --build-arg CACHE_DATE=$(date +%Y-%m-%d:%H:%M:%S) -t dynverse/dynguidelines_server .
 
 ## Push the container
 docker push dynverse/dynguidelines_server
 
 ## Run the container
-docker run --rm -p 80:80 --name shiny dynverse/dynguidelines_server
+docker run --rm -p 8080:8080 --name shiny dynverse/dynguidelines_server
 
-
-
-docker tag dynverse/dynguidelines_server gcr.io/dynguidelines/dynguidelines:v1
-docker push gcr.io/dynguidelines/dynguidelines:v1
-kubectl set image deployment/dynguidelines dynguidelines=gcr.io/dynguidelines/dynguidelines:v1
+## push to google cloud
+# https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app
+docker tag dynverse/dynguidelines_server gcr.io/dynverse/dynguidelines_server
+docker push gcr.io/dynverse/dynguidelines_server:v1
+kubectl set image deployment/dynguidelines dynguidelines=gcr.io/dynverse/dynguidelines_server
 
 
 

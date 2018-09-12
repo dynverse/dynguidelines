@@ -25,7 +25,7 @@ RUN wget --no-verbose https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubu
 RUN apt-get install -y xtail
 
 # install dynguidelines
-RUN R -e "devtools::install_github('dynverse/dynguidelines', dep = TRUE)" #redo
+RUN R -e "devtools::install_github('dynverse/dynguidelines@devel', dep = TRUE)"
 
 # copy over files of the server and the app
 EXPOSE 8080
@@ -36,3 +36,7 @@ COPY ./ui.R /srv/shiny-server/
 
 # define run command
 CMD ["sh", "/usr/bin/shiny-server.sh"]
+
+# reinstall dynguidelines after caching
+ARG CACHE_DATE=not_a_date
+RUN R -e "devtools::install_github('dynverse/dynguidelines@devel', dep = TRUE)"
