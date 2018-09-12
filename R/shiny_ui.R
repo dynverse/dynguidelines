@@ -620,14 +620,14 @@ get_citations_modal <- function() {
         `data-badge-type` = "medium-donut",
         `data-doi` = "10.1101/276907"
       ),
-      tags$script("_altmetric_embed_init();"),
+      tags$script("if (typeof _altmetric_embed_init !== 'undefined') {_altmetric_embed_init()};"),
 
       singleton(tags$head(tags$script(type = "text/javascript",src = "https://badge.dimensions.ai/badge.js"))),
       tags$div(
         class = "__dimensions_badge_embed__",
         `data-doi` = "10.1101/276907"
       ),
-      tags$script("window.__dimensions_embed.addBadges();")
+      tags$script("if (typeof __dimensions_embed !== 'undefined') {__dimensions_embed.addBadges()};")
     ),
 
 
