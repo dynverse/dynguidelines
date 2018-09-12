@@ -4,7 +4,7 @@ if (!"rsconnect" %in% rownames(installed.packages())) {
 }
 
 # install from github so that packrat knows the source of this package
-devtools::install_github("dynverse/dynguidelines", dep = F)
+devtools::install_github("dynverse/dynguidelines@devel", dep = F)
 
 # load in account info
 rsconnect::setAccountInfo(name="dynverse", token="88F1120902755CE3DC4BF1753546B487", secret=Sys.getenv("shinyapps_secret"))

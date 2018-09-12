@@ -25,10 +25,10 @@ RUN wget --no-verbose https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubu
 RUN apt-get install -y xtail
 
 # install dynguidelines
-RUN R -e "devtools::install_github('dynverse/dynguidelines', dep = TRUE)"
+RUN R -e "devtools::install_github('dynverse/dynguidelines', dep = TRUE)" #redo
 
 # copy over files of the server and the app
-EXPOSE 80
+EXPOSE 8080
 COPY shiny-server.sh /usr/bin/shiny-server.sh
 COPY shiny-server.conf  /etc/shiny-server/shiny-server.conf
 COPY ./server.R /srv/shiny-server/
