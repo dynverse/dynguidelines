@@ -13,7 +13,9 @@ shiny_ui <- function() {
     tags$head(includeScript(system.file("js/tooltips.js", package = "dynguidelines"))),
     tags$head(includeScript(system.file("js/google-analytics.js", package = "dynguidelines"))),
 
-    tags$head(tags$script(src = "https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js")),
+    tags$head(tags$script(src = "https://cdn.jsdelivr.net/combine/npm/lodash@4.17.10,npm/intro.js@2.9.3")),
+
+    tags$head(tags$link(rel = "stylesheet", href = "https://cdn.jsdelivr.net/npm/intro.js@2.9.3/introjs.min.css")),
 
     tags$head(includeCSS(system.file("css/style.css", package = "dynguidelines"))),
 
@@ -36,6 +38,17 @@ shiny_ui <- function() {
           class = "navbar-collapse collapse",
           tags$ul(
             class = "nav navbar-nav navbar-right",
+
+            # tutorial
+            tags$li(
+              class = "nav-highlight",
+              tags$a(
+                "Tutorial",
+                icon("question-circle"),
+                href = "#intro",
+                onclick="javascript:introJs().setOption('showBullets', false).setOption('scrollToElement', false).start();"
+              )
+            ),
 
             # benchmarking study
             tags$li(
@@ -90,7 +103,9 @@ shiny_ui <- function() {
           style = "width:30%",
           div(
             style = "overflow-y:scroll; position:fixed; bottom:0px; top:80px; width:inherit; padding-right: 10px;background-color:white;z-index:1;",
-            uiOutput("questions_panel")
+            uiOutput("questions_panel"),
+            `data-intro` = "Answer the questions pertaining to your dataset and work environment. The most important questions are positioned on the top and are shown default.",
+            `data-step` = 1
           )
         ),
         div(
@@ -107,7 +122,9 @@ shiny_ui <- function() {
               icon("code"),
               href = "#toggle-code",
               `data-target` = "#code",
-              `data-toggle` = "collapse"
+              `data-toggle` = "collapse",
+              `data-intro` = "You can get the code necessary to reproduce the guidelines here. Copy it over to your script!",
+              `data-step` = 4
             ),
 
             # columns toggle
@@ -118,7 +135,9 @@ shiny_ui <- function() {
               icon("columns"),
               href = "#toggle-columns",
               `data-target` = "#columns",
-              `data-toggle` = "collapse"
+              `data-toggle` = "collapse",
+              `data-intro` = "Click here to see more information on each method in the main table. It allows you to focus on particular aspects of the benchmarking, such as scalability, benchmarking metrics, and quality control.",
+              `data-step` = 5
             ),
 
             # columns toggle
@@ -141,7 +160,9 @@ shiny_ui <- function() {
                 " Close & use ",
                 icon("chevron-circle-right", class = "arrow4")
               ),
-              style = "color: white;font-weight: bold; background-color:#9362e0"
+              style = "color: white;font-weight: bold; background-color:#9362e0",
+              `data-step` = 3,
+              `data-intro` = "When ready, click this button to return the selected set of methods in R."
             )
           ),
 
@@ -153,12 +174,12 @@ shiny_ui <- function() {
             id = "columns",
 
             tags$div(
-              # presets
+              # presets buttons
               tags$div(
                 uiOutput("column_presets")
               ),
 
-              # individual checks
+              # individual checkboxes
               tags$div(
                 class = "indeterminate-checkbox-group",
                 uiOutput("column_show_hide")
@@ -187,6 +208,7 @@ shiny_ui <- function() {
 
           # method table
           div(
+            `data-intro` = "The relevant methods will be displayed here, along with information on how they were selected.",
             uiOutput("methods_table")
           )
         )
