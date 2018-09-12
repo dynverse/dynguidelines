@@ -8,3 +8,5 @@
 This package can select the most optimal set of trajectory inference methods, based on a set of user and dataset specific parameters. This can be done both programmatically and through a shiny app.
 
 See [dyno](https://www.github.com/dynverse/dyno) for more information on how to use this package to infer and interpret trajectories.
+
+![demo](man/figures/demo.gif)
