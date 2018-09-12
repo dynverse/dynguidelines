@@ -78,25 +78,26 @@ shiny_server <- function(
     # code
     output$code <- renderText(get_answers_code(answers = reactive_answers()))
 
-    # toggleClass(id = NULL, class = NULL, condition = NULL, selector = NULL)
-
     ## on exit, return guidelines
     if (interactive() || Sys.getenv("CI") == "true") {
       return_guidelines <- function() {
         isolate({
+          cat(
+            c(
+              "Code to reproduce the guidelines, copy it over to your script!",
+              "",
+              crayon::bold(get_answers_code(reactive_answers()))
+            ) %>% glue::glue_collapse("\n"),
+            "\n"
+          )
+
           return_value <- guidelines(dataset = NULL, answers = reactive_answers())
+
           stopApp(return_value)
         })
       }
 
-      # activate this function when pressing the submit button
-      observe({
-        if(input$submit > 0) {
-          return_guidelines()
-        }
-      })
-
-      # or when exiting through rstudio exit buttong
+      # or when exiting through rstudio exit button
       session$onSessionEnded(return_guidelines)
     }
   }

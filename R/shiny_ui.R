@@ -162,7 +162,8 @@ shiny_ui <- function() {
               ),
               style = "color: white;font-weight: bold; background-color:#9362e0",
               `data-step` = 3,
-              `data-intro` = "When ready, click this button to return the selected set of methods in R."
+              `data-intro` = "When ready, click this button to return the selected set of methods in R.",
+              onclick = "window.close();"
             )
           ),
 
