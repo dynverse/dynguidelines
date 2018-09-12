@@ -39,15 +39,6 @@ shiny_server <- function(
     # nest questions based on category
     question_categories <- split(questions, factor(map_chr(questions, "category"), unique(map_chr(questions, "category"))))
 
-    ## create answer reactivity
-    reactive_answers <- reactive({
-      answers$answer <- map(questions[answers$question_id], get_answer, input = input)
-
-      answers$source <- map_chr(questions[answers$question_id], function(question) question$source())
-      answers
-    })
-    current_guidelines <- reactive(guidelines(dataset = NULL, answers = reactive_answers()))
-
     ## create show/hide columns reactivity
     show_column_ids <- paste0("column_", get_renderers()$column_id)
     show_columns <- reactive(map(show_column_ids, ~input[[.]]) %>% set_names(show_column_ids) %>% unlist())
@@ -59,8 +50,30 @@ shiny_server <- function(
     # questions
     output$questions_panel <- renderUI(get_questions_ui(question_categories, reactive_answers()))
 
+    ## create answer reactivity
+    reactive_answers <- reactive({
+      answers$answer <- map(questions[answers$question_id], get_answer, input = input)
+
+      answers$source <- map_chr(questions[answers$question_id], function(question) question$source())
+      answers
+    })
+    current_guidelines <- reactive({
+      # wait with calculating the guidelines until the answers have all been initialized, using the hidden input "questions_loaded"
+      if (!is.null(input$questions_loaded)) {
+        guidelines(dataset = NULL, answers = reactive_answers())
+      } else {
+        NULL
+      }
+    })
+
     # methods table
-    output$methods_table <- renderUI(get_guidelines_methods_table(current_guidelines(), show_columns()))
+    output$methods_table <- renderUI(
+      if(!is.null(current_guidelines())) {
+        get_guidelines_methods_table(current_guidelines(), show_columns())
+      } else {
+        icon("spinner", class = "fa-pulse fa-3x fa-fw")
+      }
+    )
 
     # code
     output$code <- renderText(get_answers_code(answers = reactive_answers()))
