@@ -620,17 +620,14 @@ get_citations_modal <- function() {
     #   a(href = "https://biorxiv.org/content/early/2018/03/05/276907", "biorxiv")
     # ),
 
-    tags$script(type = "text/javascript", src = "https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"),
+    singleton(tags$head(tags$script(type = "text/javascript", src = "https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"))),
     tags$span(
       class = "altmetric-embed",
       `data-badge-type` = "medium-donut",
       `data-doi` = "10.1101/276907"
     ),
 
-    tags$script(
-      type = "text/javascript",
-      src = "https://badge.dimensions.ai/badge.js"
-    ),
+    singleton(tags$head(tags$script(type = "text/javascript",src = "https://badge.dimensions.ai/badge.js"))),
     tags$span(
       class = "__dimensions_badge_embed__",
       `data-doi` = "10.1101/276907"
