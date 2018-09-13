@@ -84,7 +84,7 @@ shiny_ui <- function() {
 
             # dyno repo
             tags$li(
-              class = ifelse(!interactive(), "nav-highlight", ""),
+              class = if(interactive()) {""} else {"nav-highlight"},
               tags$a(
                 HTML("Finding trajectories with <em>dyn</em>o "),
                 icon("github"),
