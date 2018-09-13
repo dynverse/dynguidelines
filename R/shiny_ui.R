@@ -75,7 +75,7 @@ shiny_ui <- function() {
             # benchmarking repo
             tags$li(
               tags$a(
-                HTML("<em>dyn</em>benchmark "),
+                HTML("Evaluating methods with <em>dyn</em>benchmark "),
                 icon("github"),
                 href = "https://github.com/dynverse/dynbenchmark",
                 target = "blank"
@@ -85,7 +85,7 @@ shiny_ui <- function() {
             # dyno repo
             tags$li(
               tags$a(
-                HTML("<em>dyn</em>o "),
+                HTML("Inferring trajectories with <em>dyn</em>o "),
                 icon("github"),
                 href = "https://github.com/dynverse/dyno",
                 target = "blank"
@@ -653,9 +653,14 @@ get_citations_modal <- function() {
       target = "blank"
     ),
 
-    tags$div(
+    tags$p(
       style = "font-size: 17.5px;",
       "... or give us a shout-out on twitter (", tags$a(href = "https://twitter.com/saeyslab", "@saeyslab", target = "blank"), "). We'd love to hear your feedback!"
+    ),
+
+    tags$p(
+      style = "font-size: 17.5px;",
+      "Don't forget to also cite the papers describing the individual methods which you're using. They can be found by clicking the ", icon("paper-plane"), "icon."
     ),
 
     style = "overflow:visible;",
