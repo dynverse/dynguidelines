@@ -82,16 +82,6 @@ shiny_ui <- function() {
               )
             ),
 
-            # dyno repo
-            tags$li(
-              tags$a(
-                HTML("Finding trajectories with <em>dyn</em>o "),
-                icon("github"),
-                href = "https://github.com/dynverse/dyno",
-                target = "blank"
-              )
-            ),
-
             tags$li(
               a(
                 style = "display: inline;",
@@ -185,7 +175,7 @@ shiny_ui <- function() {
                 style = "color: white;font-weight: bold; background-color:#9362e0",
                 span(
                   icon("share", class = "arrow4"),
-                  HTML("Use <em>dyn</em>o to infer trajectories "),
+                  HTML("Infer trajectories with <em>dyn</em>o"),
                   icon("share", class = "arrow4")
                 ),
                 href = "https://github.com/dynverse/dyno",
