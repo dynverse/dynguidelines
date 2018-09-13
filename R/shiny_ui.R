@@ -89,14 +89,14 @@ shiny_ui <- function() {
                 HTML("Finding trajectories with <em>dyn</em>o "),
                 icon("github"),
                 href = "https://github.com/dynverse/dyno",
-                target = "blank",
-                `data-intro` = if(!interactive()) {
-                  "All methods presented here are available in the <em>dyn</em> pipeline, which can also be used to <strong>interpret</strong> and <strong>visualise</strong> the inferred trajectories."
-                } else {
-                  NULL
-                },
-                `data-step` = 5
-              )
+                target = "blank"
+              ),
+              `data-intro` = if(!interactive()) {
+                HTML("All methods presented here are available in the <em>dyn</em> pipeline, which can also be used to <strong>interpret</strong> and <strong>visualise</strong> the inferred trajectories.")
+              } else {
+                NULL
+              },
+              `data-step` = 5
             ),
 
             tags$li(
