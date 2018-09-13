@@ -84,19 +84,12 @@ shiny_ui <- function() {
 
             # dyno repo
             tags$li(
-              class = if(interactive()) {""} else {"nav-highlight"},
               tags$a(
                 HTML("Finding trajectories with <em>dyn</em>o "),
                 icon("github"),
                 href = "https://github.com/dynverse/dyno",
                 target = "blank"
-              ),
-              `data-intro` = if(!interactive()) {
-                HTML("All methods presented here are available in the <em>dyn</em> pipeline, which can also be used to <strong>interpret</strong> and <strong>visualise</strong> the inferred trajectories.")
-              } else {
-                NULL
-              },
-              `data-step` = 5
+              )
             ),
 
             tags$li(
@@ -176,9 +169,9 @@ shiny_ui <- function() {
                 class = "btn",
                 "submit",
                 label = span(
-                  icon("chevron-circle-right", class = "arrow4"),
+                  icon("share", class = "arrow4"),
                   " Close & use ",
-                  icon("chevron-circle-right", class = "arrow4")
+                  icon("share", class = "arrow4")
                 ),
                 style = "color: white;font-weight: bold; background-color:#9362e0",
                 `data-step` = 5,
@@ -186,7 +179,20 @@ shiny_ui <- function() {
                 onclick = "window.close();"
               )
             } else {
-              ""
+              # dyno button
+              tags$a(
+                class = "btn",
+                style = "color: white;font-weight: bold; background-color:#9362e0",
+                span(
+                  icon("share", class = "arrow4"),
+                  HTML("Use <em>dyn</em>o to infer trajectories "),
+                  icon("share", class = "arrow4")
+                ),
+                href = "https://github.com/dynverse/dyno",
+                `data-intro` = "All methods presented here are available in the <a href = 'https://github.com/dynverse/dyno' target = 'blank'><em>dyn</em>o pipeline</a>, which can also be used to <strong>interpret</strong> and <strong>visualise</strong> the inferred trajectories.",
+                `data-step` = 5,
+                target = "blank"
+              )
             }
           ),
 

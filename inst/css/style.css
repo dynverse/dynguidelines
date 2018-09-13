@@ -167,7 +167,7 @@ td > span.score {
 
 /*** Arrow animation ***/
 
-.arrow4 {
+a:hover .arrow4, a.introjs-showElement .arrow4 {
   animation: slide4 4s linear infinite;
 }
 
