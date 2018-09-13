@@ -85,10 +85,16 @@ shiny_ui <- function() {
             # dyno repo
             tags$li(
               tags$a(
-                HTML("Inferring trajectories with <em>dyn</em>o "),
+                HTML("Finding trajectories with <em>dyn</em>o "),
                 icon("github"),
                 href = "https://github.com/dynverse/dyno",
-                target = "blank"
+                target = "blank",
+                `data-intro` = if(!interactive()) {
+                  "All methods presented here are available in the <em>dyn</em> pipeline, which can also be used to <strong>interpret</strong> and <strong>visualise</strong> the inferred trajectories."
+                } else {
+                  NULL
+                },
+                `data-step` = 5
               )
             ),
 
@@ -624,7 +630,11 @@ get_columns_show_hide_ui <- function(renderers) {
 # get the modal to display the citations
 get_citations_modal <- function() {
   showModal(modalDialog(
-    title = tagList("If ", HTML("<em>dyn</em>guidelines was helpful to you, please cite: ")),
+    title = tagList(
+      "If ",
+      HTML("<em>dyn</em>guidelines was helpful to you, please cite: "),
+      tags$button(type = "button", class = "close", `data-dismiss` = "modal", "\U00D7")
+    ),
 
     tags$div(
       style = "float:right;",
