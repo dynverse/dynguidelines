@@ -167,8 +167,13 @@ td > span.score {
 
 /*** Arrow animation ***/
 
-a:hover .arrow4, a.introjs-showElement .arrow4 {
+.arrow4 {
   animation: slide4 4s linear infinite;
+  animation-play-state: paused;
+}
+
+a:hover .arrow4, a.introjs-showElement .arrow4 {
+  animation-play-state: running;
 }
 
 @keyframes slide4 {
