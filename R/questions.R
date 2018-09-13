@@ -216,7 +216,8 @@ get_questions <- function() {
         } else {
           default
         }
-      }
+      },
+      show_on_start = TRUE
     ),
     list(
       question_id = "method_selection",
