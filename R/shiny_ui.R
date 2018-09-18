@@ -523,20 +523,20 @@ get_questions_ui <- function(question_categories, answers) {
       if (all(category_sources != "none")) {
         shinyjs::toggleClass(
           category_panel$attr$id,
-          "default-category",
-          all(category_sources == "default")
+          "completed-category",
+          any(category_sources == "adapted")
         )
 
         shinyjs::toggleClass(
           category_panel$attr$id,
           "computed-category",
-          all(category_sources == "computed")
+          any(category_sources == "computed") && all(category_sources %in% c("computed", "default"))
         )
 
         shinyjs::toggleClass(
           category_panel$attr$id,
-          "completed-category",
-          any(category_sources == "adapted")
+          "default-category",
+          all(category_sources == "default")
         )
       }
     })
@@ -689,6 +689,13 @@ get_options_ui <- function() {
        "How to show the scores",
        choices = c(Circles = "circle", Bars = "bar"),
        selected = "bar"
+     ),
+     shinyWidgets::radioGroupButtons(
+       "advanced_mode",
+       "Show advanced questions",
+       choiceNames = c("Yes", "No"),
+       choiceValues = c(TRUE, FALSE),
+       selected = FALSE
      )
   )
 }
