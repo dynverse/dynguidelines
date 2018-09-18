@@ -41,9 +41,12 @@ answer_questions <- function(dataset = NULL, ...) {
   # get computed answers from dataset
   computed_question_ids <- character()
   if (!is.null(dataset)) {
-    for (question_id in setdiff(names(questions), given_question_ids)) {
+    questions <- get_questions()
+    for (question_id in setdiff(names(questions), names(given_answers))) {
       if (is.function(questions[[question_id]]$default_dataset)) {
-        answers[[question_id]][["default"]] <- list(questions[[question_id]]$default_dataset(dataset, answers[[question_id]])) # use list here to avoid xxx <- NULL removing the element
+        new_default <- questions[[question_id]]$default_dataset(dataset, answers[[question_id]])
+        new_default <- list(new_default)  # use list here to avoid xxx <- NULL removing the element
+        answers[question_id] <- new_default
         computed_question_ids <- c(computed_question_ids, question_id)
       }
     }

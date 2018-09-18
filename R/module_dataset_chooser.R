@@ -37,7 +37,7 @@ dataset_chooser_input <- function(id, data) {
   dataset_picker <- shinyWidgets::pickerInput(
     inputId = ns("ids"),
     label = "Select individual datasets",
-    choices = benchmark_datasets_info,
+    choices = benchmark_datasets_info$id,
     selected = benchmark_datasets_info$id,
     multiple = TRUE,
     options = list(

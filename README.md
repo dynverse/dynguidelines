@@ -6,6 +6,17 @@
 
 This package summarises the results from the [dynbenchmark](https://www.github.com/dynverse/dynbenchmark) evaluation of trajectory inference methods. Both programmatically and through a (shiny) app, users can select the most optimal set of methods given a set of user and dataset specific parameters.
 
+Installing the app:
+```
+# install.packages("devtools")
+devtools::install_github("dynverse/dynguidelines")
+```
+
+Running the app:
+```
+dynguidelines::guidelines_shiny()
+```
+
 See [dyno](https://www.github.com/dynverse/dyno) for more information on how to use this package to infer and interpret trajectories.
 
 ![demo](man/figures/demo.gif)

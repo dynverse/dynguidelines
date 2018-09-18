@@ -75,19 +75,9 @@ shiny_ui <- function() {
             # benchmarking repo
             tags$li(
               tags$a(
-                HTML("<em>dyn</em>benchmark "),
+                HTML("Evaluating methods with <em>dyn</em>benchmark "),
                 icon("github"),
                 href = "https://github.com/dynverse/dynbenchmark",
-                target = "blank"
-              )
-            ),
-
-            # dyno repo
-            tags$li(
-              tags$a(
-                HTML("<em>dyn</em>o "),
-                icon("github"),
-                href = "https://github.com/dynverse/dyno",
                 target = "blank"
               )
             ),
@@ -169,9 +159,9 @@ shiny_ui <- function() {
                 class = "btn",
                 "submit",
                 label = span(
-                  icon("chevron-circle-right", class = "arrow4"),
+                  icon("share", class = "arrow4"),
                   " Close & use ",
-                  icon("chevron-circle-right", class = "arrow4")
+                  icon("share", class = "arrow4")
                 ),
                 style = "color: white;font-weight: bold; background-color:#9362e0",
                 `data-step` = 5,
@@ -179,7 +169,20 @@ shiny_ui <- function() {
                 onclick = "window.close();"
               )
             } else {
-              ""
+              # dyno button
+              tags$a(
+                class = "btn",
+                style = "color: white;font-weight: bold; background-color:#9362e0",
+                span(
+                  icon("share", class = "arrow4"),
+                  HTML("Infer trajectories with <em>dyn</em>o"),
+                  icon("share", class = "arrow4")
+                ),
+                href = "https://github.com/dynverse/dyno",
+                `data-intro` = "All methods presented here are available in the <a href = 'https://github.com/dynverse/dyno' target = 'blank'><em>dyn</em>o pipeline</a>, which can also be used to <strong>interpret</strong> and <strong>visualise</strong> the inferred trajectories.",
+                `data-step` = 5,
+                target = "blank"
+              )
             }
           ),
 
@@ -520,20 +523,20 @@ get_questions_ui <- function(question_categories, answers) {
       if (all(category_sources != "none")) {
         shinyjs::toggleClass(
           category_panel$attr$id,
-          "default-category",
-          all(category_sources == "default")
+          "completed-category",
+          any(category_sources == "adapted")
         )
 
         shinyjs::toggleClass(
           category_panel$attr$id,
           "computed-category",
-          all(category_sources == "computed")
+          any(category_sources == "computed") && all(category_sources %in% c("computed", "default"))
         )
 
         shinyjs::toggleClass(
           category_panel$attr$id,
-          "completed-category",
-          any(category_sources == "adapted")
+          "default-category",
+          all(category_sources == "default")
         )
       }
     })
@@ -624,7 +627,11 @@ get_columns_show_hide_ui <- function(renderers) {
 # get the modal to display the citations
 get_citations_modal <- function() {
   showModal(modalDialog(
-    title = tagList("If ", HTML("<em>dyn</em>guidelines was helpful to you, please cite: ")),
+    title = tagList(
+      "If ",
+      HTML("<em>dyn</em>guidelines was helpful to you, please cite: "),
+      tags$button(type = "button", class = "close", `data-dismiss` = "modal", "\U00D7")
+    ),
 
     tags$div(
       style = "float:right;",
@@ -649,13 +656,18 @@ get_citations_modal <- function() {
 
     tags$a(
       href = "http://dx.doi.org/10.1101/276907",
-      tags$blockquote(HTML(paste0("<p>", glue::glue_collapse(sample(c("Saelens Wouter*", "Robrecht Cannoodt*")), ", "), ", Helena Todorov, and Yvan Saeys. </p><p> \U201C A Comparison of Single-Cell Trajectory Inference Methods: Towards More Accurate and Robust Tools.\U201D </p><p> BioRxiv, March 5, 2018, 276907. </p> <p> https://doi.org/10.1101/276907 </p>"))),
+      tags$blockquote(HTML(paste0("<p>", glue::glue_collapse(sample(c("Wouter Saelens*", "Robrecht Cannoodt*")), ", "), ", Helena Todorov, and Yvan Saeys. </p><p> \U201C A Comparison of Single-Cell Trajectory Inference Methods: Towards More Accurate and Robust Tools.\U201D </p><p> BioRxiv, March 5, 2018, 276907. </p> <p> https://doi.org/10.1101/276907 </p>"))),
       target = "blank"
     ),
 
-    tags$div(
+    tags$p(
       style = "font-size: 17.5px;",
       "... or give us a shout-out on twitter (", tags$a(href = "https://twitter.com/saeyslab", "@saeyslab", target = "blank"), "). We'd love to hear your feedback!"
+    ),
+
+    tags$p(
+      style = "font-size: 17.5px;",
+      "Don't forget to also cite the papers describing the individual methods which you're using. They can be found by clicking the ", icon("paper-plane"), "icon."
     ),
 
     style = "overflow:visible;",
@@ -677,6 +689,13 @@ get_options_ui <- function() {
        "How to show the scores",
        choices = c(Circles = "circle", Bars = "bar"),
        selected = "bar"
+     ),
+     shinyWidgets::radioGroupButtons(
+       "advanced_mode",
+       "Show advanced questions",
+       choiceNames = c("Yes", "No"),
+       choiceValues = c(TRUE, FALSE),
+       selected = FALSE
      )
   )
 }
