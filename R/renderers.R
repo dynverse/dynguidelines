@@ -85,7 +85,7 @@ render_selected <- function(x) {
 render_identity <- function(x) {x}
 
 render_article <- function(x) {
-  map(x, ~if(!is.na(.)) {tags$a(href = paste0("https://doi.org/", ., target = "blank"), icon("paper-plane"))} else {""})
+  map(x, ~if(!is.na(.)) {tags$a(href = paste0("https://doi.org/", .), icon("paper-plane"), target = "blank")} else {""})
 }
 
 render_code <- function(x) {
