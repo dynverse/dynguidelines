@@ -36,6 +36,7 @@ guidelines <- function(
       # only modify if question is active
       if(question$active_if(question_answers)) {
         data <- question$modifier(data, question_answers)
+        data$methods_aggr %>% select(method_name)
       }
     }
   }

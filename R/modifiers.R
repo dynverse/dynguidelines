@@ -1,14 +1,14 @@
 default_modifier <- function(data, answers) {
-  data$methods_aggr <- data$methods_aggr %>% arrange(-benchmark_overall)
+  data$methods_aggr <- data$methods_aggr %>% arrange(-benchmark_overall_overall)
 
-  benchmark_overall <- methods_aggr %>%
+  benchmark_overall_overall <- methods_aggr %>%
     select(method_id, benchmark) %>%
     filter(!map_lgl(benchmark, is.null)) %>%
     tidyr::unnest(benchmark) %>%
     calculate_benchmark_score(answers = answers)
-  data$methods_aggr$benchmark_overall <- benchmark_overall[data$methods_aggr$method_id]
+  data$methods_aggr$benchmark_overall_overall <- benchmark_overall_overall[data$methods_aggr$method_id]
 
-  data$methods_aggr <- data$methods_aggr %>% arrange(-benchmark_overall)
+  data$methods_aggr <- data$methods_aggr %>% arrange(-benchmark_overall_overall)
 
   data
 }
@@ -16,9 +16,9 @@ default_modifier <- function(data, answers) {
 
 multiple_disconnected_modifier <- function(data, answers) {
   if(isTRUE(answers$multiple_disconnected)) {
-    data$methods_aggr <- data$methods_aggr %>% filter(detects_disconnected_graph)
+    data$methods_aggr <- data$methods_aggr %>% filter(method_detects_disconnected_graph)
     data$method_columns <- data$method_columns %>%
-      add_row(column_id = "detects_disconnected_graph", filter = TRUE, order = FALSE)
+      add_row(column_id = "method_detects_disconnected_graph", filter = TRUE, order = FALSE)
   }
   data
 }
@@ -26,11 +26,11 @@ multiple_disconnected_modifier <- function(data, answers) {
 
 expect_topology_modifier <- function(data, answers) {
   if (!isTRUE(answers$expect_topology)) {
-    data$methods_aggr <- data$methods_aggr %>% filter(detects_linear & detects_bifurcation & detects_tree)
+    data$methods_aggr <- data$methods_aggr %>% filter(method_detects_linear & method_detects_bifurcation & method_detects_tree)
     data$method_columns <- data$method_columns %>%
       bind_rows(
         tibble(
-          column_id = c("detects_linear", "detects_bifurcation", "detects_tree"),
+          column_id = c("method_detects_linear", "method_detects_bifurcation", "method_detects_tree"),
           filter = TRUE,
           order = FALSE
         )
@@ -41,8 +41,8 @@ expect_topology_modifier <- function(data, answers) {
 
 
 expected_topology_modifier <- function(data, answers) {
-  trajectory_type_column <- paste0("detects_", answers$expected_topology)
-  score_column <- paste0("benchmark_", answers$expected_topology)
+  trajectory_type_column <- paste0("method_detects_", answers$expected_topology)
+  score_column <- paste0("benchmark_tt_", answers$expected_topology)
 
   trajectory_type_score <- methods_aggr %>%
     select(method_id, benchmark) %>%
@@ -64,11 +64,11 @@ expected_topology_modifier <- function(data, answers) {
 
 expect_cycles_modifier <- function(data, answers) {
   if(isTRUE(answers$expect_cycles)) {
-    data$methods_aggr <- data$methods_aggr %>% filter(detects_graph & detects_cycle)
+    data$methods_aggr <- data$methods_aggr %>% filter(method_detects_graph & method_detects_cycle)
     data$method_columns <- data$method_columns %>%
       bind_rows(
         tibble(
-          column_id = c("detects_graph", "detects_cycle"),
+          column_id = c("method_detects_graph", "method_detects_cycle"),
           filter = TRUE,
           order = FALSE
         )
@@ -81,10 +81,10 @@ expect_cycles_modifier <- function(data, answers) {
 
 expect_complex_tree_modifier <- function(data, answers) {
   if(isTRUE(answers$expect_complex_tree)) {
-    data$methods_aggr <- data$methods_aggr %>% arrange(-benchmark_tree)
+    data$methods_aggr <- data$methods_aggr %>% arrange(-benchmark_tt_tree)
     data$method_columns <- data$method_columns %>%
       mutate(order = FALSE) %>%
-      add_row(column_id = "benchmark_tree", filter = FALSE, order = TRUE)
+      add_row(column_id = "benchmark_tt_tree", filter = FALSE, order = TRUE)
   }
   data
 }
@@ -106,7 +106,7 @@ programming_interface_modifier <- function(data, answers) {
 languages_modifier <- function(data, answers) {
   data$methods_aggr <- data$methods_aggr %>% filter(platform %in% answers$languages)
   data$method_columns <- data$method_columns %>%
-    add_row(column_id = "platform", filter = TRUE, order = FALSE)
+    add_row(column_id = "method_platform", filter = TRUE, order = FALSE)
 
   data
 }
@@ -129,36 +129,37 @@ developer_friendliness_modifier <- function(data, answers) {
 }
 
 
+
+invoke_if_function <- function(func, ...) {
+  if(!is.null(func)) {
+    func(...)
+  } else {
+    NA
+  }
+}
+
+
 time_modifier <- function(data, answers) {
   time_cutoff <- process_time(answers$time)
   if (!is.na(time_cutoff)) {
     # calculate the time
     data$methods_aggr <- data$methods_aggr %>%
       mutate(
-        time_prediction = map(
-          scaling_model_time,
-          function(scaling_model_time) {
-            if(is.null(scaling_model_time)) {
-              list(mean = NA, sd = NA)
-            } else {
-              scaling_model_time(
-                n_cells = ifelse(is.na(answers$n_cells), 1, answers$n_cells),
-                n_features = ifelse(is.na(answers$n_features), 1, answers$n_features)
-              )
-            }
-          }
-        ),
-        time_prediction_mean = map_dbl(time_prediction, "mean"),
-        time_prediction_sd = map_dbl(time_prediction, "sd")
+        scaling_predicted_time = map_dbl(
+          scaling_models_predict_time,
+          invoke_if_function,
+          n_cells = answers$n_cells,
+          n_features = answers$n_features
+        )
       )
 
     # filter on time
     data$methods_aggr <- data$methods_aggr %>%
-      filter(is.na(time_prediction_mean) | time_prediction_mean <= time_cutoff)
+      filter(is.na(scaling_predicted_time) | scaling_predicted_time <= time_cutoff)
 
     # add to method columns
     data$method_columns <- data$method_columns %>%
-      add_row(column_id = "time_prediction_mean", filter = TRUE, order = FALSE)
+      add_row(column_id = "scaling_predicted_time", filter = TRUE, order = FALSE)
   }
   data
 }
@@ -169,30 +170,21 @@ memory_modifier <- function(data, answers) {
     # calculate the memory
     data$methods_aggr <- data$methods_aggr %>%
       mutate(
-        memory_prediction = map(
-          scaling_model_mem,
-          function(scaling_model_mem) {
-            if(is.null(scaling_model_mem)) {
-              list(mean = NA, sd = NA)
-            } else {
-              scaling_model_mem(
-                n_cells = ifelse(is.na(answers$n_cells), 1, answers$n_cells),
-                n_features = ifelse(is.na(answers$n_features), 1, answers$n_features)
-              )
-            }
-          }
-        ),
-        memory_prediction_mean = map_dbl(memory_prediction, "mean"),
-        memory_prediction_sd = map_dbl(memory_prediction, "sd")
+        scaling_predicted_mem = map_dbl(
+          scaling_models_predict_mem,
+          invoke_if_function,
+          n_cells = answers$n_cells,
+          n_features = answers$n_features
+        )
       )
 
     # filter on memory
     data$methods_aggr <- data$methods_aggr %>%
-      filter(is.na(memory_prediction_mean) | memory_prediction_mean <= memory_cutoff)
+      filter(is.na(scaling_predicted_mem) | scaling_predicted_mem <= memory_cutoff)
 
     # add to method columns
     data$method_columns <- data$method_columns %>%
-      add_row(column_id = "memory_prediction_mean", filter = TRUE, order = FALSE)
+      add_row(column_id = "scaling_predicted_mem", filter = TRUE, order = FALSE)
   }
 
   data
@@ -203,7 +195,7 @@ prior_information_modifier <- function(data, answers) {
   unavailable_priors <- dynwrap::priors %>% filter(!prior_id %in% answers$prior_information) %>% pull(prior_id)
   data$methods_aggr <- data$methods_aggr %>%
     filter(
-      input %>% map("required") %>% map_lgl(~!any(. %in% unavailable_priors))
+      map_lgl(method_required_priors, ~!any(. %in% unavailable_priors))
     )
 
   data

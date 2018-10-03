@@ -433,6 +433,7 @@ input_functions <- list(
     )
   },
   textslider = function(q) {
+    testthat::expect_true(q$default %in% q$choices)
     shinyWidgets::sliderTextInput(
       inputId = q$question_id,
       label = q$label,
