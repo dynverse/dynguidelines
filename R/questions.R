@@ -42,7 +42,7 @@ get_questions <- function() {
       question_id = "multiple_disconnected",
       modifier = multiple_disconnected_modifier,
       type = "radiobuttons",
-      choices = c("Yes" = TRUE, "It's possible" = TRUE, "No" = FALSE),
+      choices = c("Yes" = TRUE, "I don't know" = TRUE, "No" = FALSE),
       modifier = function(data, answer = NULL) {},
       activeIf = "true",
       label = "Do you expect multiple disconnected trajectories in the data?",
@@ -107,7 +107,7 @@ get_questions <- function() {
       question_id = "expect_cycles",
       modifier = expect_cycles_modifier,
       type = "radiobuttons",
-      choices = c("Yes" = TRUE, "It's possible" = TRUE, "No" = FALSE),
+      choices = c("Yes" = TRUE, "I don't know" = TRUE, "No" = FALSE),
       activeIf = "
       input.multiple_disconnected == 'FALSE' &&
       input.expect_topology == 'FALSE'
@@ -127,7 +127,7 @@ get_questions <- function() {
       question_id = "expect_complex_tree",
       modifier = expect_complex_tree_modifier,
       type = "radiobuttons",
-      choices = c("Yes" = TRUE, "Not necessarily" = FALSE),
+      choices = c("Yes" = TRUE, "I don't know" = FALSE, "No" = FALSE),
       activeIf = "
       input.multiple_disconnected == 'FALSE' &&
       input.expect_cycles == 'FALSE' &&
@@ -191,7 +191,7 @@ get_questions <- function() {
       question_id = "memory",
       modifier = memory_modifier,
       type = "textslider",
-      choices = c(format_memory(c(seq(10^5, 10^6, 10^5), seq(10^6, 10^7, 10^6), seq(10^7, 10^8, 10^7))), "\U221E"),
+      choices = c(format_memory(c(seq(10^8, 10^9, 10^8), seq(10^9, 10^10, 10^9), seq(10^10, 10^11, 10^10))), "\U221E"),
       default = "2GB",
       category = "scalability",
       category = "scalability",

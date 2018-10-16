@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: 2018-09-24T13:18:53Z
+  labels:
+    run: dynguidelines
+  name: dynguidelines
+  namespace: default
+  resourceVersion: "991"
+  selfLink: /api/v1/namespaces/default/services/dynguidelines
+  uid: 6201f3e7-bffc-11e8-b4cd-42010a80018a
+spec:
+  clusterIP: 10.31.244.30
+  externalTrafficPolicy: Cluster
+  ports:
+  - nodePort: 32498
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    run: dynguidelines
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - ip: 146.148.59.79

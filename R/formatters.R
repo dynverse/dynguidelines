@@ -46,14 +46,15 @@ format_memory <- function(x) {
     if (is.na(x)) {
       NA
     } else if (x < 10^3) {
-      paste0(round(x), "kB")
+      paste0(round(x), "B")
     } else if (x < 10^6) {
-      paste0(round(x/10^3), "MB")
+      paste0(round(x/10^3), "kB")
     } else if (x < 10^9) {
-      paste0(round(x/10^6), "GB")
+      paste0(round(x/10^6), "MB")
+    } else if (x < 10^12) {
+      paste0(round(x/10^9), "GB")
     } else {
-      message("More than a terrabyte of memory seems a bit overkill...")
-      paste0(round(x/10^9), "TB")
+      paste0(round(x/10^12), "TB")
     }
   })
 }
@@ -64,15 +65,18 @@ process_memory <- function(x) {
     } else if (x == "\U221E") {
       Inf
     } else {
-      number <- as.numeric(gsub("([0-9]*)[kMGT]B", "\\1", x))
-      if (endsWith(x, "kB")) {
+      number <- as.numeric(gsub("([0-9]*)[kMGT]?B", "\\1", x))
+      unit <- gsub("[0-9]*([kMGT]?B)", "\\1", x)
+      if (unit == "B") {
         number
-      } else if (endsWith(x, "MB")) {
+      } else if (unit == "kB") {
         number * 10^3
-      } else if (endsWith(x, "GB")) {
+      } else if (unit == "MB") {
         number * 10^6
-      } else if (endsWith(x, "TB")) {
+      } else if (unit == "GB") {
         number * 10^9
+      } else if (unit == "TB") {
+        number * 10^12
       } else {
         stop("Invalid memory: ", x)
       }

@@ -66,12 +66,16 @@ get_trajectory_type_renderer <- function(trajectory_type) {
       map(
         x,
         function(x) {
-          if(x) {
-            class <- "trajectory_type"
+          if(is.na(x)) {
+            "NA"
           } else {
-            class <- "trajectory_type inactive"
+            if (isTRUE(x)) {
+              class <- "trajectory_type"
+            } else {
+              class <- "trajectory_type inactive"
+            }
+            img(src = str_glue("img/trajectory_types/{gsub('method_detects_', '', trajectory_type)}.png"), class = class)
           }
-          img(src = str_glue("img/trajectory_types/{gsub('detects_', '', trajectory_type)}.png"), class = class)
         }
       )
     }
@@ -85,7 +89,7 @@ render_selected <- function(x) {
 render_identity <- function(x) {x}
 
 render_article <- function(x) {
-  map(x, ~if(!is.na(.)) {tags$a(href = paste0("https://doi.org/", ., target = "blank"), icon("paper-plane"))} else {""})
+  map(x, ~if(!is.na(.)) {tags$a(href = paste0("https://doi.org/", .), icon("paper-plane"), target = "blank")} else {""})
 }
 
 render_code <- function(x) {
@@ -132,18 +136,18 @@ get_renderers <- function() {
   renderers <- tribble(
     ~column_id, ~category, ~renderer, ~label, ~title, ~style, ~default, ~name,
     "selected", "basic", render_selected, icon("check-circle"), "Selected methods for TI", NA, -100, NA,
-    "name", "basic", render_identity, "Method", "Name of the method", "max-width:99%", -99, NA,
-    "most_complex_trajectory_type", "method", render_detects_trajectory_type, "Topology", "The most complex topology this method can predict", NA, -98, NA,
-    "benchmark_overall", "benchmark", get_score_renderer(), "Benchmark score", "Overall score in the benchmark", "width:130px;", 98, NA,
-    "doi", "method", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99, "paper",
-    "code_url", "method", render_code, icon("code"), "Code of method", NA, 100, "code",
-    "platform", "method", render_identity, "Language", "Language", NA, NA, NA,
-    "time_prediction_mean", "scaling", time_renderer, "Estimated time", "Estimated running time", NA, NA, NA,
-    "memory_prediction_mean", "scaling", memory_renderer, "Estimated memory", "Estimated maximal memory usage", NA, NA, NA
+    "method_name", "basic", render_identity, "Method", "Name of the method", "max-width:99%", -99, NA,
+    "method_most_complex_trajectory_type", "method", render_detects_trajectory_type, "Topology", "The most complex topology this method can predict", NA, -98, NA,
+    "benchmark_overall_overall", "benchmark", get_score_renderer(), "Benchmark score", "Overall score in the benchmark", "width:130px;", 98, NA,
+    "method_doi", "method", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99, "paper",
+    "method_code_url", "method", render_code, icon("code"), "Code of method", NA, 100, "code",
+    "method_platform", "method", render_identity, "Language", "Language", NA, NA, NA,
+    "scaling_predicted_time", "scaling", time_renderer, "Estimated time", "Estimated running time", NA, NA, NA,
+    "scaling_predicted_mem", "scaling", memory_renderer, "Estimated memory", "Estimated maximal memory usage", NA, NA, NA
   ) %>% bind_rows(
     tibble(
       trajectory_type = trajectory_types$id,
-      column_id = paste0("detects_", trajectory_type),
+      column_id = paste0("method_detects_", trajectory_type),
       category = "method",
       renderer = map(column_id, get_trajectory_type_renderer),
       label = map(column_id, ~""),
@@ -155,8 +159,8 @@ get_renderers <- function() {
   ) %>% bind_rows(
     tibble(
       trajectory_type = trajectory_types$id,
-      column_id = paste0("benchmark_", trajectory_type),
-      category = "benchmark_trajectory_types",
+      column_id = paste0("benchmark_tt_", trajectory_type),
+      category = "benchmark_trajectory_type",
       renderer = map(column_id, ~get_score_renderer()),
       label = as.list(str_glue("{label_capitalise(trajectory_type)} score")),
       name = NA,
@@ -167,8 +171,8 @@ get_renderers <- function() {
   ) %>% bind_rows(
     tibble(
       metric_id = benchmark_metrics$metric_id,
-      column_id = paste0("benchmark_", metric_id),
-      category = "benchmark_metrics",
+      column_id = paste0("benchmark_overall_norm_", metric_id),
+      category = "benchmark_metric",
       renderer = map(column_id, ~get_score_renderer()),
       label = map(benchmark_metrics$html, HTML),
       name = NA,
@@ -178,11 +182,11 @@ get_renderers <- function() {
     ) %>% select(-metric_id)
   ) %>% bind_rows(
     tibble(
-      dataset_source = unique(benchmark_datasets_info$source),
-      column_id = paste0("benchmark_", dataset_source),
-      category = "benchmark_dataset_sources",
+      dataset_source = gsub("/", "_", unique(benchmark_datasets_info$source)),
+      column_id = paste0("benchmark_source_", dataset_source),
+      category = "benchmark_source",
       renderer = map(column_id, ~get_score_renderer()),
-      label = as.list(dataset_source),
+      label = as.list(label_capitalise(dataset_source)),
       name = NA,
       title = dataset_source,
       style = "width:130px;",
