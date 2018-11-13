@@ -104,7 +104,7 @@ programming_interface_modifier <- function(data, answers) {
 
 
 languages_modifier <- function(data, answers) {
-  data$methods_aggr <- data$methods_aggr %>% filter(platform %in% answers$languages)
+  data$methods_aggr <- data$methods_aggr %>% filter(method_platform %in% answers$languages)
   data$method_columns <- data$method_columns %>%
     add_row(column_id = "method_platform", filter = TRUE, order = FALSE)
 
@@ -113,17 +113,17 @@ languages_modifier <- function(data, answers) {
 
 
 user_friendliness_modifier <- function(data, answers) {
-  data$methods_aggr <- data$methods_aggr %>% filter(qc_user_friendly >= as.numeric(answers$user_friendliness)/100)
+  data$methods_aggr <- data$methods_aggr %>% filter(qc_app_user_friendly >= as.numeric(answers$user_friendliness)/100)
   data$method_columns <- data$method_columns %>%
-    add_row(column_id = "qc_user_friendly", filter = TRUE, order = FALSE)
+    add_row(column_id = "qc_app_user_friendly", filter = TRUE, order = FALSE)
 
   data
 }
 
 developer_friendliness_modifier <- function(data, answers) {
-  data$methods_aggr <- data$methods_aggr %>% filter(qc_developer_friendly >= as.numeric(answers$developer_friendliness)/100)
+  data$methods_aggr <- data$methods_aggr %>% filter(qc_app_developer_friendly >= as.numeric(answers$developer_friendliness)/100)
   data$method_columns <- data$method_columns %>%
-    add_row(column_id = "qc_developer_friendly", filter = TRUE, order = FALSE)
+    add_row(column_id = "qc_app_developer_friendly", filter = TRUE, order = FALSE)
 
   data
 }
