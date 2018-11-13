@@ -18,6 +18,8 @@ generate_r_active_if <- function(question) {
   }
 }
 
+memory_choices <- c(seq(10^8, 10^9, 10^8), seq(10^9, 10^10, 10^9), seq(10^10, 10^11, 10^10))
+
 #' Get the the questions, their modifiers and properties
 #'
 #' @include modifiers.R
@@ -191,8 +193,8 @@ get_questions <- function() {
       question_id = "memory",
       modifier = memory_modifier,
       type = "textslider",
-      choices = c(format_memory(c(seq(10^8, 10^9, 10^8), seq(10^9, 10^10, 10^9), seq(10^10, 10^11, 10^10))), "\U221E"),
-      default = "2GB",
+      choices = c(format_memory(memory_choices), "\U221E"),
+      default = get_available_memory,
       category = "scalability",
       category = "scalability",
       activeIf = "true",
