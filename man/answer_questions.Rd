@@ -19,8 +19,8 @@ answer_questions(dataset = NULL, ...)
 \item n_cells: Number of cells, defaults to 1000:
 \item n_features: Number of features (genes), defaults to 1000:
 \item time: Time limit, defaults to 1h:
-\item memory: Memory limit, defaults to 2GB:
-\item prior_information: Are you able to provide the following prior information?, defaults to NULL:
+\item memory: Memory limit, defaults to 30GB:
+\item prior_information: Are you able to provide the following prior information?, defaults to c("start_id", "end_id", "end_n", "start_n", "groups_n", "features_id"):
 \item method_selection: How to select the number of methods, defaults to dynamic_n_methods:
 \item dynamic_n_methods: Minimal probability of selecting the top model for the task, defaults to 80:
 \item fixed_n_methods: Number of methods, defaults to 4:
@@ -29,7 +29,7 @@ answer_questions(dataset = NULL, ...)
 \item dynmethods: Do you use dynmethods to run the methods?, defaults to TRUE:
 \item docker: Is docker installed?, defaults to TRUE:
 \item programming_interface: Can you work in a programming interface?, defaults to TRUE:
-\item languages: Which languages can you work with?, defaults to c("python", "R", "C++"):
+\item languages: Which languages can you work with?, defaults to c("Python", "R", "C++"):
 \item user_friendliness: Minimal user friendliness score, defaults to 60:
 \item developer_friendliness: Minimal developer friendliness score, defaults to 60:
 \item exclude_datasets: Which datasets should be excluded, defaults to character(0):
