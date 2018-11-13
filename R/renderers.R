@@ -195,7 +195,7 @@ get_renderers <- function() {
   ) %>% bind_rows(
     tibble(
       column_id = methods_aggr %>% select(starts_with("qc_")) %>% select_if(is.numeric) %>% colnames(),
-      category = "qc",
+      category = "usability",
       renderer = map(column_id, ~get_score_renderer(viridis::viridis)),
       label = as.list(label_capitalise(column_id)),
       name = NA,
