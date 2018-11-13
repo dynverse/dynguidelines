@@ -29,8 +29,8 @@ get_questions <- function() {
     filter(prior_id != "dataset")
 
   # possible programming languages
-  all_programming_languages <- c("python", "R", "C++", "Matlab")
-  all_free_programming_languages <- intersect(all_programming_languages, c("python", "R", "C++"))
+  all_programming_languages <- c("Python", "R", "C++", "Matlab")
+  all_free_programming_languages <- intersect(all_programming_languages, c("Python", "R", "C++"))
 
   # possible trajectory types
   trajectory_types <- dynwrap::trajectory_types
