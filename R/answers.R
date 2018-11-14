@@ -32,16 +32,17 @@ answer_questions_docs <- function() {
 #'
 #' @export
 answer_questions <- function(dataset = NULL, ...) {
+  questions <- get_questions()
+
   # get either the defaults or the arguments given by the user
   given_answers <- list(...)
-  default_answers <- get_defaults()
+  default_answers <- get_defaults(names(questions))
   default_answers <- default_answers[setdiff(names(default_answers), names(given_answers))]
   answers <- c(given_answers, default_answers)
 
   # get computed answers from dataset
   computed_question_ids <- character()
   if (!is.null(dataset)) {
-    questions <- get_questions()
     for (question_id in setdiff(names(questions), names(given_answers))) {
       if (is.function(questions[[question_id]]$default_dataset)) {
         new_default <- questions[[question_id]]$default_dataset(dataset, answers[[question_id]])
@@ -49,6 +50,12 @@ answer_questions <- function(dataset = NULL, ...) {
         answers[question_id] <- new_default
         computed_question_ids <- c(computed_question_ids, question_id)
       }
+    }
+  }
+
+  for (question_id in setdiff(names(questions), names(given_answers))) {
+    if (is.function(questions[[question_id]]$default)) {
+      computed_question_ids <- c(computed_question_ids, question_id)
     }
   }
 

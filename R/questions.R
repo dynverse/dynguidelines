@@ -18,6 +18,8 @@ generate_r_active_if <- function(question) {
   }
 }
 
+memory_choices <- c(seq(10^8, 10^9, 10^8), seq(10^9, 10^10, 10^9), seq(10^10, 10^11, 10^10))
+
 #' Get the the questions, their modifiers and properties
 #'
 #' @include modifiers.R
@@ -29,11 +31,11 @@ get_questions <- function() {
     filter(prior_id != "dataset")
 
   # possible programming languages
-  all_programming_languages <- c("python", "R", "C++", "Matlab")
-  all_free_programming_languages <- intersect(all_programming_languages, c("python", "R", "C++"))
+  all_programming_languages <- c("Python", "R", "C++", "Matlab")
+  all_free_programming_languages <- intersect(all_programming_languages, c("Python", "R", "C++"))
 
   # possible trajectory types
-  data(trajectory_types, package = "dynwrap", envir = environment())
+  trajectory_types <- dynwrap::trajectory_types
   all_trajectory_types <- trajectory_types$id
 
   # benchmark metrics
@@ -191,8 +193,8 @@ get_questions <- function() {
       question_id = "memory",
       modifier = memory_modifier,
       type = "textslider",
-      choices = c(format_memory(c(seq(10^8, 10^9, 10^8), seq(10^9, 10^10, 10^9), seq(10^10, 10^11, 10^10))), "\U221E"),
-      default = "2GB",
+      choices = c(format_memory(memory_choices), "\U221E"),
+      default = get_available_memory,
       category = "scalability",
       category = "scalability",
       activeIf = "true",
@@ -209,7 +211,7 @@ get_questions <- function() {
       title = "Some methods require some prior information, such as the start cells, to help with the construction of the trajectory. Although this can help the method with finding the right trajectory, prior information can also bias the trajectory towards what is already known. <br> Prior information should therefore be given with great care.",
       activeIf = "true",
       category = "prior_information",
-      default = c(),
+      default = dynwrap::priors %>% filter(type == "soft") %>% pull(prior_id),
       default_dataset = function(dataset, default) {
         if("prior_information" %in% names(dataset) || dynwrap::is_wrapper_with_prior_information(dataset)) {
           priors %>% filter(prior_id %in% names(dataset$prior_information)) %>% pull(prior_id)

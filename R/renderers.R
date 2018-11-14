@@ -7,7 +7,24 @@ scale_01 <- function(y, lower = min(y, na.rm = TRUE), upper = max(y, na.rm = TRU
   (y - lower) / (upper - lower)
 }
 
-get_score_renderer <- function(palette = viridis::magma) {
+
+palettes <- tribble(
+  ~palette,        ~colours,
+  # blues palette
+  "overall", grDevices::colorRampPalette(rev(RColorBrewer::brewer.pal(9, "Greys")[-1]))(101),
+  "benchmark", grDevices::colorRampPalette(rev(RColorBrewer::brewer.pal(9, "Blues") %>% c("#011636")))(101),
+  "scaling", grDevices::colorRampPalette(rev(RColorBrewer::brewer.pal(9, "Reds")[-8:-9]))(101),
+  "stability", grDevices::colorRampPalette(rev(RColorBrewer::brewer.pal(9, "YlOrBr")[-7:-9]))(101),
+  "qc", grDevices::colorRampPalette(rev(RColorBrewer::brewer.pal(9, "Greens")[-1] %>% c("#00250f")))(101),
+  "column_annotation", c(overall = "#555555", benchmark = "#4292c6", scaling = "#f6483a", stability = "#fe9929", qc = "#41ab5d")
+) %>% deframe()
+
+scaled_color <- function(x, palette) {
+  palette[ceiling(x * (length(palette)-1)) + 1]
+}
+
+
+get_score_renderer <- function(palette = palettes$benchmark) {
   function(x, options) {
     if (any(is.na(x))) {
       # warning("Some NA values in score renderer! ", x)
@@ -21,10 +38,10 @@ get_score_renderer <- function(palette = viridis::magma) {
         rounded = format_100(normalised),
         formatted = ifelse(is.na(x), "NA", rounded),
         width = paste0(rounded, "px"),
-        `background-color` = ifelse(is.na(x), "none", palette(255)[ceiling(normalised*254)+1] %>% html_color()),
+        `background-color` = ifelse(is.na(x), "none", html_color(scaled_color(normalised, palette))),
         color = case_when(scale_01(normalised, lower = 0) > 0.5 ~ "black", is.na(x) ~ "grey", TRUE ~ "white"),
         `text-shadow` = case_when(color == "white" ~ "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black", TRUE ~ "none"),
-        style = pmap(lst(`background-color`, color, display = "block", width, `text-shadow`), htmltools::css)
+        style = pmap(lst(`background-color`, color, width, `text-shadow`), htmltools::css)
       )
     } else if (style == "circle") {
       y <- tibble(
@@ -34,7 +51,7 @@ get_score_renderer <- function(palette = viridis::magma) {
         formatted = ifelse(is.na(x), "NA", rounded),
         width = paste0(rounded/3, "px"),
         `line-height` = paste0(rounded/3, "px"),
-        `background-color` = ifelse(is.na(x), "none", palette(255)[ceiling(normalised*254)+1] %>% html_color()),
+        `background-color` = ifelse(is.na(x), "none", html_color(scaled_color(normalised, palette))),
         color = case_when(scale_01(normalised, lower = 0) > 0.5 ~ "black", is.na(x) ~ "grey", TRUE ~ "white"),
         `text-shadow` = case_when(color == "white" ~ "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black", TRUE ~ "none"),
         style = pmap(lst(`background-color`, color, display = "block", width, `text-shadow`, `line-height`, `border-radius` = "50%", `text-align` = "center"), htmltools::css)
@@ -98,7 +115,7 @@ render_code <- function(x) {
 
 
 
-get_scaling_renderer <- function(formatter, palette = viridis::cividis, min, max, log = FALSE) {
+get_scaling_renderer <- function(formatter, palette = palettes$scaling, min, max, log = FALSE) {
   function(x) {
     if (log) {
       x <- exp(x)
@@ -113,7 +130,7 @@ get_scaling_renderer <- function(formatter, palette = viridis::cividis, min, max
       normalised = ifelse(is.na(x), 0, scale_01(log(x))),
       rounded = format_100(normalised),
       width = paste0(rounded, "px"),
-      background = ifelse(is.na(x), "none", palette(255, direction = -1)[ceiling(normalised*254)+1] %>% html_color()),
+      background = ifelse(is.na(x), "none", html_color(scaled_color(1-normalised, palette))),
       color = case_when(scale_01(normalised, lower = 0) > 0.5 ~ "white", is.na(x) ~ "grey", TRUE ~ "black"),
       style = pmap(list(`background-color` = background, color = color, display = "block", width = width), htmltools::css)
     )
@@ -126,6 +143,30 @@ time_renderer <- get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7, 
 memory_renderer <- get_scaling_renderer(format_memory, min = 1, max = 10^12, log = FALSE)
 time_renderer_log <- get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7, log = TRUE)
 memory_renderer_log <- get_scaling_renderer(format_memory, min = 1, max = 10^12, log = TRUE)
+
+
+stability_warning_renderer <- function(x) {
+  map(x, function(x) {
+    if (x > 0) {
+      tags$span(
+        icon("warning"),
+        "Unstable",
+        class = "score",
+        style = paste(
+          paste0("background-color:", scaled_color(1-x, palettes$stability)),
+          "color: white",
+          "white-space: nowrap",
+          sep = ";"
+        ),
+        `data-toggle` = "tooltip",
+        `data-placement` = "top",
+        title = "This method can generate unstable results. We advise you to rerun it multiple times on a dataset."
+      )
+    } else {
+      NULL
+    }
+  })
+}
 
 #' Get all renderers
 #'
@@ -143,7 +184,8 @@ get_renderers <- function() {
     "method_code_url", "method", render_code, icon("code"), "Code of method", NA, 100, "code",
     "method_platform", "method", render_identity, "Language", "Language", NA, NA, NA,
     "scaling_predicted_time", "scaling", time_renderer, "Estimated time", "Estimated running time", NA, NA, NA,
-    "scaling_predicted_mem", "scaling", memory_renderer, "Estimated memory", "Estimated maximal memory usage", NA, NA, NA
+    "scaling_predicted_mem", "scaling", memory_renderer, "Estimated memory", "Estimated maximal memory usage", NA, NA, NA,
+    "stability_warning", "stability", stability_warning_renderer, "Stability", "Whether the stability is low", NA, NA, NA
   ) %>% bind_rows(
     tibble(
       trajectory_type = trajectory_types$id,
@@ -194,9 +236,11 @@ get_renderers <- function() {
     ) %>% select(-dataset_source)
   ) %>% bind_rows(
     tibble(
-      column_id = methods_aggr %>% select(starts_with("qc_")) %>% select_if(is.numeric) %>% colnames(),
-      category = "qc",
-      renderer = map(column_id, ~get_score_renderer(viridis::viridis)),
+      column_id = methods_aggr %>%
+        select(starts_with("qc_")) %>%
+        select_if(is.numeric) %>% colnames(),
+      category = "usability",
+      renderer = map(column_id, ~get_score_renderer(palettes$qc)),
       label = as.list(label_capitalise(column_id)),
       name = NA,
       title = as.character(label),
@@ -208,6 +252,18 @@ get_renderers <- function() {
         scaling_type = gsub("scaling_([^_]*)_.*", "\\1", column_id),
         category = "scaling",
         renderer = list(mem = memory_renderer_log, time = time_renderer_log)[scaling_type],
+        label = as.list(column_id),
+        name = NA,
+        title = as.character(label),
+        style = "width:130px",
+        default = NA
+      )
+    ) %>% bind_rows(
+      tibble(
+        column_id = methods_aggr %>% select(starts_with("stability")) %>% select_if(is.numeric) %>% colnames(),
+        scaling_type = gsub("stability_([^_]*)_.*", "\\1", column_id),
+        category = "stability",
+        renderer = map(column_id, ~get_score_renderer(palettes$stability)),
         label = as.list(column_id),
         name = NA,
         title = as.character(label),
