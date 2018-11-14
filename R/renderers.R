@@ -151,9 +151,10 @@ stability_warning_renderer <- function(x) {
       tags$span(
         icon("warning"),
         "Unstable",
-        style = c(
+        style = paste(
           paste0("color:", scaled_color(1-x, palettes$stability)),
-          "white-space: nowrap;"
+          "white-space: nowrap",
+          sep = ";"
         )
       )
     } else {
@@ -179,7 +180,7 @@ get_renderers <- function() {
     "method_platform", "method", render_identity, "Language", "Language", NA, NA, NA,
     "scaling_predicted_time", "scaling", time_renderer, "Estimated time", "Estimated running time", NA, NA, NA,
     "scaling_predicted_mem", "scaling", memory_renderer, "Estimated memory", "Estimated maximal memory usage", NA, NA, NA,
-    "stability_warning", "stability", stability_warning_renderer, icon("warning"), "Whether the stability is low", NA, NA, NA
+    "stability_warning", "stability", stability_warning_renderer, "Stability", "Whether the stability is low", NA, NA, NA
   ) %>% bind_rows(
     tibble(
       trajectory_type = trajectory_types$id,
