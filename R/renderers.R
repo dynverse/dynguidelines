@@ -23,6 +23,16 @@ scaled_color <- function(x, palette) {
   palette[ceiling(x * (length(palette)-1)) + 1]
 }
 
+color_based_on_background <- function(background) {
+  map_chr(background, function(background) {
+    ifelse(
+      mean(colorspace::hex2RGB(background)@coords) > 0.6,
+      "black",
+      "white"
+    )
+  })
+}
+
 
 get_score_renderer <- function(palette = palettes$benchmark) {
   function(x, options) {
@@ -145,28 +155,49 @@ time_renderer_log <- get_scaling_renderer(format_time, min = 0.1, max = 60*60*24
 memory_renderer_log <- get_scaling_renderer(format_memory, min = 1, max = 10^12, log = TRUE)
 
 
-stability_warning_renderer <- function(x) {
-  map(x, function(x) {
-    if (x > 0) {
-      tags$span(
-        icon("warning"),
-        "Unstable",
-        class = "score",
-        style = paste(
-          paste0("background-color:", scaled_color(1-x, palettes$stability)),
-          "color: white",
-          "white-space: nowrap",
-          sep = ";"
-        ),
-        `data-toggle` = "tooltip",
-        `data-placement` = "top",
-        title = "This method can generate unstable results. We advise you to rerun it multiple times on a dataset."
-      )
-    } else {
-      NULL
-    }
-  })
+get_warning_renderer <- function(
+  label,
+  title,
+  palette
+) {
+  function(x) {
+    map(x, function(x) {
+      if (x > 0) {
+        background <- scaled_color(1-x, palette)
+        color <- color_based_on_background(background)
+
+        tags$span(
+          icon("warning"),
+          label,
+          class = "score",
+          style = paste(
+            paste0("background-color:", background),
+            paste0("color: ", color),
+            "white-space: nowrap",
+            sep = ";"
+          ),
+          `data-toggle` = "tooltip",
+          `data-placement` = "top",
+          title = title
+        )
+      } else {
+        NULL
+      }
+    })
+  }
 }
+
+stability_warning_renderer <- get_warning_renderer(
+  "Unstable",
+  title = "This method can generate unstable results. We advise you to rerun it multiple times on a dataset.",
+  palette = palettes$stability
+)
+
+error_warning_renderer <- get_warning_renderer(
+  "Errors",
+  title = "This method errors often. It may not work on your dataset.",
+  palette = palettes$overall
+)
 
 #' Get all renderers
 #'
@@ -178,14 +209,15 @@ get_renderers <- function() {
     ~column_id, ~category, ~renderer, ~label, ~title, ~style, ~default, ~name,
     "selected", "basic", render_selected, icon("check-circle"), "Selected methods for TI", NA, -100, NA,
     "method_name", "basic", render_identity, "Method", "Name of the method", "max-width:99%", -99, NA,
-    "method_most_complex_trajectory_type", "method", render_detects_trajectory_type, "Topology", "The most complex topology this method can predict", NA, -98, NA,
-    "benchmark_overall_overall", "benchmark", get_score_renderer(), "Benchmark score", "Overall score in the benchmark", "width:130px;", 98, NA,
+    "method_most_complex_trajectory_type", "method", render_detects_trajectory_type, "Topology", "The most complex topology this method can predict", NA, NA, NA,
+    "benchmark_overall_overall", "accuracy", get_score_renderer(), "Accuracy", "Overall accuracy score, across trajectory types, dataset sources, and metrics", "width:130px;", 98, NA,
     "method_doi", "method", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99, "paper",
     "method_code_url", "method", render_code, icon("code"), "Code of method", NA, 100, "code",
     "method_platform", "method", render_identity, "Language", "Language", NA, NA, NA,
-    "scaling_predicted_time", "scaling", time_renderer, "Estimated time", "Estimated running time", NA, NA, NA,
-    "scaling_predicted_mem", "scaling", memory_renderer, "Estimated memory", "Estimated maximal memory usage", NA, NA, NA,
-    "stability_warning", "stability", stability_warning_renderer, "Stability", "Whether the stability is low", NA, NA, NA
+    "scaling_predicted_time", "scaling", time_renderer, "Time", "Estimated running time", NA, 2, NA,
+    "scaling_predicted_mem", "scaling", memory_renderer, "Memory", "Estimated maximal memory usage", NA, 2.1, NA,
+    "stability_warning", "stability", stability_warning_renderer, "Stability", "Whether the stability is low", NA, 3, NA,
+    "error_warning", "method", error_warning_renderer, "Errors", "Whether the method errors often", NA, 3, NA
   ) %>% bind_rows(
     tibble(
       trajectory_type = trajectory_types$id,
@@ -196,13 +228,13 @@ get_renderers <- function() {
       name = paste0("Detects ", trajectory_type),
       title = as.character(str_glue("Whether this method can predict a {label_split(trajectory_type)} topology")),
       style = NA,
-      default = NA
+      default = ifelse(trajectory_type %in% c("convergence", "acyclic_graph"), NA, 1 + seq_len(length(trajectory_type))/100)
     )
   ) %>% bind_rows(
     tibble(
       trajectory_type = trajectory_types$id,
       column_id = paste0("benchmark_tt_", trajectory_type),
-      category = "benchmark_trajectory_type",
+      category = "accuracy_trajectory_type",
       renderer = map(column_id, ~get_score_renderer()),
       label = as.list(str_glue("{label_capitalise(trajectory_type)} score")),
       name = NA,
@@ -214,7 +246,7 @@ get_renderers <- function() {
     tibble(
       metric_id = benchmark_metrics$metric_id,
       column_id = paste0("benchmark_overall_norm_", metric_id),
-      category = "benchmark_metric",
+      category = "accuracy_metric",
       renderer = map(column_id, ~get_score_renderer()),
       label = map(benchmark_metrics$html, HTML),
       name = NA,
@@ -226,7 +258,7 @@ get_renderers <- function() {
     tibble(
       dataset_source = gsub("/", "_", unique(benchmark_datasets_info$source)),
       column_id = paste0("benchmark_source_", dataset_source),
-      category = "benchmark_source",
+      category = "accuracy_dataset_source",
       renderer = map(column_id, ~get_score_renderer()),
       label = as.list(label_capitalise(dataset_source)),
       name = NA,
@@ -241,18 +273,28 @@ get_renderers <- function() {
         select_if(is.numeric) %>% colnames(),
       category = "usability",
       renderer = map(column_id, ~get_score_renderer(palettes$qc)),
-      label = as.list(label_capitalise(column_id)),
+      label = str_match(column_id, "qc_(app|cat)_(.*)") %>%
+        as.data.frame() %>%
+        mutate_all(as.character) %>%
+        glue::glue_data("{label_capitalise(.$V3)}") %>%
+        as.character() %>%
+        as.list(),
       name = NA,
       title = as.character(label),
       style = "width:130px;",
       default = NA
     ) %>% bind_rows(
       tibble(
-        column_id = methods_aggr %>% select(starts_with("scaling")) %>% select_if(is.numeric) %>% colnames(),
-        scaling_type = gsub("scaling_([^_]*)_.*", "\\1", column_id),
+        column_id = methods_aggr %>% select(matches("scaling_pred_(time|mem)_")) %>% colnames(),
+        scaling_type = gsub("scaling_pred_(time|mem)_.*", "\\1", column_id),
         category = "scaling",
-        renderer = list(mem = memory_renderer_log, time = time_renderer_log)[scaling_type],
-        label = as.list(column_id),
+        renderer = list(mem = memory_renderer, time = time_renderer)[scaling_type],
+        label = str_match(column_id, "scaling_pred_(time|mem)_cells(.*)_features(.*)") %>%
+          as.data.frame() %>%
+          mutate_all(as.character) %>%
+          glue::glue_data("{.$V2} {.$V3} cells and {.$V4} features") %>%
+          as.character() %>%
+          as.list(),
         name = NA,
         title = as.character(label),
         style = "width:130px",
@@ -316,7 +358,7 @@ get_column_presets <- function() {
 activate_column_preset_category <- function(category) {
   function(show_columns) {
     show_columns[names(show_columns)] <- "false"
-    columns_oi <- get_renderers() %>% filter(category == !!category) %>% pull(column_id) %>% paste0("column_", .)
+    columns_oi <- get_renderers() %>% filter(category %in% c(!!category, "basic")) %>% pull(column_id) %>% paste0("column_", .)
     columns_oi <- c("column_name", columns_oi)
     show_columns[columns_oi] <- "true"
     show_columns
