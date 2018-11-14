@@ -12,16 +12,22 @@ default_modifier <- function(data, answers) {
   # default order
   data$methods_aggr <- data$methods_aggr %>% arrange(-benchmark_overall_overall)
 
-  # add stability warning column
-  data$methods_aggr <- data$methods_aggr %>% mutate(
-    stability_warning = case_when(
-      stability_overall_overall < 0.5 ~ 1,
-      stability_overall_overall < 0.8 ~ 0.5,
+  # add stability and error warning column
+  scale_clip <- function(x, min, max) {
+    case_when(
+      x < min ~ 1,
+      x < max ~ 1 - (x - min) / (max - min),
       TRUE ~ 0
     )
+  }
+
+  data$methods_aggr <- data$methods_aggr %>% mutate(
+    stability_warning = scale_clip(stability_overall_overall, 0.5, 0.8),
+    error_warning = 1 - scale_clip(benchmark_overall_pct_errored, 0.2, 0.5)
   )
   data$method_columns <- data$method_columns %>%
-    add_row(column_id = "stability_warning", order = FALSE)
+    add_row(column_id = "stability_warning", order = FALSE) %>%
+    add_row(column_id = "error_warning", order = FALSE)
 
   data
 }
