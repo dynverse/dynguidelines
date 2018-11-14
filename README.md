@@ -6,7 +6,7 @@ Status](https://img.shields.io/travis/dynverse/dynguidelines.svg?logo=travis)](h
 [![AppVeyor Build
 Status](https://ci.appveyor.com/api/projects/status/github/dynverse/dynguidelines?branch=master&svg=true)](https://ci.appveyor.com/project/dynverse/dynguidelines)
 [![codecov](https://codecov.io/gh/dynverse/dynguidelines/branch/master/graph/badge.svg)](https://codecov.io/gh/dynverse/dynguidelines)
-<img src="man/figures/logo.png" align="right" />
+<img src="man/figures/logo.png" align="right" width="150px" />
 
 # Selecting the most optimal TI methods
 
