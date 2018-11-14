@@ -1,4 +1,8 @@
-# dynguidelines 0.2.1 (unreleased)
+# dynguidelines 0.3 (unreleased)
+
+* Add category headers, just like figure 2/3
+
+# dynguidelines 0.2.1 (14-11-2018)
 
 * Add warning column for when a method errors too often
 * Several fixes for more readable columns (such as usability)
