@@ -37,10 +37,10 @@ docker push dynverse/dynguidelines_server:${version}
 ## Run the container locally for testing
 ```
 docker run --rm -p 8080:8080 --name shiny dynverse/dynguidelines_server:${version}
+docker kill shiny
 ```
 
 ## Push to google cloud
- https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app
 
 ```
 docker tag dynverse/dynguidelines_server:${version} gcr.io/dynguidelines/dynguidelines_server:${version}
@@ -56,6 +56,10 @@ kubectl get deployments
 
 # Create cluster from scratch
 
+Add the cluster as a google cloud context:
+https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app
+
+Create the cluster
 ```
 gcloud container clusters create dynguidelines --num-nodes=3
 ```
