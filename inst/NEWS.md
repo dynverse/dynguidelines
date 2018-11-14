@@ -1,4 +1,11 @@
-# dynguidelines 0.2.0 (unreleased)
+# dynguidelines 0.2.1 (unreleased)
+
+* Add warning column for when a method errors too often
+* Several fixes for more readable columns (such as usability)
+* Update deployment instructions
+* Rename scaling to scalability
+
+# dynguidelines 0.2.0 (14-11-2018)
 
 * Update for new dynbenchmark results
 * Add new coloring scheme

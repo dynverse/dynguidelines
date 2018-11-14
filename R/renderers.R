@@ -214,8 +214,8 @@ get_renderers <- function() {
     "method_doi", "method", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99, "paper",
     "method_code_url", "method", render_code, icon("code"), "Code of method", NA, 100, "code",
     "method_platform", "method", render_identity, "Language", "Language", NA, NA, NA,
-    "scaling_predicted_time", "scaling", time_renderer, "Time", "Estimated running time", NA, 2, NA,
-    "scaling_predicted_mem", "scaling", memory_renderer, "Memory", "Estimated maximal memory usage", NA, 2.1, NA,
+    "scaling_predicted_time", "scalability", time_renderer, "Time", "Estimated running time", NA, 2, NA,
+    "scaling_predicted_mem", "scalability", memory_renderer, "Memory", "Estimated maximal memory usage", NA, 2.1, NA,
     "stability_warning", "stability", stability_warning_renderer, "Stability", "Whether the stability is low", NA, 3, NA,
     "error_warning", "method", error_warning_renderer, "Errors", "Whether the method errors often", NA, 3, NA
   ) %>% bind_rows(
@@ -273,12 +273,14 @@ get_renderers <- function() {
         select_if(is.numeric) %>% colnames(),
       category = "usability",
       renderer = map(column_id, ~get_score_renderer(palettes$qc)),
-      label = str_match(column_id, "qc_(app|cat)_(.*)") %>%
+      label = case_when(
+        column_id == "qc_overall_overall" ~ "Usability",
+        TRUE ~ str_match(column_id, "qc_(app|cat)_(.*)") %>%
         as.data.frame() %>%
         mutate_all(as.character) %>%
         glue::glue_data("{label_capitalise(.$V3)}") %>%
-        as.character() %>%
-        as.list(),
+        as.character()
+      )  %>% as.list(),
       name = NA,
       title = as.character(label),
       style = "width:130px;",
@@ -287,7 +289,7 @@ get_renderers <- function() {
       tibble(
         column_id = methods_aggr %>% select(matches("scaling_pred_(time|mem)_")) %>% colnames(),
         scaling_type = gsub("scaling_pred_(time|mem)_.*", "\\1", column_id),
-        category = "scaling",
+        category = "scalability",
         renderer = list(mem = memory_renderer, time = time_renderer)[scaling_type],
         label = str_match(column_id, "scaling_pred_(time|mem)_cells(.*)_features(.*)") %>%
           as.data.frame() %>%
