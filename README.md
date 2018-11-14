@@ -42,17 +42,16 @@ changes.
 
 <!-- This section gets automatically generated from inst/NEWS.md, and also generates inst/NEWS -->
 
-### Latest changes in dynguidelines 0.2.0 (unreleased)
+### Latest changes in dynguidelines 0.2.1 (unreleased)
+
+  - Add warning column for when a method errors too often
+  - Several fixes for more readable columns (such as usability)
+  - Update deployment instructions
+  - Rename scaling to scalability
+
+### Latest changes in dynguidelines 0.2.0 (14-11-2018)
 
   - Update for new dynbenchmark results
   - Add new coloring scheme
   - Add stability, shown by default as a warning that a method produces
     an unstable result
-
-### Latest changes in dynguidelines 0.1.0 (16-04-2018)
-
-  - INITIAL RELEASE: dynguidelines, user guidelines for trajectory
-    inference
-  - A shiny app which lets you select the most optimal trajectory
-    inference method based on a number of user-dependent and
-    dataset-dependent parameters

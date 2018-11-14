@@ -32,6 +32,7 @@ dynguidelines::guidelines_shiny()
 
 See [dyno](https://www.github.com/dynverse/dyno) for more information on how to use this package to infer and interpret trajectories.
 
+<!-- This gif was recorded using peek (https://github.com/phw/peek) --->
 ![demo](man/figures/demo.gif)
 
 ## Latest changes
