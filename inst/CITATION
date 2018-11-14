@@ -1,0 +1,13 @@
+citEntry(
+  entry    = "Article",
+  author   = "Wouter Saelens and Robrecht Cannoodt",
+  title    = "dynguidelines: Practical guidelines for trajectory inference.",
+  journal  = "In Progress",
+  year     = "2019",
+  month    = "",
+  volume   = "",
+  number   = "",
+  pages    = "",
+  doi      = "",
+  textVersion = "Saelens W. and Cannoodt R., dynguidelines: Practical guidelines for trajectory inference, In Progress, 2019."
+)

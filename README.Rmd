@@ -1,0 +1,64 @@
+---
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE, message = FALSE, error = FALSE, warning = FALSE}
+library(tidyverse)
+```
+
+[![Build Status](https://img.shields.io/travis/dynverse/dynguidelines.svg?logo=travis)](https://travis-ci.org/dynverse/dynguidelines)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/dynverse/dynguidelines?branch=master&svg=true)](https://ci.appveyor.com/project/dynverse/dynguidelines)
+[![codecov](https://codecov.io/gh/dynverse/dynguidelines/branch/master/graph/badge.svg)](https://codecov.io/gh/dynverse/dynguidelines) 
+<img src="man/figures/logo.png" align="right" />
+
+# Selecting the most optimal TI methods
+
+This package summarises the results from the [dynbenchmark](https://www.github.com/dynverse/dynbenchmark) evaluation of trajectory inference methods. Both programmatically and through a (shiny) app, users can select the most optimal set of methods given a set of user and dataset specific parameters.
+
+Installing the app:
+```{r eval=FALSE}
+# install.packages("devtools")
+devtools::install_github("dynverse/dynguidelines")
+```
+
+Running the app:
+```{r eval=FALSE}
+dynguidelines::guidelines_shiny()
+```
+
+See [dyno](https://www.github.com/dynverse/dyno) for more information on how to use this package to infer and interpret trajectories.
+
+![demo](man/figures/demo.gif)
+
+## Latest changes
+Check out `news(package = "dynfeature")` or [NEWS.md](inst/NEWS.md) for a full list of changes.
+
+<!-- This section gets automatically generated from inst/NEWS.md, and also generates inst/NEWS -->
+
+```{r news, results='asis', echo=FALSE}
+library(tidyverse)
+
+news_md <- readr::read_lines("inst/NEWS.md")
+
+# creating NEWS for package
+news_normal <- news_md %>% 
+  str_replace_all("^# dynguidelines", "dynguidelines") %>% 
+  str_replace_all("\\[[^\\]]*\\]\\(([^\\)]*)\\)", "\\1")
+readr::write_lines(news_normal, "inst/NEWS")
+
+# creating text for readme
+ix <- which(str_detect(news_md, "^# dynguidelines"))
+
+cat(str_replace(news_md[[ix[[1]]]], "^# ", "### Latest changes in "))
+
+cat(news_md[seq(ix[[1]]+1, ix[[2]]-1)], sep = "\n")
+
+cat(str_replace(news_md[[ix[[2]]]], "^# ", "### Latest changes in "))
+
+len2 <- if (length(ix) >= 3) ix[[3]] - 1 else length(news_md)
+cat(news_md[seq(ix[[2]]+1, len2)], sep = "\n")
+```
