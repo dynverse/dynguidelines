@@ -1,4 +1,6 @@
+/*****************/
 /*** Title bar ***/
+/*****************/
 
 /* title */
 .navbar img {
@@ -58,8 +60,10 @@ div.computed {
 	transform: rotate(-90deg);
 }
 
-
+/**********************/
 /***** Questions ******/
+/**********************/
+
 .shiny-input-container:not(.shiny-input-container-inline) {
   width: auto !important;
   max-width: 100%;
@@ -115,8 +119,10 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0;
 }
 
-
+/**************************/
 /***** Methods table ******/
+/**************************/
+
 tr.selected > td:first-of-type {
   background-color: #333333;
   color: white;
@@ -124,6 +130,18 @@ tr.selected > td:first-of-type {
 
 tr.selected {
   background-color: #EEEEEE;
+}
+
+/* Headers */
+th.method-column-header {
+  vertical-align:bottom;
+}
+
+th.method-column-header-category {
+  color: white;
+  text-align: center;
+  border-left: 2px solid white;
+  border-right: 2px solid white;
 }
 
 /* Score */
