@@ -1,7 +1,7 @@
 Package: dynguidelines
 Type: Package
-Title: Practical guidelines for trajectory inference
-Version: 0.1.0
+Title: User guidelines for trajectory inference
+Version: 0.2.0
 Authors@R: c(
     person(
       "Wouter", 
@@ -18,8 +18,10 @@ Authors@R: c(
       comment = c(ORCID = "0000-0003-3641-729X")
     )
   )
-Description: The dynguidelines package can be used to find the most optimal TI methods on a given dataset.
-   This can be done both directly in R or through a shiny interface.
+Description: A shiny app which lets you select the most optimal TI method 
+     based on a number of user-dependent and dataset-dependent parameters.
+     After using the GUI, a user can copy the code necessary to reproduce
+     the guidelines to their script. 
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
