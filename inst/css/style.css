@@ -131,6 +131,7 @@ td > span.score {
   border-radius: 4px;
   padding-right: 4px;
   padding-left: 4px;
+  display: block;
 }
 
 

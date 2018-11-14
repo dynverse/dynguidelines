@@ -41,7 +41,7 @@ get_score_renderer <- function(palette = palettes$benchmark) {
         `background-color` = ifelse(is.na(x), "none", html_color(scaled_color(normalised, palette))),
         color = case_when(scale_01(normalised, lower = 0) > 0.5 ~ "black", is.na(x) ~ "grey", TRUE ~ "white"),
         `text-shadow` = case_when(color == "white" ~ "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black", TRUE ~ "none"),
-        style = pmap(lst(`background-color`, color, display = "block", width, `text-shadow`), htmltools::css)
+        style = pmap(lst(`background-color`, color, width, `text-shadow`), htmltools::css)
       )
     } else if (style == "circle") {
       y <- tibble(
@@ -157,7 +157,10 @@ stability_warning_renderer <- function(x) {
           "color: white",
           "white-space: nowrap",
           sep = ";"
-        )
+        ),
+        `data-toggle` = "tooltip",
+        `data-placement` = "top",
+        title = "This method can generate unstable results. We advise you to rerun it multiple times on a dataset."
       )
     } else {
       NULL
