@@ -1,6 +1,7 @@
 default_modifier <- function(data, answers) {
   data$methods_aggr <- data$methods_aggr %>% arrange(-benchmark_overall_overall)
 
+  # default benchmark
   benchmark_overall_overall <- methods_aggr %>%
     select(method_id, benchmark) %>%
     filter(!map_lgl(benchmark, is.null)) %>%
@@ -8,7 +9,19 @@ default_modifier <- function(data, answers) {
     calculate_benchmark_score(answers = answers)
   data$methods_aggr$benchmark_overall_overall <- benchmark_overall_overall[data$methods_aggr$method_id]
 
+  # default order
   data$methods_aggr <- data$methods_aggr %>% arrange(-benchmark_overall_overall)
+
+  # add stability warning column
+  data$methods_aggr <- data$methods_aggr %>% mutate(
+    stability_warning = case_when(
+      stability_overall_overall < 0.5 ~ 1,
+      stability_overall_overall < 0.8 ~ 0.5,
+      TRUE ~ 0
+    )
+  )
+  data$method_columns <- data$method_columns %>%
+    add_row(column_id = "stability_warning", order = FALSE)
 
   data
 }

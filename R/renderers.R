@@ -144,6 +144,24 @@ memory_renderer <- get_scaling_renderer(format_memory, min = 1, max = 10^12, log
 time_renderer_log <- get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7, log = TRUE)
 memory_renderer_log <- get_scaling_renderer(format_memory, min = 1, max = 10^12, log = TRUE)
 
+
+stability_warning_renderer <- function(x) {
+  map(x, function(x) {
+    if (x > 0) {
+      tags$span(
+        icon("warning"),
+        "Unstable",
+        style = c(
+          paste0("color:", scaled_color(1-x, palettes$stability)),
+          "white-space: nowrap;"
+        )
+      )
+    } else {
+      NULL
+    }
+  })
+}
+
 #' Get all renderers
 #'
 #' @export
@@ -160,7 +178,8 @@ get_renderers <- function() {
     "method_code_url", "method", render_code, icon("code"), "Code of method", NA, 100, "code",
     "method_platform", "method", render_identity, "Language", "Language", NA, NA, NA,
     "scaling_predicted_time", "scaling", time_renderer, "Estimated time", "Estimated running time", NA, NA, NA,
-    "scaling_predicted_mem", "scaling", memory_renderer, "Estimated memory", "Estimated maximal memory usage", NA, NA, NA
+    "scaling_predicted_mem", "scaling", memory_renderer, "Estimated memory", "Estimated maximal memory usage", NA, NA, NA,
+    "stability_warning", "stability", stability_warning_renderer, icon("warning"), "Whether the stability is low", NA, NA, NA
   ) %>% bind_rows(
     tibble(
       trajectory_type = trajectory_types$id,
