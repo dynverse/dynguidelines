@@ -151,8 +151,10 @@ stability_warning_renderer <- function(x) {
       tags$span(
         icon("warning"),
         "Unstable",
+        class = "score",
         style = paste(
-          paste0("color:", scaled_color(1-x, palettes$stability)),
+          paste0("background-color:", scaled_color(1-x, palettes$stability)),
+          "color: white",
           "white-space: nowrap",
           sep = ";"
         )

@@ -118,12 +118,12 @@ input[type=number]::-webkit-outer-spin-button {
 
 /***** Methods table ******/
 tr.selected > td:first-of-type {
-  background-color: #9362e0;
+  background-color: #333333;
   color: white;
 }
 
 tr.selected {
-  background-color: #f6f1fd;
+  background-color: #EEEEEE;
 }
 
 /* Score */
