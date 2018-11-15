@@ -135,6 +135,7 @@ tr.selected {
 /* Headers */
 th.method-column-header {
   vertical-align:bottom!important;
+  width: 10px;
 }
 
 th.method-column-header-category {
@@ -144,13 +145,31 @@ th.method-column-header-category {
   border-right: 2px solid white;
 }
 
+/* Cells */
+
+.table>tbody>tr>td, .table>tbody>tr>th {
+  padding: 8px 5px 8px 5px;
+  width: 1px;
+}
+
 /* Score */
 td > span.score {
-  border-radius: 4px;
-  padding-right: 4px;
-  padding-left: 4px;
+  padding-right: 3px;
+  padding-left: 3px;
   display: block;
   border: 1px solid #444444;
+}
+
+td > span.bar {
+  border-radius: 3px;
+}
+
+td > span.circle {
+  border-radius: 50%;
+}
+
+td > span.box {
+  text-align:center;
 }
 
 
