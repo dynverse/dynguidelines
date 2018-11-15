@@ -606,7 +606,7 @@ get_columns_presets_ui <- function(column_presets, session, show_columns) {
       observeEvent(session$input[[button_id]], {
         # change the columns checkboxes
         new_show_columns <- column_preset$activate(show_columns())
-        changed_show_columns <- new_show_columns[new_show_columns != show_columns()]
+        changed_show_columns <- new_show_columns[new_show_columns != show_columns()[names(new_show_columns)]]
 
         walk2(names(changed_show_columns), changed_show_columns, function(column_id, value) {
           updateIndeterminateCheckboxInput(session, column_id, value)
