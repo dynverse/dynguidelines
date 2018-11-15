@@ -138,10 +138,7 @@ shiny_ui <- function() {
               "Show/hide columns ",
               icon("columns"),
               href = "#toggle-columns",
-              `data-target` = "#columns",
-              `data-toggle` = "collapse",
-              `data-intro` = "Here, you can change the columns displayed in the main table. It allows you to focus on particular aspects of the benchmarking, such as scalability, accuracy metrics, and usability.",
-              `data-step` = 5
+              `data-target` = "#columns"
             ),
 
             # columns toggle
@@ -233,7 +230,10 @@ shiny_ui <- function() {
 
           # presets buttons
           tags$div(
-            uiOutput("column_presets")
+            uiOutput("column_presets"),
+            `data-toggle` = "collapse",
+            `data-intro` = "Here, you can change the columns displayed in the main table. It allows you to focus on particular aspects of the benchmarking, such as scalability, accuracy metrics, and usability.",
+            `data-step` = 5
           ),
 
           # method table
