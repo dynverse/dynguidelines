@@ -10,6 +10,7 @@
 * Remove debug javascript messages
 * Fix javascript error for lenses which activated wrong columns
 * Fix bug when no n_cells or n_features is entered
+* Clean stability column names
 
 # dynguidelines 0.3.0 (15-11-2018)
 

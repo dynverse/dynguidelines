@@ -347,19 +347,16 @@ get_renderers <- function() {
       )
     ) %>% bind_rows(
       tibble(
-        column_id = methods_aggr %>%
-          select(starts_with("stability"), -stability_overall_overall) %>%
-          select_if(is.numeric) %>%
-          colnames(),
-        scaling_type = gsub("stability_([^_]*)_.*", "\\1", column_id),
+        metric_id = benchmark_metrics$metric_id,
+        column_id = paste0("stability_", metric_id),
         category = "stability",
         renderer = map(column_id, ~get_score_renderer(palettes$stability)),
-        label = as.list(column_id),
+        label = map(benchmark_metrics$html, HTML),
         name = NA,
-        title = as.character(label),
-        style = "",
+        title = benchmark_metrics$html,
+        style = "width:11px;",
         default = NA
-      )
+      ) %>% select(-metric_id)
     )
   )
 
