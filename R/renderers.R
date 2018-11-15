@@ -122,7 +122,7 @@ render_article <- function(x) {
 }
 
 render_code <- function(x) {
-  map(x, ~if(!is.na(.)) {tags$a(href = ., icon("code"))} else {""})
+  map(x, ~if(!is.na(.)) {tags$a(href = ., icon("code"), target = "blank")} else {""})
 }
 
 hard_prior_ids <- dynwrap::priors %>% filter(type == "hard") %>% pull(prior_id) # prepopulate
@@ -234,17 +234,17 @@ get_renderers <- function() {
   renderers <- tribble(
     ~column_id, ~category, ~renderer, ~label, ~title, ~style, ~default, ~name,
     "selected", "method", render_selected, icon("check-circle"), "Selected methods for TI", NA, -100, NA,
-    "method_name", "method", render_identity, "Name", "Name of the method", "max-width:99%;width:100%", -99, NA,
-    "method_required_priors", "method", render_required_priors, "Priors", "Required priors", NA, NA, NA,
+    "method_name", "method", render_identity, "Name", "Name of the method", "max-width:99%;width:100%", -98, NA,
+    "method_doi", "method", render_article, icon("paper-plane"), "Paper/study describing the method", NA, -99, "paper",
+    "method_code_url", "method", render_code, icon("code"), "Code of method", NA, -99, "code",
+    "method_required_priors", "method", render_required_priors, "Priors", "Required priors", NA, 1, NA,
     "method_wrapper_type", "method", render_wrapper_type, "Wrapper", "How the method was wrapped using <a href='wrap.dynverse.org'><em>dyn</em>wrap</a>", NA, NA, NA,
     "method_most_complex_trajectory_type", "method", render_detects_trajectory_type, "Topology", "The most complex topology this method can predict", NA, NA, NA,
-    "method_doi", "method", render_article, icon("paper-plane"), "Paper/study describing the method", NA, 99, "paper",
-    "method_code_url", "method", render_code, icon("code"), "Code of method", NA, 100, "code",
     "method_platform", "method", render_identity, "Platform", "Platform", NA, NA, NA,
     "scaling_predicted_time", "scalability", time_renderer, "Time", "Estimated running time", NA, 2, NA,
     "scaling_predicted_mem", "scalability", memory_renderer, "Memory", "Estimated maximal memory usage", NA, 2.1, NA,
     "stability_warning", "stability", stability_warning_renderer, "Stability", "Whether the stability is low", NA, 3, NA,
-    "error_warning", "method", error_warning_renderer, "Errors", "Whether the method errors often", NA, 3, NA
+    "error_warning", "method", error_warning_renderer, "Errors", "Whether the method errors often", NA, 99, NA
   ) %>% bind_rows(
     tibble(
       trajectory_type = trajectory_types$id,
@@ -255,7 +255,7 @@ get_renderers <- function() {
       name = paste0("Detects ", trajectory_type),
       title = as.character(str_glue("Whether this method can predict a {label_split(trajectory_type)} topology")),
       style = NA,
-      default = ifelse(trajectory_type %in% c("convergence", "acyclic_graph"), NA, 1 + seq_len(length(trajectory_type))/100)
+      default = ifelse(trajectory_type %in% c("convergence", "acyclic_graph"), NA, 3 + seq_len(length(trajectory_type))/100)
     )
   ) %>% bind_rows(
     tibble(
