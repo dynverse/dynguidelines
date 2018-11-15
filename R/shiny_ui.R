@@ -598,7 +598,7 @@ add_loaded_proxy <- function(inputs, id) {
 get_columns_presets_ui <- function(column_presets, session, show_columns) {
   tags$div(
     class = "btn-group",
-    tags$label(icon("camera"), "Lenses: ", style = "float:left;"),
+    tags$label("Lenses ", style = "float:left;line-height: 38px;font-size: 14px;margin-right: 5px;"),
     map(column_presets, function(column_preset) {
       # observe button event, and change the show columns accordingly
       button_id <- paste0("column_preset_", column_preset$id)

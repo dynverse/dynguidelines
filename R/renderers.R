@@ -394,7 +394,7 @@ get_column_presets <- function() {
     ),
     list(
       id = "fig2",
-      label = "Figure 2",
+      label = "Summary Figure 2",
       activate = function(show_columns) {
         show_columns[] <- "false"
 
