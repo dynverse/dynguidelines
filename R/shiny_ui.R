@@ -354,7 +354,7 @@ get_guidelines_methods_table <- function(guidelines, show_columns = character(),
               `data-toggle` = "tooltip",
               `data-placement` = "top",
               title = title,
-              style = ifelse(is.na(style), "width:20px;", style),
+              style = ifelse(is.na(style), "", style),
               class = "method-column-header tooltippable"
             )
           })
