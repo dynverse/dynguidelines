@@ -134,7 +134,7 @@ tr.selected {
 
 /* Headers */
 th.method-column-header {
-  vertical-align:bottom;
+  vertical-align:bottom!important;
 }
 
 th.method-column-header-category {
