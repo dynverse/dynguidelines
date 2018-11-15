@@ -9,6 +9,9 @@ default_modifier <- function(data, answers) {
     calculate_benchmark_score(answers = answers)
   data$methods_aggr$benchmark_overall_overall <- benchmark_overall_overall[data$methods_aggr$method_id]
 
+  data$method_columns <- data$method_columns %>%
+    add_row(column_id = "benchmark_overall_overall", order = FALSE)
+
   # default order
   data$methods_aggr <- data$methods_aggr %>% arrange(-benchmark_overall_overall)
 
@@ -45,11 +48,11 @@ multiple_disconnected_modifier <- function(data, answers) {
 
 expect_topology_modifier <- function(data, answers) {
   if (!isTRUE(answers$expect_topology)) {
-    data$methods_aggr <- data$methods_aggr %>% filter(method_detects_linear & method_detects_bifurcation & method_detects_tree)
+    data$methods_aggr <- data$methods_aggr %>% filter(method_detects_linear & method_detects_bifurcation & method_detects_multifurcation & method_detects_tree)
     data$method_columns <- data$method_columns %>%
       bind_rows(
         tibble(
-          column_id = c("method_detects_linear", "method_detects_bifurcation", "method_detects_tree"),
+          column_id = c("method_detects_linear", "method_detects_bifurcation", "method_detects_multifurcation", "method_detects_tree"),
           filter = TRUE,
           order = FALSE
         )
