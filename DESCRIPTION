@@ -39,7 +39,7 @@ Imports:
   tibble,
   htmltools,
   purrr,
-  shiny,
+  shiny (>= 1.2.0),
   shinyWidgets,
   shinyjs,
   knitr,

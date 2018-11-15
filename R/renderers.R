@@ -337,11 +337,11 @@ get_renderers <- function() {
         label = str_match(column_id, "scaling_pred_(time|mem)_cells(.*)_features(.*)") %>%
           as.data.frame() %>%
           mutate_all(as.character) %>%
-          glue::glue_data("{.$V2} {.$V3} cells and {.$V4} features") %>%
-          as.character() %>%
-          as.list(),
+          mutate(icon = list(mem = icon("memory"), time = icon("clock-o"))[V2]) %>%
+          pmap(function(icon, V3, V4, ...) {tags$span(icon, V3, " \U00D7 ", V4)})
+        ,
         name = NA,
-        title = as.character(label),
+        title = "",
         style = "",
         default = NA
       )
