@@ -1,3 +1,10 @@
+# dynguidelines 0.3.1 (unreleased)
+
+**Fixes**
+
+* Remove debug javascript messages
+* Fix javascript error for lenses which activated wrong columns
+
 # dynguidelines 0.3.0 (15-11-2018)
 
 **New features**

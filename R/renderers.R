@@ -437,7 +437,7 @@ activate_column_preset_category <- function(category) {
   function(show_columns) {
     show_columns[names(show_columns)] <- "false"
     columns_oi <- get_renderers() %>% filter((category %in% !!category) | (column_id %in% c("selected", "method_name" ))) %>% pull(column_id) %>% paste0("column_", .)
-    columns_oi <- c("column_name", columns_oi)
+    columns_oi <- c("column_method_name", columns_oi)
     show_columns[columns_oi] <- "true"
     show_columns
   }
