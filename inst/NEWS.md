@@ -1,10 +1,11 @@
-# dynguidelines 0.3 (unreleased)
+# dynguidelines 0.3.0 (unreleased)
 
 ## New features
 * Add category headers, just like figure 2/3
 * Columns are now sorted within each category, categories are sorted according to figure 2/3
 * New columns: overall scores within each category, wrapper type, prior information
-* New lens: Figure 2
+* New lens: Summary (Fig. 2)
+# Show lenses by default
 
 ## Fixes
 * Several small cosmetic changes

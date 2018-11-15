@@ -385,16 +385,8 @@ get_column_presets <- function() {
       }
     ),
     list(
-      id = "everything",
-      label = "Everything",
-      activate = function(show_columns) {
-        show_columns[names(show_columns)] <- "true"
-        show_columns
-      }
-    ),
-    list(
       id = "fig2",
-      label = "Summary Figure 2",
+      label = "Summary (Fig. 2)",
       activate = function(show_columns) {
         show_columns[] <- "false"
 
@@ -424,6 +416,18 @@ get_column_presets <- function() {
         activate = activate_column_preset_category(category)
       )
     })
+    ) %>%
+    c(
+      list(
+        list(
+          id = "everything",
+          label = "Everything",
+          activate = function(show_columns) {
+            show_columns[names(show_columns)] <- "true"
+            show_columns
+          }
+        )
+      )
     )
 }
 
