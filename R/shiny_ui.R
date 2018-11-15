@@ -118,7 +118,7 @@ shiny_ui <- function() {
           # top buttons
           div(
             class = "btn-group btn-group-justified",
-            # code toggle
+            # code button
             tags$a(
               class = "btn btn-default",
               style = "",
@@ -131,17 +131,18 @@ shiny_ui <- function() {
               `data-step` = 4
             ),
 
-            # columns toggle
+            # columns button
             tags$a(
               class = "btn btn-default",
               style = "",
               "Show/hide columns ",
               icon("columns"),
               href = "#toggle-columns",
-              `data-target` = "#columns"
+              `data-target` = "#columns",
+              `data-toggle` = "collapse"
             ),
 
-            # columns toggle
+            # options button
             tags$a(
               class = "btn btn-default",
               style = "",
@@ -231,7 +232,6 @@ shiny_ui <- function() {
           # presets buttons
           tags$div(
             uiOutput("column_presets"),
-            `data-toggle` = "collapse",
             `data-intro` = "Here, you can change the columns displayed in the main table. It allows you to focus on particular aspects of the benchmarking, such as scalability, accuracy metrics, and usability.",
             `data-step` = 5
           ),
