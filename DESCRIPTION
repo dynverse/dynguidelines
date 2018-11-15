@@ -1,7 +1,7 @@
 Package: dynguidelines
 Type: Package
 Title: User guidelines for trajectory inference
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: c(
     person(
       "Wouter", 
@@ -31,6 +31,7 @@ Depends:
 Imports:
   akima,
   crayon,
+  colorspace,
   dyneval,
   dynwrap,
   dynutils,
@@ -52,7 +53,7 @@ Suggests:
   shinytest
 Remotes:
   dynverse/dyneval,
-  dynverse/dynwrap,
+  dynverse/dynwrap@devel,
   dynverse/dynutils
 URL: https://github.com/dynverse/dynguidelines
 BugReports: https://github.com/dynverse/dynguidelines/issues

@@ -1,4 +1,6 @@
+/*****************/
 /*** Title bar ***/
+/*****************/
 
 /* title */
 .navbar img {
@@ -58,8 +60,10 @@ div.computed {
 	transform: rotate(-90deg);
 }
 
-
+/**********************/
 /***** Questions ******/
+/**********************/
+
 .shiny-input-container:not(.shiny-input-container-inline) {
   width: auto !important;
   max-width: 100%;
@@ -115,8 +119,10 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0;
 }
 
-
+/**************************/
 /***** Methods table ******/
+/**************************/
+
 tr.selected > td:first-of-type {
   background-color: #333333;
   color: white;
@@ -126,12 +132,44 @@ tr.selected {
   background-color: #EEEEEE;
 }
 
+/* Headers */
+th.method-column-header {
+  vertical-align:bottom!important;
+  width: 10px;
+}
+
+th.method-column-header-category {
+  color: white;
+  text-align: center;
+  border-left: 2px solid white;
+  border-right: 2px solid white;
+}
+
+/* Cells */
+
+.table>tbody>tr>td, .table>tbody>tr>th {
+  padding: 8px 5px 8px 5px;
+  width: 1px;
+}
+
 /* Score */
 td > span.score {
-  border-radius: 4px;
-  padding-right: 4px;
-  padding-left: 4px;
+  padding-right: 3px;
+  padding-left: 3px;
   display: block;
+  border: 1px solid #444444;
+}
+
+td > span.bar {
+  border-radius: 3px;
+}
+
+td > span.circle {
+  border-radius: 50%;
+}
+
+td > span.box {
+  text-align:center;
 }
 
 
@@ -191,7 +229,8 @@ a:hover .arrow4, a.introjs-showElement .arrow4 {
 
 /* Trajectory types */
 img.trajectory_type {
-  width:40px;
+  width:50px;
+  margin: -4px;
 }
 
 img.trajectory_type.inactive {

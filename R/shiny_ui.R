@@ -31,7 +31,9 @@ shiny_ui <- function() {
           tags$a(
             class = "",
             href = "#",
-            img(src = "img/logo_horizontal.png")
+            img(src = "img/logo_horizontal.png"),
+            `data-intro` = "<em>dyn</em>guidelines is an app for selecting the most optimal set of trajectory inference (TI) methods for a given use case. It uses data from a <a href='https://benchmark.dynverse.org'>comprehensive benchmarking of TI methods</a> and is part of a larger set of open packages for doing and interpreting trajectories called the <a href='https://dynverse.org'><em>dyn</em>verse</a>.",
+            `data-step` = 1
           )
         ),
 
@@ -106,8 +108,8 @@ shiny_ui <- function() {
           div(
             style = "overflow-y:scroll; position:fixed; bottom:0px; top:80px; width:inherit; padding-right: 10px;background-color:white;z-index:1;",
             uiOutput("questions_panel"),
-            `data-intro` = "The choice of methods is different for every analysis. These questions guide you through method selection by polling the prior information on the trajectory, the size of the data and the work environment.",
-            `data-step` = 1
+            `data-intro` = "The choice of methods depends on the use case. These questions are designed to make deciding which method to use easier, by polling for the prior information on the trajectory, the size of the data and the execution environment.",
+            `data-step` = 2
           )
         ),
         div(
@@ -116,7 +118,7 @@ shiny_ui <- function() {
           # top buttons
           div(
             class = "btn-group btn-group-justified",
-            # code toggle
+            # code button
             tags$a(
               class = "btn btn-default",
               style = "",
@@ -126,10 +128,10 @@ shiny_ui <- function() {
               `data-target` = "#code",
               `data-toggle` = "collapse",
               `data-intro` = "You can get the code necessary to reproduce the guidelines here. Copy it over to your script!",
-              `data-step` = 3
+              `data-step` = 4
             ),
 
-            # columns toggle
+            # columns button
             tags$a(
               class = "btn btn-default",
               style = "",
@@ -137,12 +139,10 @@ shiny_ui <- function() {
               icon("columns"),
               href = "#toggle-columns",
               `data-target` = "#columns",
-              `data-toggle` = "collapse",
-              `data-intro` = "Here, you can change the columns displayed in the main table. It allows you to focus on particular aspects of the benchmarking, such as scalability, benchmarking metrics, and quality control.",
-              `data-step` = 4
+              `data-toggle` = "collapse"
             ),
 
-            # columns toggle
+            # options button
             tags$a(
               class = "btn btn-default",
               style = "",
@@ -164,7 +164,7 @@ shiny_ui <- function() {
                   icon("share", class = "arrow4")
                 ),
                 style = "color: white;font-weight: bold; background-color:#9362e0",
-                `data-step` = 5,
+                `data-step` = 6,
                 `data-intro` = "When ready, click this button to return the selected set of methods in R.",
                 onclick = "window.close();"
               )
@@ -180,13 +180,11 @@ shiny_ui <- function() {
                 ),
                 href = "https://github.com/dynverse/dyno",
                 `data-intro` = "All methods presented here are available in the <a href = 'https://github.com/dynverse/dyno' target = 'blank'><em>dyn</em>o pipeline</a>, which can also be used to <strong>interpret</strong> and <strong>visualise</strong> the inferred trajectories.",
-                `data-step` = 5,
+                `data-step` = 6,
                 target = "blank"
               )
             }
           ),
-
-
 
           # columns collapsible
           tags$div(
@@ -194,10 +192,6 @@ shiny_ui <- function() {
             id = "columns",
 
             tags$div(
-              # presets buttons
-              tags$div(
-                uiOutput("column_presets")
-              ),
 
               # individual checkboxes
               tags$div(
@@ -226,7 +220,7 @@ shiny_ui <- function() {
             textOutput("code", container = tags$pre)
           ),
 
-          # options
+          # options collapsible
           tags$div(
             class = "panel-collapse collapse",
             id = "options",
@@ -235,9 +229,17 @@ shiny_ui <- function() {
             uiOutput("options")
           ),
 
+          # presets buttons
+          tags$div(
+            uiOutput("column_presets"),
+            `data-intro` = "Here, you can change the columns displayed in the main table. It allows you to focus on particular aspects of the benchmarking, such as scalability, accuracy metrics, and usability.",
+            `data-step` = 5
+          ),
+
           # method table
           div(
             `data-intro` = "The relevant methods are displayed here, along with information on how they were ordered and selected.",
+            `data-step` = 3,
             uiOutput("methods_table")
           )
         )
@@ -300,7 +302,8 @@ get_guidelines_methods_table <- function(guidelines, show_columns = character(),
     # order columns
     method_columns <- method_columns %>%
       mutate(order = case_when(!is.na(default)~default, filter~1, order~2, TRUE~3)) %>%
-      arrange(order)
+      left_join(get_column_categories(), "category") %>%
+      arrange(category_order, order)
 
     # extract correct columns from guidelines
     methods <- guidelines$methods_aggr %>% select(!!method_columns$column_id)
@@ -308,7 +311,7 @@ get_guidelines_methods_table <- function(guidelines, show_columns = character(),
     if (ncol(methods) == 0) {
       span(class = "text-danger", "No columns selected")
     } else {
-      # render columns
+      # render individual columns
       methods_rendered <- methods %>%
         map2(method_columns$renderer, function(col, renderer) {
           if ("options" %in% names(formals(renderer))) {
@@ -319,9 +322,30 @@ get_guidelines_methods_table <- function(guidelines, show_columns = character(),
         }) %>%
         as_tibble()
 
+      # get information on categories
+      rle_group <- function(x) {
+        rle <- rle(x)
+        unlist(map2(seq_along(rle$length), rle$length, rep))
+      }
+
+      method_column_categories <- method_columns %>%
+        mutate(run = rle_group(category)) %>%
+        group_by(run, category) %>%
+        summarise(colspan = n(), color = first(color))
+
       # construct html of table
       methods_table <- tags$table(
         class = "table table-responsive",
+        tags$tr(
+          pmap(method_column_categories, function(category, colspan, color, ...) {
+            tags$th(
+              label_capitalise(category),
+              style = paste0("background-color:", color),
+              class = "method-column-header method-column-header-category",
+              colspan = colspan
+            )
+          })
+        ),
         tags$tr(
           pmap(method_columns, function(label, title, style, ...) {
             tags$th(
@@ -329,8 +353,8 @@ get_guidelines_methods_table <- function(guidelines, show_columns = character(),
               `data-toggle` = "tooltip",
               `data-placement` = "top",
               title = title,
-              style = paste0("vertical-align:bottom;", ifelse(is.na(style), "width:20px;", style)),
-              class = "tooltippable"
+              style = ifelse(is.na(style), "", style),
+              class = "method-column-header tooltippable"
             )
           })
         ),
@@ -574,14 +598,14 @@ add_loaded_proxy <- function(inputs, id) {
 get_columns_presets_ui <- function(column_presets, session, show_columns) {
   tags$div(
     class = "btn-group",
-    tags$label("Presets: ", style = "float:left;"),
+    tags$label("Lenses ", style = "float:left;line-height: 38px;font-size: 14px;margin-right: 5px;"),
     map(column_presets, function(column_preset) {
       # observe button event, and change the show columns accordingly
       button_id <- paste0("column_preset_", column_preset$id)
       observeEvent(session$input[[button_id]], {
         # change the columns checkboxes
         new_show_columns <- column_preset$activate(show_columns())
-        changed_show_columns <- new_show_columns[new_show_columns != show_columns()]
+        changed_show_columns <- new_show_columns[new_show_columns != show_columns()[names(new_show_columns)]]
 
         walk2(names(changed_show_columns), changed_show_columns, function(column_id, value) {
           updateIndeterminateCheckboxInput(session, column_id, value)
