@@ -45,6 +45,7 @@ shiny_server <- function(
 
     output$column_presets <- renderUI(get_columns_presets_ui(column_presets = get_column_presets(), session = session, show_columns = show_columns))
     output$column_show_hide <- renderUI(get_columns_show_hide_ui(renderers = get_renderers()))
+    outputOptions(output, "column_show_hide", suspendWhenHidden = FALSE)
 
     ## create answer reactivity
     reactive_answers <- reactive({

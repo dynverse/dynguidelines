@@ -188,18 +188,12 @@ shiny_ui <- function() {
             }
           ),
 
-
-
           # columns collapsible
           tags$div(
             class = "panel-collapse collapse",
             id = "columns",
 
             tags$div(
-              # presets buttons
-              tags$div(
-                uiOutput("column_presets")
-              ),
 
               # individual checkboxes
               tags$div(
@@ -228,13 +222,18 @@ shiny_ui <- function() {
             textOutput("code", container = tags$pre)
           ),
 
-          # options
+          # options collapsible
           tags$div(
             class = "panel-collapse collapse",
             id = "options",
 
             # actual code
             uiOutput("options")
+          ),
+
+          # presets buttons
+          tags$div(
+            uiOutput("column_presets")
           ),
 
           # method table
@@ -599,7 +598,7 @@ add_loaded_proxy <- function(inputs, id) {
 get_columns_presets_ui <- function(column_presets, session, show_columns) {
   tags$div(
     class = "btn-group",
-    tags$label("Presets: ", style = "float:left;"),
+    tags$label(icon("camera"), "Lenses: ", style = "float:left;"),
     map(column_presets, function(column_preset) {
       # observe button event, and change the show columns accordingly
       button_id <- paste0("column_preset_", column_preset$id)
