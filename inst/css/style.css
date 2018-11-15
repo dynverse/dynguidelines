@@ -150,6 +150,7 @@ td > span.score {
   padding-right: 4px;
   padding-left: 4px;
   display: block;
+  border: 1px solid #444444;
 }
 
 
