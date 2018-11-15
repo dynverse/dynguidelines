@@ -12,6 +12,7 @@
 * Fix bug when no n_cells or n_features is entered
 * Clean stability column names
 * Clean scalability column names
+* Add tooltips to priors
 
 # dynguidelines 0.3.0 (15-11-2018)
 

@@ -138,7 +138,10 @@ render_required_priors <- function(x) {
       tags$span(
         symbol,
         title = paste(prior_id_to_label[prior_ids], collapse = ", "),
-        class = "tooltippable"
+        class = "tooltippable",
+        `data-toggle` = "tooltip",
+        `data-placement` = "top",
+        style = "font-size:15px"
       )
     } else {
       ""
@@ -280,7 +283,7 @@ get_renderers <- function() {
       column_id = paste0("benchmark_tt_", trajectory_type),
       category = "accuracy",
       renderer = map(column_id, ~get_score_renderer()),
-      label = as.list(str_glue("{label_capitalise(trajectory_type)} score")),
+      label = as.list(str_glue("{label_capitalise(trajectory_type)}")),
       name = NA,
       title = as.character(str_glue("Score on datasets containing a {label_split(trajectory_type)} topology")),
       style = "",
