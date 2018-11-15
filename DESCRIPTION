@@ -53,7 +53,7 @@ Suggests:
   shinytest
 Remotes:
   dynverse/dyneval,
-  dynverse/dynwrap,
+  dynverse/dynwrap@devel,
   dynverse/dynutils
 URL: https://github.com/dynverse/dynguidelines
 BugReports: https://github.com/dynverse/dynguidelines/issues
