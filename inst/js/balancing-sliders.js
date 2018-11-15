@@ -71,8 +71,6 @@ $.extend(balancingSliders, {
           changeableInputs.attr("data-dependent", "false");
           var changedVal = Number(changedInput.val());
 
-          console.log("trigger")
-
           changedInput.data("ionRangeSlider").update({"from": changedVal + (1-fixedSum)});
 
         // special case where all otherVals are 0, but the fixedVal has just become lower than 1
