@@ -32,26 +32,40 @@ dynguidelines::guidelines_shiny()
 See [dyno](https://www.github.com/dynverse/dyno) for more information on
 how to use this package to infer and interpret trajectories.
 
+<!-- This gif was recorded using peek (https://github.com/phw/peek) --->
+
 ![demo](man/figures/demo.gif)
 
 ## Latest changes
 
-Check out `news(package = "dynfeature")` or [NEWS.md](inst/NEWS.md) for
-a full list of
+Check out `news(package = "dynguidelines")` or [NEWS.md](inst/NEWS.md)
+for a full list of
 changes.
 
 <!-- This section gets automatically generated from inst/NEWS.md, and also generates inst/NEWS -->
 
-### Latest changes in dynguidelines 0.2.1 (unreleased)
+### Latest changes in dynguidelines 0.3.0 (15-11-2018)
+
+**New features**
+
+  - Add category headers, just like figure 2/3
+  - Columns are now sorted within each category, categories are sorted
+    according to figure 2/3
+  - New columns: overall scores within each category, wrapper type,
+    prior information
+  - New lens: Summary (Fig. 2)
+  - Show lenses by default
+
+**Fixes**
+
+  - Several small cosmetic changes
+  - Code and doi links are opened in a new tab
+  - Not knowing the explicit topology will now filter on multifurcations
+    as well
+
+### Latest changes in dynguidelines 0.2.1 (14-11-2018)
 
   - Add warning column for when a method errors too often
   - Several fixes for more readable columns (such as usability)
   - Update deployment instructions
   - Rename scaling to scalability
-
-### Latest changes in dynguidelines 0.2.0 (14-11-2018)
-
-  - Update for new dynbenchmark results
-  - Add new coloring scheme
-  - Add stability, shown by default as a warning that a method produces
-    an unstable result

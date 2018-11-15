@@ -1,13 +1,15 @@
-# dynguidelines 0.3.0 (unreleased)
+# dynguidelines 0.3.0 (15-11-2018)
 
-## New features
+**New features**
+
 * Add category headers, just like figure 2/3
 * Columns are now sorted within each category, categories are sorted according to figure 2/3
 * New columns: overall scores within each category, wrapper type, prior information
 * New lens: Summary (Fig. 2)
-# Show lenses by default
+* Show lenses by default
 
-## Fixes
+**Fixes**
+
 * Several small cosmetic changes
 * Code and doi links are opened in a new tab
 * Not knowing the explicit topology will now filter on multifurcations as well

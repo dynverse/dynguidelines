@@ -36,7 +36,7 @@ See [dyno](https://www.github.com/dynverse/dyno) for more information on how to 
 ![demo](man/figures/demo.gif)
 
 ## Latest changes
-Check out `news(package = "dynfeature")` or [NEWS.md](inst/NEWS.md) for a full list of changes.
+Check out `news(package = "dynguidelines")` or [NEWS.md](inst/NEWS.md) for a full list of changes.
 
 <!-- This section gets automatically generated from inst/NEWS.md, and also generates inst/NEWS -->
 
