@@ -382,8 +382,8 @@ get_column_categories <- function() {
 get_column_presets <- function() {
   list(
     list(
-      id = "intelligent",
-      label = "Intelligent",
+      id = "default",
+      label = "Default",
       activate = function(show_columns) {
         show_columns[names(show_columns)] <- "indeterminate"
         show_columns
