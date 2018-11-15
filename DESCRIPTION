@@ -72,4 +72,8 @@ Collate:
     'renderers.R'
     'shiny_server.R'
     'shiny_ui.R'
+    'shiny_ui_methods_table.R'
+    'shiny_ui_modals.R'
+    'shiny_ui_options.R'
+    'shiny_ui_questions.R'
 Roxygen: list(markdown = TRUE)
