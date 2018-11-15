@@ -1,5 +1,10 @@
 # dynguidelines 0.3.1 (unreleased)
 
+**New features**
+
+* Time and memory are now formatted relative to the limits in the questions (fixes #46)
+* If time and memory exceed the limit, they are clipped
+
 **Fixes**
 
 * Remove debug javascript messages

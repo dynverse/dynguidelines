@@ -70,7 +70,7 @@ shiny_server <- function(
     # methods table
     output$methods_table <- renderUI(
       if(!is.null(current_guidelines())) {
-        get_guidelines_methods_table(current_guidelines(), show_columns(), options = options())
+        get_guidelines_methods_table(current_guidelines(), show_columns(), options = options(), answers = reactive_answers())
       } else {
         icon("spinner", class = "fa-pulse fa-3x fa-fw")
       }

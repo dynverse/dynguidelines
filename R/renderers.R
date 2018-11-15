@@ -4,6 +4,9 @@ scale_01 <- function(y, lower = min(y, na.rm = TRUE), upper = max(y, na.rm = TRU
     lower <- upper - 0.1
   }
 
+  y[y < lower] <- lower
+  y[y > upper] <- upper
+
   (y - lower) / (upper - lower)
 }
 
@@ -150,23 +153,27 @@ render_wrapper_type <- function(x) {
 
 
 
-get_scaling_renderer <- function(formatter, palette = palettes$scalability, min, max, log = FALSE) {
-  function(x) {
-    if (log) {
-      x <- exp(x)
-    }
-
-    x[x < min] <- min
-    x[x > max] <- max
+get_scaling_renderer <- function(
+  formatter,
+  palette = palettes$scalability,
+  min,
+  max,
+  upper_question_id = "time",
+  upper_processor = process_time
+) {
+  function(x, options, answers) {
+    # determine upper limit for coloring
+    upper <- invoke(upper_processor, answers$answer[[upper_question_id]])
+    if (upper > max) upper <- max
 
     y <- tibble(
       x = x,
-      formatted = formatter(x),
-      normalised = ifelse(is.na(x), 0, scale_01(log(x))),
+      formatted = formatter(x, min, max),
+      normalised = ifelse(is.na(x), 0, scale_01(log(x), lower = log(min), upper = log(upper))),
       rounded = format_100(normalised),
       width = paste0(rounded, "px"),
       background = ifelse(is.na(x), "none", html_color(scaled_color(1-normalised, palette))),
-      color = case_when(scale_01(normalised, lower = 0) > 0.5 ~ "white", is.na(x) ~ "grey", TRUE ~ "black"),
+      color = case_when(normalised > 0.5 ~ "white", is.na(x) ~ "grey", TRUE ~ "black"),
       style = pmap(list(`background-color` = background, color = color, display = "block", width = width), htmltools::css),
       class = "score bar"
     )
@@ -175,10 +182,8 @@ get_scaling_renderer <- function(formatter, palette = palettes$scalability, min,
   }
 }
 
-time_renderer <- get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7, log = FALSE)
-memory_renderer <- get_scaling_renderer(format_memory, min = 1, max = 10^12, log = FALSE)
-time_renderer_log <- get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7, log = TRUE)
-memory_renderer_log <- get_scaling_renderer(format_memory, min = 1, max = 10^12, log = TRUE)
+time_renderer <- get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7, upper_question_id = "time", upper_processor = process_time)
+memory_renderer <- get_scaling_renderer(format_memory, min = process_memory("100MB"), max = process_memory("1TB"), upper_question_id = "memory", upper_processor = process_memory)
 
 
 get_warning_renderer <- function(

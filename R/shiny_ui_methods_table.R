@@ -9,7 +9,7 @@ add_icons <- function(label, conditions, icons) {
   })
 }
 
-get_guidelines_methods_table <- function(guidelines, show_columns = character(), options = list()) {
+get_guidelines_methods_table <- function(guidelines, show_columns = character(), options = list(), answers = list()) {
   testthat::expect_true(length(names(show_columns)) == length(show_columns))
 
   if(nrow(guidelines$methods_aggr) == 0) {
@@ -62,7 +62,9 @@ get_guidelines_methods_table <- function(guidelines, show_columns = character(),
       # render individual columns
       methods_rendered <- methods %>%
         map2(method_columns$renderer, function(col, renderer) {
-          if ("options" %in% names(formals(renderer))) {
+          if ("answers" %in% names(formals(renderer))) {
+            renderer(col, options, answers)
+          } else if ("options" %in% names(formals(renderer))) {
             renderer(col, options)
           } else {
             renderer(col)
