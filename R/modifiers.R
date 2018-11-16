@@ -10,7 +10,7 @@ default_modifier <- function(data, answers) {
   data$methods_aggr$benchmark_overall_overall <- benchmark_overall_overall[data$methods_aggr$method_id]
 
   data$method_columns <- data$method_columns %>%
-    add_row(column_id = "benchmark_overall_overall", order = FALSE)
+    add_row(column_id = "benchmark_overall_overall", order = TRUE)
 
   # default order
   data$methods_aggr <- data$methods_aggr %>% arrange(-benchmark_overall_overall)
