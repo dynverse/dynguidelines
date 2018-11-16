@@ -273,7 +273,7 @@ get_renderers <- function() {
       renderer = map(palettes[category], get_score_renderer),
       label = list("Overall"),
       name = NA,
-      title = "",
+      title = paste0("Average ", category, " score"),
       style = "",
       default = NA
     )
