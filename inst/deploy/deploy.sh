@@ -10,7 +10,7 @@ DOCKER_IMAGE_NAME=dynguidelines_server
 KUBE_DEPLOYMENT_NAME=dynguidelines
 KUBE_DEPLOYMENT_CONTAINER_NAME=dynguidelines
 
-docker build -t gcr.io/${PROJECT_NAME_PRD}/${DOCKER_IMAGE_NAME}:$TRAVIS_COMMIT .
+docker build -t gcr.io/${PROJECT_NAME_PRD}/${DOCKER_IMAGE_NAME}:$TRAVIS_COMMIT ./inst/deploy/
 
 echo $GCLOUD_SERVICE_KEY_PRD | base64 --decode -i > ${HOME}/gcloud-service-key.json
 gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
