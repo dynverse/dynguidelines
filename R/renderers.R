@@ -249,8 +249,8 @@ get_renderers <- function() {
     "method_wrapper_type", "method", render_wrapper_type, "Wrapper", "How the method was wrapped using <a href='wrap.dynverse.org'><em>dyn</em>wrap</a>", NA, NA, NA,
     "method_most_complex_trajectory_type", "method", render_detects_trajectory_type, "Topology", "The most complex topology this method can predict", NA, NA, NA,
     "method_platform", "method", render_identity, "Platform", "Platform", NA, NA, NA,
-    "scaling_predicted_time", "scalability", time_renderer, "Time", "Estimated running time", NA, 2, NA,
-    "scaling_predicted_mem", "scalability", memory_renderer, "Memory", "Estimated maximal memory usage", NA, 2.1, NA,
+    "scaling_predicted_time", "scalability", time_renderer, icon("clock"), "Estimated running time", NA, 2, NA,
+    "scaling_predicted_mem", "scalability", memory_renderer, icon("memory"), "Estimated maximal memory usage", NA, 2.1, NA,
     "stability_warning", "stability", stability_warning_renderer, "Stability", "Whether the stability is low", NA, 3, NA,
     "error_warning", "method", error_warning_renderer, "Errors", "Whether the method errors often", NA, 99, NA
   ) %>% bind_rows(
