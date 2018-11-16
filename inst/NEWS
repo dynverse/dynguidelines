@@ -1,3 +1,23 @@
+dynguidelines 0.3.2 (unreleased)
+
+dynguidelines 0.3.1 (16-11-2018)
+
+**New features**
+
+* Time and memory are now formatted relative to the limits in the questions (fixes #46)
+* If time and memory exceed the limit, they are clipped
+
+**Fixes**
+
+* Remove debug javascript messages
+* Fix javascript error for lenses which activated wrong columns
+* Fix bug when no n_cells or n_features is entered
+* Clean stability column names
+* Clean scalability column names
+* Add tooltips to priors
+* Small fixes for default columns
+* Cleanup of exported function and documentation
+
 dynguidelines 0.3.0 (15-11-2018)
 
 **New features**

@@ -44,28 +44,23 @@ changes.
 
 <!-- This section gets automatically generated from inst/NEWS.md, and also generates inst/NEWS -->
 
-### Latest changes in dynguidelines 0.3.0 (15-11-2018)
+### Latest changes in dynguidelines 0.3.2 (unreleased)
+
+### Latest changes in dynguidelines 0.3.1 (16-11-2018)
 
 **New features**
 
-  - Add category headers, just like figure 2/3
-  - Columns are now sorted within each category, categories are sorted
-    according to figure 2/3
-  - New columns: overall scores within each category, wrapper type,
-    prior information
-  - New lens: Summary (Fig. 2)
-  - Show lenses by default
+  - Time and memory are now formatted relative to the limits in the
+    questions (fixes \#46)
+  - If time and memory exceed the limit, they are clipped
 
 **Fixes**
 
-  - Several small cosmetic changes
-  - Code and doi links are opened in a new tab
-  - Not knowing the explicit topology will now filter on multifurcations
-    as well
-
-### Latest changes in dynguidelines 0.2.1 (14-11-2018)
-
-  - Add warning column for when a method errors too often
-  - Several fixes for more readable columns (such as usability)
-  - Update deployment instructions
-  - Rename scaling to scalability
+  - Remove debug javascript messages
+  - Fix javascript error for lenses which activated wrong columns
+  - Fix bug when no n\_cells or n\_features is entered
+  - Clean stability column names
+  - Clean scalability column names
+  - Add tooltips to priors
+  - Small fixes for default columns
+  - Cleanup of exported function and documentation
