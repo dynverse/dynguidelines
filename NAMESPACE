@@ -2,7 +2,6 @@
 
 export(answer_questions)
 export(get_answers_code)
-export(get_questions)
 export(guidelines)
 export(guidelines_shiny)
 export(shiny_server)
