@@ -28,7 +28,7 @@ process_time <- function(x) {
       NA
     } else if (x == "\U221E") {
       Inf
-    } else {
+    } else if (str_detect(x, "([0-9]*)[smhd]")) {
       number <- as.numeric(gsub("([0-9]*)[smhd]", "\\1", x))
       if (endsWith(x, "s")) {
         number
@@ -38,9 +38,9 @@ process_time <- function(x) {
         number * 60 * 60
       } else if (endsWith(x, "d")) {
         number * 60 * 60 * 24
-      } else {
-        stop("Invalid time: ", x)
       }
+    } else {
+      stop("Invalid time: ", x)
     }
   })
 }

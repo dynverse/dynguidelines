@@ -233,9 +233,6 @@ error_warning_renderer <- get_warning_renderer(
   palette = palettes$overall
 )
 
-#' Get all renderers
-#'
-#' @export
 get_renderers <- function() {
   data(trajectory_types, package = "dynwrap", envir = environment())
 
@@ -375,10 +372,6 @@ get_column_categories <- function() {
 
 
 
-
-#' Get column presets
-#'
-#' @export
 get_column_presets <- function() {
   list(
     list(

@@ -14,6 +14,7 @@
 * Clean scalability column names
 * Add tooltips to priors
 * Small fixes for default columns
+* Cleanup of exported function and documentation
 
 # dynguidelines 0.3.0 (15-11-2018)
 
