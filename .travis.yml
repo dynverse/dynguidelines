@@ -16,12 +16,12 @@ after_success:
  - R -e 'covr::codecov()'
 before_install:
   - source <(curl -s https://raw.githubusercontent.com/dynverse/travis_scripts/master/install_phantomjs.sh)
+    # The install script errors if this directory already exists,
+    # but Travis already creates it when we mark it as cached.
+    # The install script is overly verbose, which sometimes causes
+    # problems on Travis, so ignore stdout.
   - if [ ! -d $HOME/google-cloud-sdk/bin ]; then
-      # The install script errors if this directory already exists,
-      # but Travis already creates it when we mark it as cached.
       rm -rf $HOME/google-cloud-sdk;
-      # The install script is overly verbose, which sometimes causes
-      # problems on Travis, so ignore stdout.
       curl https://sdk.cloud.google.com | bash > /dev/null;
     fi
   # This line is critical. We setup the SDK to take precedence in our
