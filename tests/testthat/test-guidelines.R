@@ -3,8 +3,7 @@ context("Testing")
 test_that("guidelines", {
   guidelines <- guidelines(answers = answer_questions())
 
-  expect_true("dynguidelines::guidelines" %in% attr(guidelines, "class"))
-  expect_true(is_guidelines(guidelines))
+  expect_true(is(guidelines, "dynguidelines::guidelines"))
   expect_is(guidelines$methods_selected, "character")
   expect_is(guidelines$methods_aggr, "tbl")
   expect_is(guidelines$methods, "tbl")

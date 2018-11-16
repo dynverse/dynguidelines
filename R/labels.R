@@ -1,7 +1,3 @@
-#' Labelling
-#'
-#' @param x What to label
-#' @export
 label_capitalise <- function(x) {
   capitalise <- function(string) {
     capped <- grep("^[A-Z]", string, invert = TRUE)
@@ -12,8 +8,6 @@ label_capitalise <- function(x) {
   x %>% str_replace_all("_", " ") %>% capitalise()
 }
 
-#' @export
-#' @rdname label_capitalise
 label_split <- function(x) {
   x %>% str_replace_all("_", " ")
 }

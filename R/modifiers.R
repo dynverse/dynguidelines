@@ -10,7 +10,7 @@ default_modifier <- function(data, answers) {
   data$methods_aggr$benchmark_overall_overall <- benchmark_overall_overall[data$methods_aggr$method_id]
 
   data$method_columns <- data$method_columns %>%
-    add_row(column_id = "benchmark_overall_overall", order = FALSE)
+    add_row(column_id = "benchmark_overall_overall", order = TRUE)
 
   # default order
   data$methods_aggr <- data$methods_aggr %>% arrange(-benchmark_overall_overall)
@@ -163,15 +163,19 @@ invoke_if_function <- function(func, ...) {
 
 time_modifier <- function(data, answers) {
   time_cutoff <- process_time(answers$time)
+
   if (!is.na(time_cutoff)) {
+    n_cells <- ifelse(is.na(answers$n_cells), 1, answers$n_cells)
+    n_features <- ifelse(is.na(answers$n_features), 1, answers$n_features)
+
     # calculate the time
     data$methods_aggr <- data$methods_aggr %>%
       mutate(
         scaling_predicted_time = map_dbl(
           scaling_models_predict_time,
           invoke_if_function,
-          n_cells = answers$n_cells,
-          n_features = answers$n_features
+          n_cells = n_cells,
+          n_features = n_features
         )
       )
 
@@ -189,14 +193,17 @@ time_modifier <- function(data, answers) {
 memory_modifier <- function(data, answers) {
   memory_cutoff <- process_memory(answers$memory)
   if (!is.na(memory_cutoff)) {
+    n_cells <- ifelse(is.na(answers$n_cells), 1, answers$n_cells)
+    n_features <- ifelse(is.na(answers$n_features), 1, answers$n_features)
+
     # calculate the memory
     data$methods_aggr <- data$methods_aggr %>%
       mutate(
         scaling_predicted_mem = map_dbl(
           scaling_models_predict_mem,
           invoke_if_function,
-          n_cells = answers$n_cells,
-          n_features = answers$n_features
+          n_cells = n_cells,
+          n_features = n_features
         )
       )
 

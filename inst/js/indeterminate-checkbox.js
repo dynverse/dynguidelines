@@ -40,7 +40,6 @@ $.extend(indeterminateCheckbox, {
   },
   setValue: function(el, value) {
     var input = $(el).find("input");
-    console.log(value)
     setIndeterminateCheckboxValue(input, value);
   },
   subscribe: function(el, callback) {
@@ -74,8 +73,6 @@ $.extend(indeterminateCheckbox, {
     };
   },
   receiveMessage: function(el, data) {
-    console.log("HI")
-
     var input = $(el).find("input");
 
     if (data.hasOwnProperty("value")) {

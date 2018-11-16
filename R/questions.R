@@ -25,7 +25,6 @@ memory_choices <- c(seq(10^8, 10^9, 10^8), seq(10^9, 10^10, 10^9), seq(10^10, 10
 #' @include modifiers.R
 #' @include labels.R
 #' @include formatters.R
-#' @export
 get_questions <- function() {
   priors <- dynwrap::priors %>%
     filter(prior_id != "dataset")

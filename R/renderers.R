@@ -4,6 +4,9 @@ scale_01 <- function(y, lower = min(y, na.rm = TRUE), upper = max(y, na.rm = TRU
     lower <- upper - 0.1
   }
 
+  y[y < lower] <- lower
+  y[y > upper] <- upper
+
   (y - lower) / (upper - lower)
 }
 
@@ -135,7 +138,10 @@ render_required_priors <- function(x) {
       tags$span(
         symbol,
         title = paste(prior_id_to_label[prior_ids], collapse = ", "),
-        class = "tooltippable"
+        class = "tooltippable",
+        `data-toggle` = "tooltip",
+        `data-placement` = "top",
+        style = "font-size:15px"
       )
     } else {
       ""
@@ -150,23 +156,27 @@ render_wrapper_type <- function(x) {
 
 
 
-get_scaling_renderer <- function(formatter, palette = palettes$scalability, min, max, log = FALSE) {
-  function(x) {
-    if (log) {
-      x <- exp(x)
-    }
-
-    x[x < min] <- min
-    x[x > max] <- max
+get_scaling_renderer <- function(
+  formatter,
+  palette = palettes$scalability,
+  min,
+  max,
+  upper_question_id = "time",
+  upper_processor = process_time
+) {
+  function(x, options, answers) {
+    # determine upper limit for coloring
+    upper <- invoke(upper_processor, answers$answer[[upper_question_id]])
+    if (upper > max) upper <- max
 
     y <- tibble(
       x = x,
-      formatted = formatter(x),
-      normalised = ifelse(is.na(x), 0, scale_01(log(x))),
+      formatted = formatter(x, min, max),
+      normalised = ifelse(is.na(x), 0, scale_01(log(x), lower = log(min), upper = log(upper))),
       rounded = format_100(normalised),
       width = paste0(rounded, "px"),
       background = ifelse(is.na(x), "none", html_color(scaled_color(1-normalised, palette))),
-      color = case_when(scale_01(normalised, lower = 0) > 0.5 ~ "white", is.na(x) ~ "grey", TRUE ~ "black"),
+      color = case_when(normalised > 0.5 ~ "white", is.na(x) ~ "grey", TRUE ~ "black"),
       style = pmap(list(`background-color` = background, color = color, display = "block", width = width), htmltools::css),
       class = "score bar"
     )
@@ -175,10 +185,8 @@ get_scaling_renderer <- function(formatter, palette = palettes$scalability, min,
   }
 }
 
-time_renderer <- get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7, log = FALSE)
-memory_renderer <- get_scaling_renderer(format_memory, min = 1, max = 10^12, log = FALSE)
-time_renderer_log <- get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7, log = TRUE)
-memory_renderer_log <- get_scaling_renderer(format_memory, min = 1, max = 10^12, log = TRUE)
+time_renderer <- get_scaling_renderer(format_time, min = 0.1, max = 60*60*24*7, upper_question_id = "time", upper_processor = process_time)
+memory_renderer <- get_scaling_renderer(format_memory, min = process_memory("100MB"), max = process_memory("1TB"), upper_question_id = "memory", upper_processor = process_memory)
 
 
 get_warning_renderer <- function(
@@ -225,9 +233,6 @@ error_warning_renderer <- get_warning_renderer(
   palette = palettes$overall
 )
 
-#' Get all renderers
-#'
-#' @export
 get_renderers <- function() {
   data(trajectory_types, package = "dynwrap", envir = environment())
 
@@ -241,8 +246,8 @@ get_renderers <- function() {
     "method_wrapper_type", "method", render_wrapper_type, "Wrapper", "How the method was wrapped using <a href='wrap.dynverse.org'><em>dyn</em>wrap</a>", NA, NA, NA,
     "method_most_complex_trajectory_type", "method", render_detects_trajectory_type, "Topology", "The most complex topology this method can predict", NA, NA, NA,
     "method_platform", "method", render_identity, "Platform", "Platform", NA, NA, NA,
-    "scaling_predicted_time", "scalability", time_renderer, "Time", "Estimated running time", NA, 2, NA,
-    "scaling_predicted_mem", "scalability", memory_renderer, "Memory", "Estimated maximal memory usage", NA, 2.1, NA,
+    "scaling_predicted_time", "scalability", time_renderer, icon("clock"), "Estimated running time", NA, 2, NA,
+    "scaling_predicted_mem", "scalability", memory_renderer, icon("memory"), "Estimated maximal memory usage", NA, 2.1, NA,
     "stability_warning", "stability", stability_warning_renderer, "Stability", "Whether the stability is low", NA, 3, NA,
     "error_warning", "method", error_warning_renderer, "Errors", "Whether the method errors often", NA, 99, NA
   ) %>% bind_rows(
@@ -265,7 +270,7 @@ get_renderers <- function() {
       renderer = map(palettes[category], get_score_renderer),
       label = list("Overall"),
       name = NA,
-      title = "",
+      title = paste0("Average ", category, " score"),
       style = "",
       default = NA
     )
@@ -275,7 +280,7 @@ get_renderers <- function() {
       column_id = paste0("benchmark_tt_", trajectory_type),
       category = "accuracy",
       renderer = map(column_id, ~get_score_renderer()),
-      label = as.list(str_glue("{label_capitalise(trajectory_type)} score")),
+      label = as.list(str_glue("{label_capitalise(trajectory_type)}")),
       name = NA,
       title = as.character(str_glue("Score on datasets containing a {label_split(trajectory_type)} topology")),
       style = "",
@@ -332,29 +337,26 @@ get_renderers <- function() {
         label = str_match(column_id, "scaling_pred_(time|mem)_cells(.*)_features(.*)") %>%
           as.data.frame() %>%
           mutate_all(as.character) %>%
-          glue::glue_data("{.$V2} {.$V3} cells and {.$V4} features") %>%
-          as.character() %>%
-          as.list(),
+          mutate(icon = list(mem = icon("memory"), time = icon("clock-o"))[V2]) %>%
+          pmap(function(icon, V3, V4, ...) {tags$span(icon, V3, " \U00D7 ", V4)})
+        ,
         name = NA,
-        title = as.character(label),
+        title = "",
         style = "",
         default = NA
       )
     ) %>% bind_rows(
       tibble(
-        column_id = methods_aggr %>%
-          select(starts_with("stability"), -stability_overall_overall) %>%
-          select_if(is.numeric) %>%
-          colnames(),
-        scaling_type = gsub("stability_([^_]*)_.*", "\\1", column_id),
+        metric_id = benchmark_metrics$metric_id,
+        column_id = paste0("stability_", metric_id),
         category = "stability",
         renderer = map(column_id, ~get_score_renderer(palettes$stability)),
-        label = as.list(column_id),
+        label = map(benchmark_metrics$html, HTML),
         name = NA,
-        title = as.character(label),
-        style = "",
+        title = benchmark_metrics$html,
+        style = "width:11px;",
         default = NA
-      )
+      ) %>% select(-metric_id)
     )
   )
 
@@ -370,15 +372,11 @@ get_column_categories <- function() {
 
 
 
-
-#' Get column presets
-#'
-#' @export
 get_column_presets <- function() {
   list(
     list(
-      id = "intelligent",
-      label = "Intelligent",
+      id = "default",
+      label = "Default",
       activate = function(show_columns) {
         show_columns[names(show_columns)] <- "indeterminate"
         show_columns
@@ -437,7 +435,7 @@ activate_column_preset_category <- function(category) {
   function(show_columns) {
     show_columns[names(show_columns)] <- "false"
     columns_oi <- get_renderers() %>% filter((category %in% !!category) | (column_id %in% c("selected", "method_name" ))) %>% pull(column_id) %>% paste0("column_", .)
-    columns_oi <- c("column_name", columns_oi)
+    columns_oi <- c("column_method_name", columns_oi)
     show_columns[columns_oi] <- "true"
     show_columns
   }

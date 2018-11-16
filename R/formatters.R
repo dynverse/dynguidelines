@@ -3,10 +3,14 @@ format_100 <- function(y) {
 }
 
 
-format_time <- function(x) {
+format_time <- function(x, min = 1, max = 60*60*24*10) {
   map_chr(x, function(x) {
     if (is.na(x)) {
       NA
+    } else if (x < min) {
+      paste0("<", format_time(min))
+    } else if (x > max) {
+      paste0(">", format_time(max))
     } else if(x < 60) {
       paste0(round(x), "s")
     } else if (x < (60*60)) {
@@ -24,7 +28,7 @@ process_time <- function(x) {
       NA
     } else if (x == "\U221E") {
       Inf
-    } else {
+    } else if (str_detect(x, "([0-9]*)[smhd]")) {
       number <- as.numeric(gsub("([0-9]*)[smhd]", "\\1", x))
       if (endsWith(x, "s")) {
         number
@@ -34,17 +38,21 @@ process_time <- function(x) {
         number * 60 * 60
       } else if (endsWith(x, "d")) {
         number * 60 * 60 * 24
-      } else {
-        stop("Invalid time: ", x)
       }
+    } else {
+      stop("Invalid time: ", x)
     }
   })
 }
 
-format_memory <- function(x) {
+format_memory <- function(x, min = 1000, max = 10**20) {
   map_chr(x, function(x) {
     if (is.na(x)) {
       NA
+    } else if (x < min) {
+      paste0("<", format_memory(min))
+    } else if (x > max) {
+      paste0(">", format_memory(max))
     } else if (x < 10^3) {
       paste0(round(x), "B")
     } else if (x < 10^6) {

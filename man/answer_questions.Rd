@@ -2,39 +2,39 @@
 % Please edit documentation in R/answers.R
 \name{answer_questions}
 \alias{answer_questions}
-\title{Provide answers to various questions}
+\title{Provide answers to questions}
 \usage{
 answer_questions(dataset = NULL, ...)
 }
 \arguments{
-\item{dataset}{The dataset from which the answers will be computed}
+\item{dataset}{The dynwrap dataset object from which the answers will be computed}
 
 \item{...}{Answers to questions:
 \itemize{
-\item multiple_disconnected: Do you expect multiple disconnected trajectories in the data?, defaults to NULL:
-\item expect_topology: Do you expect a particular topology in the data?, defaults to NULL:
-\item expected_topology: What is the expected topology, defaults to NULL:
-\item expect_cycles: Do you expect cycles in the data?, defaults to NULL:
-\item expect_complex_tree: Do you expect a complex tree in the data?, defaults to NULL:
-\item n_cells: Number of cells, defaults to 1000:
-\item n_features: Number of features (genes), defaults to 1000:
-\item time: Time limit, defaults to 1h:
-\item memory: Memory limit, defaults to 30GB:
-\item prior_information: Are you able to provide the following prior information?, defaults to c("start_id", "end_id", "end_n", "start_n", "groups_n", "features_id"):
-\item method_selection: How to select the number of methods, defaults to dynamic_n_methods:
-\item dynamic_n_methods: Minimal probability of selecting the top model for the task, defaults to 80:
-\item fixed_n_methods: Number of methods, defaults to 4:
-\item metric_importance: How important are the following aspects of the trajectory?, defaults to list(correlation = 0.25, him = 0.25, featureimp_wcor = 0.25, F1_branches = 0.25):
-\item user: Are you an end-user or a method developer?, defaults to user:
-\item dynmethods: Do you use dynmethods to run the methods?, defaults to TRUE:
-\item docker: Is docker installed?, defaults to TRUE:
-\item programming_interface: Can you work in a programming interface?, defaults to TRUE:
-\item languages: Which languages can you work with?, defaults to c("Python", "R", "C++"):
-\item user_friendliness: Minimal user friendliness score, defaults to 60:
-\item developer_friendliness: Minimal developer friendliness score, defaults to 60:
-\item exclude_datasets: Which datasets should be excluded, defaults to character(0):
+\item multiple_disconnected: Do you expect multiple disconnected trajectories in the data? defaults to \code{NULL}:
+\item expect_topology: Do you expect a particular topology in the data? defaults to \code{NULL}:
+\item expected_topology: What is the expected topology defaults to \code{NULL}:
+\item expect_cycles: Do you expect cycles in the data? defaults to \code{NULL}:
+\item expect_complex_tree: Do you expect a complex tree in the data? defaults to \code{NULL}:
+\item n_cells: Number of cells defaults to \code{1000}:
+\item n_features: Number of features (genes) defaults to \code{1000}:
+\item time: Time limit defaults to \code{1h}:
+\item memory: Memory limit defaults to \code{30GB}:
+\item prior_information: Are you able to provide the following prior information? defaults to \code{c("start_id", "end_id", "end_n", "start_n", "groups_n", "features_id")}:
+\item method_selection: How to select the number of methods defaults to \code{dynamic_n_methods}:
+\item dynamic_n_methods: Minimal probability of selecting the top model for the task defaults to \code{80}:
+\item fixed_n_methods: Number of methods defaults to \code{4}:
+\item metric_importance: How important are the following aspects of the trajectory? defaults to \code{list(correlation = 0.25, him = 0.25, featureimp_wcor = 0.25, F1_branches = 0.25)}:
+\item user: Are you an end-user or a method developer? defaults to \code{user}:
+\item dynmethods: Do you use dynmethods to run the methods? defaults to \code{TRUE}:
+\item docker: Is docker installed? defaults to \code{TRUE}:
+\item programming_interface: Can you work in a programming interface? defaults to \code{TRUE}:
+\item languages: Which languages can you work with? defaults to \code{c("Python", "R", "C++")}:
+\item user_friendliness: Minimal user friendliness score defaults to \code{60}:
+\item developer_friendliness: Minimal developer friendliness score defaults to \code{60}:
+\item exclude_datasets: Which datasets should be excluded defaults to \code{character(0)}:
 }}
 }
 \description{
-Provide answers to various questions
+Provide answers to questions
 }
