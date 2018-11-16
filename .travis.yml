@@ -1,12 +1,31 @@
+# parts of this travis yaml are based on https://gist.github.com/mjackson/5887963e7d8b8fb0615416c510ae8857
+
 language: r
 dist: trusty
 cache:
   directories:
     - $HOME/.cache
     - $HOME/R/Library
+    - $HOME/google-cloud-sdk
+env:
+  global:
+  # Do not prompt for user input when using any SDK methods.
+  - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 r_packages: covr
 after_success:
  - R -e 'covr::codecov()'
-# - Rscript inst/deploy/deploy.R
 before_install:
   - source <(curl -s https://raw.githubusercontent.com/dynverse/travis_scripts/master/install_phantomjs.sh)
+  - if [ ! -d $HOME/google-cloud-sdk/bin ]; then
+      # The install script errors if this directory already exists,
+      # but Travis already creates it when we mark it as cached.
+      rm -rf $HOME/google-cloud-sdk;
+      # The install script is overly verbose, which sometimes causes
+      # problems on Travis, so ignore stdout.
+      curl https://sdk.cloud.google.com | bash > /dev/null;
+    fi
+  # This line is critical. We setup the SDK to take precedence in our
+  # environment over the old SDK that is already on the machine.
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud components update kubectl
+  - gcloud version
