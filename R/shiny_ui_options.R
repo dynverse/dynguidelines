@@ -1,25 +1,29 @@
 get_columns_presets_ui <- function(column_presets, session, show_columns) {
   tags$div(
-    class = "btn-group",
     tags$label("Lenses ", style = "float:left;line-height: 38px;font-size: 14px;margin-right: 5px;"),
-    map(column_presets, function(column_preset) {
-      # observe button event, and change the show columns accordingly
-      button_id <- paste0("column_preset_", column_preset$id)
-      observeEvent(session$input[[button_id]], {
-        # change the columns checkboxes
-        new_show_columns <- column_preset$activate(show_columns())
-        changed_show_columns <- new_show_columns[new_show_columns != show_columns()[names(new_show_columns)]]
+    tags$div(
+      class = "btn-group btn-group-justified",
+      style = "width:initial!important",
+      map(column_presets, function(column_preset) {
+        # observe button event, and change the show columns accordingly
+        button_id <- paste0("column_preset_", column_preset$id)
+        observeEvent(session$input[[button_id]], {
+          # change the columns checkboxes
+          new_show_columns <- column_preset$activate(show_columns())
+          changed_show_columns <- new_show_columns[new_show_columns != show_columns()[names(new_show_columns)]]
 
-        walk2(names(changed_show_columns), changed_show_columns, function(column_id, value) {
-          updateIndeterminateCheckboxInput(session, column_id, value)
+          walk2(names(changed_show_columns), changed_show_columns, function(column_id, value) {
+            updateIndeterminateCheckboxInput(session, column_id, value)
+          })
         })
-      })
 
-      actionButton(
-        button_id,
-        label = column_preset$label
-      )
-    })
+        actionLink(
+          button_id,
+          label = column_preset$label,
+          class = "btn btn-default"
+        )
+      })
+    )
   )
 }
 

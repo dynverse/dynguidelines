@@ -1,5 +1,14 @@
 # dynguidelines 0.3.2 (unreleased)
 
+**New features**
+
+* Enable automatic deployment via travis-ci
+
+**Fixes**
+
+* Justify lens buttons
+
+
 # dynguidelines 0.3.1 (16-11-2018)
 
 **New features**
