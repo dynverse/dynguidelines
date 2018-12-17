@@ -7,6 +7,7 @@
 **Fixes**
 
 * Justify lens buttons
+* Use master branch of dynwrap instead of devel
 
 
 # dynguidelines 0.3.1 (16-11-2018)
