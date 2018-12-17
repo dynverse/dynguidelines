@@ -1,7 +1,7 @@
 Package: dynguidelines
 Type: Package
 Title: User guidelines for trajectory inference
-Version: 0.3.1
+Version: 0.3.2
 Authors@R: c(
     person(
       "Wouter", 
