@@ -26,7 +26,7 @@ echo $version
 # docker build --no-cache --build-arg CACHE_DATE=$(date +%Y-%m-%d:%H:%M:%S) -t dynverse/dynguidelines_server:${version} .
 
 # with cache
-docker build --build-arg CACHE_DATE=$(date +%Y-%m-%d:%H:%M:%S) -t dynverse/dynguidelines_server:${version} .
+docker build -t dynverse/dynguidelines_server:${version} inst/deploy
 ```
 
 ## Push the container
@@ -75,3 +75,17 @@ kubectl run dynguidelines --image=gcr.io/dynguidelines/dynguidelines_server:${ve
 ```
 kubectl get service
 ```
+
+
+# Continuous deployment
+
+Create a service account: https://cloud.google.com/iam/docs/creating-managing-service-accounts#creating_a_service_account
+
+Generate key
+
+Base 64 key
+```
+base64 ~/Downloads/dynguidelines-465c5aa876d4.json > /tmp/decrypted_key.json
+```
+
+Add as `GCLOUD_SERVICE_KEY` to travis environment variables

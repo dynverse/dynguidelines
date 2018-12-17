@@ -4,7 +4,7 @@ library(testthat)
 context("Test Shiny app")
 
 # open Shiny app and PhantomJS
-app <- ShinyDriver$new(system.file("deploy", package = "dynguidelines"))
+app <- ShinyDriver$new(system.file("deploy/server", package = "dynguidelines"))
 Sys.sleep(5)
 
 test_that("A methods table is returned", {
