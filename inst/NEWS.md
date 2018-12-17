@@ -1,4 +1,7 @@
-# dynguidelines 0.3.2
+# dynguidelines 0.3.3 (unreleased)
+
+
+# dynguidelines 0.3.2 (17-12-2018)
 
 **New features**
 
