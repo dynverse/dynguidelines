@@ -44,7 +44,7 @@ changes.
 
 <!-- This section gets automatically generated from inst/NEWS.md, and also generates inst/NEWS -->
 
-### Latest changes in dynguidelines 0.3.2 (unreleased)
+### Latest changes in dynguidelines 0.3.2
 
 **New features**
 
