@@ -287,7 +287,7 @@ calculate_benchmark_score <- function(benchmark, answers) {
     group_by(method_id, dataset_trajectory_type) %>%
     summarise_if(is.numeric, mean) %>%
     summarise_if(is.numeric, mean) %>%
-    mutate(score = dyneval::calculate_geometric_mean(.[, benchmark_metrics$metric_id], weights = unlist(answers$metric_importance[benchmark_metrics$metric_id]))) %>%
+    mutate(score = dynutils::calculate_geometric_mean(.[, benchmark_metrics$metric_id], weights = unlist(answers$metric_importance[benchmark_metrics$metric_id]))) %>%
     select(method_id, score) %>%
     deframe()
 }
