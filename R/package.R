@@ -8,7 +8,7 @@
 #' @import tibble
 #' @import shiny
 #' @import stringr
-#' @importFrom dynutils add_class extract_row_to_list
+#' @importFrom dynutils add_class extract_row_to_list calculate_geometric_mean
 #'
 #' @name dynguidelines
 NULL

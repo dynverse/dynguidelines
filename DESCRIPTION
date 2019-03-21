@@ -32,9 +32,8 @@ Imports:
   akima,
   crayon,
   colorspace,
-  dyneval,
-  dynwrap (>= 0.3.1),
-  dynutils,
+  dynwrap (>= 0.9.9),
+  dynutils (>= 1.0.1.9000),
   dplyr,
   tibble,
   htmltools,
@@ -52,7 +51,6 @@ Suggests:
   testthat,
   shinytest
 Remotes:
-  dynverse/dyneval,
   dynverse/dynwrap,
   dynverse/dynutils
 URL: https://github.com/dynverse/dynguidelines
