@@ -1,8 +1,3 @@
-# metrics from dyneval
-benchmark_metrics <- dyneval::metrics %>%
-  filter(metric_id %in% c("correlation", "him", "F1_branches", "featureimp_wcor"))
-benchmark_metrics$description <- "todo"
-
 # convert javascript active if question
 generate_r_active_if <- function(question) {
   activeIf <- question$activeIf
@@ -18,6 +13,7 @@ generate_r_active_if <- function(question) {
   }
 }
 
+# memory choices
 memory_choices <- c(seq(10^8, 10^9, 10^8), seq(10^9, 10^10, 10^9), seq(10^10, 10^11, 10^10))
 
 #' Get the the questions, their modifiers and properties
