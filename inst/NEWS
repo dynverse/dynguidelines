@@ -1,6 +1,6 @@
 dynguidelines 1.0 (29-03-2019)
 
-** Minor changes** 
+**Minor changes** 
 * Remove dyneval dependency
 * Minor changes due to changes in dynwrap v1.0
 
