@@ -1,7 +1,7 @@
 Package: dynguidelines
 Type: Package
 Title: User guidelines for trajectory inference
-Version: 0.9.9
+Version: 1.0.0
 Authors@R: c(
     person(
       "Wouter", 
@@ -32,8 +32,8 @@ Imports:
   akima,
   crayon,
   colorspace,
-  dynwrap (>= 0.9.9),
-  dynutils (>= 1.0.1.9000),
+  dynwrap (>= 1.0.0),
+  dynutils (>= 1.0.2),
   dplyr,
   tibble,
   htmltools,

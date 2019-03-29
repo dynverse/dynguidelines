@@ -44,10 +44,10 @@ changes.
 
 <!-- This section gets automatically generated from inst/NEWS.md, and also generates inst/NEWS -->
 
-### Recent changes in dynguidelines 1.0 (unreleased)
+### Recent changes in dynguidelines 1.0 (29-03-2019)
 
-\*\* Minor changes\*\* \* Remove dyneval dependency \* Bumping version
-number for CRAN release
+\*\* Minor changes\*\* \* Remove dyneval dependency \* Minor changes due
+to changes in dynwrap v1.0
 
 ### Recent changes in dynguidelines 0.3.2 (17-12-2018)
 

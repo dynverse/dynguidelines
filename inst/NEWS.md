@@ -1,8 +1,8 @@
-# dynguidelines 1.0 (unreleased)
+# dynguidelines 1.0 (29-03-2019)
 
 ** Minor changes** 
 * Remove dyneval dependency
-* Bumping version number for CRAN release
+* Minor changes due to changes in dynwrap v1.0
 
 # dynguidelines 0.3.2 (17-12-2018)
 

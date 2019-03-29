@@ -41,7 +41,7 @@ Check out `news(package = "dynguidelines")` or [NEWS.md](inst/NEWS.md) for a ful
 <!-- This section gets automatically generated from inst/NEWS.md, and also generates inst/NEWS -->
 
 ```{r news, echo=FALSE, results="asis"}
-dynutils::update_news("dynguidelines")
-cat(dynutils::recent_news("dynguidelines"))
+dynutils::update_news()
+cat(dynutils::recent_news())
 ```
 
