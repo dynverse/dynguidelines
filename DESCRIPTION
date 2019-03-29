@@ -1,7 +1,7 @@
 Package: dynguidelines
 Type: Package
 Title: User guidelines for trajectory inference
-Version: 0.3.2
+Version: 1.0.0
 Authors@R: c(
     person(
       "Wouter", 
@@ -25,16 +25,15 @@ Description: A shiny app which lets you select the most optimal TI method
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Depends:
   R (>= 3.3)
 Imports:
   akima,
   crayon,
   colorspace,
-  dyneval,
-  dynwrap (>= 0.3.1),
-  dynutils,
+  dynwrap (>= 1.0.0),
+  dynutils (>= 1.0.2),
   dplyr,
   tibble,
   htmltools,
@@ -52,7 +51,6 @@ Suggests:
   testthat,
   shinytest
 Remotes:
-  dynverse/dyneval,
   dynverse/dynwrap,
   dynverse/dynutils
 URL: https://github.com/dynverse/dynguidelines

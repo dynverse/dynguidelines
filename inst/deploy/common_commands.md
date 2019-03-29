@@ -61,7 +61,7 @@ https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app
 
 Create the cluster
 ```
-gcloud container clusters create dynguidelines --num-nodes=3
+gcloud container clusters create dynguidelines --num-nodes=1
 ```
 
 Push container (see up)
@@ -69,6 +69,8 @@ Push container (see up)
 Run container
 ```
 kubectl run dynguidelines --image=gcr.io/dynguidelines/dynguidelines_server:${version} --port 8080
+
+kubectl expose deployment dynguidelines --type=LoadBalancer --port 80 --target-port 8080
 ```
 
 ## Get public ip

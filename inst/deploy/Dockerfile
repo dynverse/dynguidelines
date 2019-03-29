@@ -32,10 +32,10 @@ RUN cd dynguidelines; R -e "devtools::install(dep = TRUE)"
 
 # copy over files of the server and the app
 EXPOSE 8080
-COPY inst/deploy/server/shiny-server.sh /home/rstudio/shiny-server.sh
-COPY inst/deploy/server/shiny-server.conf  /etc/shiny-server/shiny-server.conf
-COPY inst/deploy/server/server.R /srv/shiny-server/
-COPY inst/deploy/server/ui.R /srv/shiny-server/
+COPY server/shiny-server.sh /home/rstudio/shiny-server.sh
+COPY server/shiny-server.conf  /etc/shiny-server/shiny-server.conf
+COPY server/server.R /srv/shiny-server/
+COPY server/ui.R /srv/shiny-server/
 
 # define run command
 CMD ["sh", "/home/rstudio/shiny-server.sh"]

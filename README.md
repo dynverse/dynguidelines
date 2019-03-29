@@ -44,7 +44,12 @@ changes.
 
 <!-- This section gets automatically generated from inst/NEWS.md, and also generates inst/NEWS -->
 
-### Latest changes in dynguidelines 0.3.2
+### Recent changes in dynguidelines 1.0 (29-03-2019)
+
+**Minor changes** \* Remove dyneval dependency \* Minor changes due to
+changes in dynwrap v1.0
+
+### Recent changes in dynguidelines 0.3.2 (17-12-2018)
 
 **New features**
 
@@ -54,22 +59,3 @@ changes.
 
   - Justify lens buttons
   - Use master branch of dynwrap instead of devel
-
-### Latest changes in dynguidelines 0.3.1 (16-11-2018)
-
-**New features**
-
-  - Time and memory are now formatted relative to the limits in the
-    questions (fixes \#46)
-  - If time and memory exceed the limit, they are clipped
-
-**Fixes**
-
-  - Remove debug javascript messages
-  - Fix javascript error for lenses which activated wrong columns
-  - Fix bug when no n\_cells or n\_features is entered
-  - Clean stability column names
-  - Clean scalability column names
-  - Add tooltips to priors
-  - Small fixes for default columns
-  - Cleanup of exported function and documentation

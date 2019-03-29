@@ -1,34 +1,45 @@
 # parts of this travis yaml are based on https://gist.github.com/mjackson/5887963e7d8b8fb0615416c510ae8857
-
 language: r
 dist: trusty
+warnings_are_errors: true
 cache:
   directories:
-    - $HOME/.cache
     - $HOME/R/Library
-    - $HOME/google-cloud-sdk
+services:
+  - docker
 env:
   global:
   # Do not prompt for user input when using any SDK methods.
   - CLOUDSDK_CORE_DISABLE_PROMPTS=1
-r_packages: covr
-after_success:
- - R -e 'covr::codecov()'
 
 before_install:
-  - source <(curl -s https://raw.githubusercontent.com/dynverse/travis_scripts/master/install_phantomjs.sh)
-
+  - source <(curl -sSL https://raw.githubusercontent.com/dynverse/travis_scripts/master/helper.sh)
+  - install_phantomjs
+install:
+ - install_cran devtools covr
+ - install_cran covr
+ - use_dynverse_devel
+ - install_withdeps
 before_deploy:
   - if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf $HOME/google-cloud-sdk; export CLOUDSDK_CORE_DISABLE_PROMPTS=1; curl https://sdk.cloud.google.com | bash; fi
   - source /home/travis/google-cloud-sdk/path.bash.inc
   - gcloud --quiet version
   - gcloud --quiet components update
-  - gcloud --quiet components beta update
   - gcloud --quiet components update kubectl
-
 deploy:
   - provider: script
     script: ./inst/deploy/deploy.sh
     skip_cleanup: true
     on:
       branch: master
+after_success:
+ - R -e 'covr::codecov()'
+
+jobs:
+  include:
+    - stage: prepare cache
+      script:
+        - echo Skip
+      after_success:
+        - echo Skip
+    - stage: test
