@@ -5,6 +5,8 @@ warnings_are_errors: true
 cache:
   directories:
     - $HOME/R/Library
+    - $HOME/google-cloud-sdk
+    - $HOME/.cache # phantomjs
 services:
   - docker
 env:
@@ -41,5 +43,7 @@ jobs:
       script:
         - echo Skip
       after_success:
+        - echo Skip
+      deplor:
         - echo Skip
     - stage: test
