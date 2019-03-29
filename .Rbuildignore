@@ -5,3 +5,4 @@
 ^deploy
 clean_history.sh
 .git
+^README\.Rmd$
