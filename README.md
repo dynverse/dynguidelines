@@ -38,24 +38,25 @@ how to use this package to infer and interpret trajectories.
 
 ## Latest changes
 
-Check out `news(package = "dynguidelines")` or [NEWS.md](inst/NEWS.md)
-for a full list of
-changes.
+Check out `news(package = "dynguidelines")` or [NEWS.md](NEWS.md) for a
+full list of changes.
 
-<!-- This section gets automatically generated from inst/NEWS.md, and also generates inst/NEWS -->
+<!-- This section gets automatically generated from NEWS.md -->
 
 ### Recent changes in dynguidelines 1.0 (29-03-2019)
 
-**Minor changes** \* Remove dyneval dependency \* Minor changes due to
-changes in dynwrap v1.0
+#### Minor changes
+
+  - Remove dyneval dependency
+  - Minor changes due to changes in dynwrap v1.0
 
 ### Recent changes in dynguidelines 0.3.2 (17-12-2018)
 
-**New features**
+#### New features
 
   - Enable automatic deployment via travis-ci
 
-**Fixes**
+#### Fixes
 
   - Justify lens buttons
   - Use master branch of dynwrap instead of devel

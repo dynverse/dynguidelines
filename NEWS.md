@@ -1,16 +1,16 @@
 # dynguidelines 1.0 (29-03-2019)
 
-**Minor changes** 
+## Minor changes
 * Remove dyneval dependency
 * Minor changes due to changes in dynwrap v1.0
 
 # dynguidelines 0.3.2 (17-12-2018)
 
-**New features**
+## New features
 
 * Enable automatic deployment via travis-ci
 
-**Fixes**
+## Fixes
 
 * Justify lens buttons
 * Use master branch of dynwrap instead of devel
@@ -18,12 +18,12 @@
 
 # dynguidelines 0.3.1 (16-11-2018)
 
-**New features**
+## New features
 
 * Time and memory are now formatted relative to the limits in the questions (fixes #46)
 * If time and memory exceed the limit, they are clipped
 
-**Fixes**
+## Fixes
 
 * Remove debug javascript messages
 * Fix javascript error for lenses which activated wrong columns
@@ -36,7 +36,7 @@
 
 # dynguidelines 0.3.0 (15-11-2018)
 
-**New features**
+## New features
 
 * Add category headers, just like figure 2/3
 * Columns are now sorted within each category, categories are sorted according to figure 2/3
@@ -44,7 +44,7 @@
 * New lens: Summary (Fig. 2)
 * Show lenses by default
 
-**Fixes**
+## Fixes
 
 * Several small cosmetic changes
 * Code and doi links are opened in a new tab
