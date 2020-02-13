@@ -22,7 +22,7 @@ Description: A shiny app which lets you select the most optimal TI method
      based on a number of user-dependent and dataset-dependent parameters.
      After using the GUI, a user can copy the code necessary to reproduce
      the guidelines to their script. 
-License: GPL-3
+License: MIT + LICENSE file
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
