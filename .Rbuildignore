@@ -6,3 +6,5 @@
 clean_history.sh
 .git
 ^README\.Rmd$
+^LICENSE\.md$
+^LICENSE\.md$
