@@ -233,8 +233,9 @@ error_warning_renderer <- get_warning_renderer(
   palette = palettes$overall
 )
 
+#' @importFrom utils data
 get_renderers <- function() {
-  data(trajectory_types, package = "dynwrap", envir = environment())
+  utils::data(trajectory_types, package = "dynwrap", envir = environment())
 
   renderers <- tribble(
     ~column_id, ~category, ~renderer, ~label, ~title, ~style, ~default, ~name,

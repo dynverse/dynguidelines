@@ -19,7 +19,9 @@ collapsePanel <- function(..., header = "", show_on_start = FALSE, id = "") {
   )
 }
 
-
+dropNulls <- function(x) {
+  x[!vapply(x, is.null, FUN.VALUE = logical(1))]
+}
 
 balancingSliders <- function(
   inputId,
@@ -35,7 +37,7 @@ balancingSliders <- function(
   ticks = FALSE
 ) {
   sliderTags <- pmap(lst(label = labels, id = ids, value = values), function(label, id, value) {
-    sliderProps <- shiny:::dropNulls(list(
+    sliderProps <- dropNulls(list(
       id = id,
       class = "js-range-slider",
       `data-type` = "single",
