@@ -1,12 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![Build
-Status](https://img.shields.io/travis/dynverse/dynguidelines.svg?logo=travis)](https://travis-ci.org/dynverse/dynguidelines)
-[![AppVeyor Build
-Status](https://ci.appveyor.com/api/projects/status/github/dynverse/dynguidelines?branch=master&svg=true)](https://ci.appveyor.com/project/dynverse/dynguidelines)
+<!-- badges: start -->
+
+[![R build
+status](https://github.com/dynverse/dynguidelines/workflows/R-CMD-check/badge.svg)](https://github.com/dynverse/dynguidelines/actions)
 [![codecov](https://codecov.io/gh/dynverse/dynguidelines/branch/master/graph/badge.svg)](https://codecov.io/gh/dynverse/dynguidelines)
 <img src="man/figures/logo.png" align="right" width="150px" />
+<!-- badges: end -->
 
 # Selecting the most optimal TI methods
 
