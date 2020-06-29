@@ -1,3 +1,9 @@
+# dynguidelines 1.0.1 (29-06-2020)
+
+## Fixes
+* Fix `get_questions()`: Remove accidental reliance on list name
+  autocompletion, which has been removed from R.
+
 # dynguidelines 1.0 (29-03-2019)
 
 ## Minor changes

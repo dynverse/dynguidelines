@@ -43,20 +43,16 @@ full list of changes.
 
 <!-- This section gets automatically generated from NEWS.md -->
 
+### Recent changes in dynguidelines 1.0.1 (29-06-2020)
+
+#### Fixes
+
+  - Fix `get_questions()`: Remove accidental reliance on list name
+    autocompletion, which has been removed from R.
+
 ### Recent changes in dynguidelines 1.0 (29-03-2019)
 
 #### Minor changes
 
   - Remove dyneval dependency
   - Minor changes due to changes in dynwrap v1.0
-
-### Recent changes in dynguidelines 0.3.2 (17-12-2018)
-
-#### New features
-
-  - Enable automatic deployment via travis-ci
-
-#### Fixes
-
-  - Justify lens buttons
-  - Use master branch of dynwrap instead of devel
