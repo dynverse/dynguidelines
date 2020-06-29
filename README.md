@@ -51,6 +51,11 @@ full list of changes.
   - Fix `get_questions()`: Remove accidental reliance on list name
     autocompletion, which has been removed from R.
 
+#### Minor changes
+
+  - Migrate from Travis CI to Github Actions for CMD check and codecov,
+    not yet for automated deployment.
+
 ### Recent changes in dynguidelines 1.0 (29-03-2019)
 
 #### Minor changes
