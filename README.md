@@ -1,12 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![Build
-Status](https://img.shields.io/travis/dynverse/dynguidelines.svg?logo=travis)](https://travis-ci.org/dynverse/dynguidelines)
-[![AppVeyor Build
-Status](https://ci.appveyor.com/api/projects/status/github/dynverse/dynguidelines?branch=master&svg=true)](https://ci.appveyor.com/project/dynverse/dynguidelines)
+<!-- badges: start -->
+
+[![R build
+status](https://github.com/dynverse/dynguidelines/workflows/R-CMD-check/badge.svg)](https://github.com/dynverse/dynguidelines/actions)
 [![codecov](https://codecov.io/gh/dynverse/dynguidelines/branch/master/graph/badge.svg)](https://codecov.io/gh/dynverse/dynguidelines)
 <img src="man/figures/logo.png" align="right" width="150px" />
+<!-- badges: end -->
 
 # Selecting the most optimal TI methods
 
@@ -38,24 +39,26 @@ how to use this package to infer and interpret trajectories.
 
 ## Latest changes
 
-Check out `news(package = "dynguidelines")` or [NEWS.md](inst/NEWS.md)
-for a full list of
-changes.
+Check out `news(package = "dynguidelines")` or [NEWS.md](NEWS.md) for a
+full list of changes.
 
-<!-- This section gets automatically generated from inst/NEWS.md, and also generates inst/NEWS -->
+<!-- This section gets automatically generated from NEWS.md -->
+
+### Recent changes in dynguidelines 1.0.1 (29-06-2020)
+
+#### Fixes
+
+  - Fix `get_questions()`: Remove accidental reliance on list name
+    autocompletion, which has been removed from R.
+
+#### Minor changes
+
+  - Migrate from Travis CI to Github Actions for CMD check and codecov,
+    not yet for automated deployment.
 
 ### Recent changes in dynguidelines 1.0 (29-03-2019)
 
-**Minor changes** \* Remove dyneval dependency \* Minor changes due to
-changes in dynwrap v1.0
+#### Minor changes
 
-### Recent changes in dynguidelines 0.3.2 (17-12-2018)
-
-**New features**
-
-  - Enable automatic deployment via travis-ci
-
-**Fixes**
-
-  - Justify lens buttons
-  - Use master branch of dynwrap instead of devel
+  - Remove dyneval dependency
+  - Minor changes due to changes in dynwrap v1.0

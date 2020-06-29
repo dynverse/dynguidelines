@@ -3,6 +3,9 @@ library(testthat)
 
 context("Test Shiny app")
 
+skip_on_os("windows")
+skip_on_os("mac")
+
 # open Shiny app and PhantomJS
 app <- ShinyDriver$new(system.file("deploy/server", package = "dynguidelines"))
 Sys.sleep(5)

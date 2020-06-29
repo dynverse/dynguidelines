@@ -43,7 +43,7 @@ get_questions <- function() {
       modifier = function(data, answer = NULL) {},
       activeIf = "true",
       label = "Do you expect multiple disconnected trajectories in the data?",
-      title = tags$p("Disconnected trajectories are trajectories which are not connected", tags$im(src='img/disconnected_example.png')),
+      title = tags$p("Disconnected trajectories are trajectories which are not connected", tags$img(src='img/disconnected_example.png')),
       category = "topology",
       default = NULL,
       default_dataset = function(dataset, default) {

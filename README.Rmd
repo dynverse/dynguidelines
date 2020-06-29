@@ -10,10 +10,11 @@ editor_options:
 library(tidyverse)
 ```
 
-[![Build Status](https://img.shields.io/travis/dynverse/dynguidelines.svg?logo=travis)](https://travis-ci.org/dynverse/dynguidelines)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/dynverse/dynguidelines?branch=master&svg=true)](https://ci.appveyor.com/project/dynverse/dynguidelines)
+<!-- badges: start -->
+[![R build status](https://github.com/dynverse/dynguidelines/workflows/R-CMD-check/badge.svg)](https://github.com/dynverse/dynguidelines/actions)
 [![codecov](https://codecov.io/gh/dynverse/dynguidelines/branch/master/graph/badge.svg)](https://codecov.io/gh/dynverse/dynguidelines) 
 <img src="man/figures/logo.png" align="right" width="150px" />
+<!-- badges: end -->
 
 # Selecting the most optimal TI methods
 
@@ -36,12 +37,11 @@ See [dyno](https://www.github.com/dynverse/dyno) for more information on how to 
 ![demo](man/figures/demo.gif)
 
 ## Latest changes
-Check out `news(package = "dynguidelines")` or [NEWS.md](inst/NEWS.md) for a full list of changes.
+Check out `news(package = "dynguidelines")` or [NEWS.md](NEWS.md) for a full list of changes.
 
-<!-- This section gets automatically generated from inst/NEWS.md, and also generates inst/NEWS -->
+<!-- This section gets automatically generated from NEWS.md -->
 
 ```{r news, echo=FALSE, results="asis"}
-dynutils::update_news()
 cat(dynutils::recent_news())
 ```
 

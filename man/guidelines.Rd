@@ -5,11 +5,16 @@
 \alias{guidelines_shiny}
 \title{Provide guidelines on which methods to use, optionally based on a given dataset}
 \usage{
-guidelines(dataset = NULL, answers = answer_questions(dataset =
-  dataset))
+guidelines(dataset = NULL, answers = answer_questions(dataset = dataset))
 
-guidelines_shiny(dataset = NULL, answers = answer_questions(dataset =
-  dataset), port = NULL, launch.browser = TRUE, host = NULL, ...)
+guidelines_shiny(
+  dataset = NULL,
+  answers = answer_questions(dataset = dataset),
+  port = NULL,
+  launch.browser = TRUE,
+  host = NULL,
+  ...
+)
 }
 \arguments{
 \item{dataset}{The dynwrap dataset object from which some of the answers will be precomputed}
@@ -39,7 +44,7 @@ Returns a dynguidelines::guidelines object, containing
 \item \code{method_columns}: Information about what columns in methods are given and whether the were used for filtering or ordering
 \item \code{methods_aggr}: Same columns as \code{methods}, but includes filtered methods
 \item \code{answers}: An answers tibble, can be provided again to this function to reproduce the guidelines
-\item \code{methods_selected}: Ids for all selected methods, can be given to \code{\link[dynwrap:infer_trajectory]{dynwrap::infer_trajectory()}}
+\item \code{methods_selected}: Ids for all selected methods, can be given to \code{\link[dynwrap:infer_trajectories]{dynwrap::infer_trajectory()}}
 }
 }
 \description{
