@@ -18,9 +18,9 @@ answer_questions(dataset = NULL, ...)
 \item expect_complex_tree: Do you expect a complex tree in the data? defaults to \code{NULL}:
 \item n_cells: Number of cells defaults to \code{1000}:
 \item n_features: Number of features (genes) defaults to \code{1000}:
-\item time: Time limit defaults to \code{1h}:
-\item memory: Memory limit defaults to \code{30GB}:
-\item prior_information: Are you able to provide the following prior information? defaults to \code{c("start_id", "end_id", "end_n", "start_n", "groups_n", "features_id")}:
+\item time: Time limit defaults to \verb{1h}:
+\item memory: Memory limit defaults to \verb{30GB}:
+\item prior_information: Are you able to provide the following prior information? defaults to \code{c("start_id", "end_id", "end_n", "start_n", "leaves_n", "groups_n", "features_id", "dimred")}:
 \item method_selection: How to select the number of methods defaults to \code{dynamic_n_methods}:
 \item dynamic_n_methods: Minimal probability of selecting the top model for the task defaults to \code{80}:
 \item fixed_n_methods: Number of methods defaults to \code{4}:
