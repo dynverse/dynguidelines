@@ -8,3 +8,4 @@ clean_history.sh
 ^README\.Rmd$
 ^LICENSE\.md$
 ^LICENSE\.md$
+^\.github$
